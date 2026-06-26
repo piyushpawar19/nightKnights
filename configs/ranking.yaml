@@ -1,0 +1,20 @@
+# Configuration for the Candidate Ranking stage
+
+scoring_weights:
+  skill_match: 0.35
+  experience_relevance: 0.30
+  education_alignment: 0.15
+  cultural_signals: 0.10
+  llm_refinement: 0.10
+
+honeypot_detection:
+  disqualification_threshold: 0.10 # Max rate of honeypots in top 100 before DQ
+  suspicious_patterns:
+    - "keyword_stuffing"
+    - "behavioral_twins"
+    - "tier5_lies"
+    - "impossible_profiles"
+
+ranking_loop:
+  max_iterations: 3
+  beam_search_size: 150

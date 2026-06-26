@@ -1,0 +1,6 @@
+{
+  "version": 1,
+  "corpus_size": 50,
+  "backend": "rank_bm25",
+  "index_file": "bm25_index.pkl"
+}
