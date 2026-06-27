@@ -1,0 +1,8 @@
+embedding_model: "sentence-transformers/all-MiniLM-L6-v2"
+embedding_dimension: 384
+faiss_index_type: "IVF"
+dense_top_k: 50
+bm25_top_k: 50
+hybrid_top_k: 100
+cache_embeddings: true
+batch_size: 32

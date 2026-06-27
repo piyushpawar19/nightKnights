@@ -1,0 +1,7 @@
+provider: "google"
+model_name: "gemini-pro"
+temperature: 0.7
+max_tokens: 1024
+timeout: 60.0
+retry_attempts: 3
+prompt_directory: "src/prompts"

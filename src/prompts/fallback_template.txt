@@ -1,0 +1,19 @@
+candidate_id: $candidate_id
+summary: Fallback explanation generated due to an issue with the primary LLM explanation. This explanation provides a high-level overview based on available data.
+strengths:
+  - Strong foundational skills identified.
+  - Relevant experience in key areas.
+weaknesses:
+  - Detailed alignment could not be determined.
+  - Specific gaps require further review.
+reasoning: A full, detailed explanation could not be generated using the primary AI model. This fallback relies on basic extraction of information to provide a general assessment. Further manual review is recommended for this candidate.
+recommendation: Consider for further review (fallback).
+confidence: 0.2
+recruiter_assessment:
+  technical_score: 0.5
+  career_score: 0.5
+  behavior_score: 0.5
+  risk_score: 0.5
+  culture_fit: 0.5
+  hiring_confidence: 0.5
+  final_score: 0.5
