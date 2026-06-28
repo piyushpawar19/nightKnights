@@ -1,1 +1,1 @@
-# Schemas module for Pydantic models and validating JSON objects
+"""Pydantic schemas for pipeline data structures."""

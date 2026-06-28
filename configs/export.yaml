@@ -1,0 +1,24 @@
+output_dir: "outputs/submissions"
+filename: "submission.csv"
+delimiter: ","
+quotechar: "\""
+quoting: 0 # csv.QUOTE_MINIMAL
+encoding: "utf-8"
+overwrite: False
+export_schema:
+  - candidate_id
+  - rank
+  - hybrid_score
+  - recruiter_technical_score
+  - recruiter_career_score
+  - recruiter_behavior_score
+  - recruiter_risk_score
+  - recruiter_culture_fit
+  - recruiter_hiring_confidence
+  - recruiter_final_score
+  - explanation_summary
+  - explanation_strengths
+  - explanation_weaknesses
+  - explanation_reasoning
+  - explanation_recommendation
+  - explanation_confidence

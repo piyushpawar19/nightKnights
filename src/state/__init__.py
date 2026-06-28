@@ -1,1 +1,1 @@
-# State module containing LangGraph/Workflow state classes
+"""State management for the candidate ranking pipeline."""

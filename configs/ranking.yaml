@@ -1,3 +1,11 @@
+dense_weight: 0.5
+bm25_weight: 0.5
+feature_weight: 0.5
+rerank_top_k: 20
+feature_thresholds:
+  skill_match: 0.7
+  experience_fit: 0.6
+normalization_method: "min_max"
 # Configuration for the Candidate Ranking stage
 
 scoring_weights:

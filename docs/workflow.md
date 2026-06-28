@@ -1,3 +1,4 @@
+# Workflow Documentation
 # Pipeline Workflow
 
 This document details the sequential execution of the candidate ranking pipeline.

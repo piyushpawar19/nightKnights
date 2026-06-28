@@ -1,3 +1,4 @@
+
 # Scoring Logic & Trap Candidate Filtering
 
 This document describes how candidates are scored and how honeypot/trap candidates are detected and disqualified.
@@ -38,3 +39,4 @@ To prevent submission disqualification, candidates matching any of the following
 4. **Impossible Profiles**:
    - Profiles with logically inconsistent timelines (e.g. graduation year before birth year, overlapping full-time roles, 10+ years experience in a framework that existed for only 3 years).
    - Checked via: `redrob_signals.impossible_profile_flag == True`.
+

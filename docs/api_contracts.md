@@ -1,3 +1,4 @@
+
 # API Contracts & Data Schemas
 
 This document defines the data models and boundaries between components in the pipeline.
@@ -85,3 +86,4 @@ The final CSV file (`outputs/submissions/<team_id>.csv`) must match:
 | `rank` | `1` to `100` (inclusive) | Candidate's rank (1 is best) |
 | `score` | Floating point | Score representing relevance/confidence |
 | `reasoning` | 1-2 sentences | Justification for this candidate's rank |
+

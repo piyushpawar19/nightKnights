@@ -1,3 +1,36 @@
+output_dir: "outputs/reports"
+enabled_metrics:
+  - recall_at_k
+  - precision_at_k
+  - hit_rate
+  - coverage
+  - mrr
+  - ndcg_at_k
+  - map
+  - ranking_precision_at_k
+  - ranking_recall_at_k
+  - top_k_accuracy
+  - explanation_success_rate
+  - fallback_rate
+  - explanation_confidence_distribution
+  - retrieval_latency_ms
+  - ranking_latency_ms
+  - explanation_latency_ms
+  - export_latency_ms
+  - total_pipeline_runtime_ms
+  - throughput_candidates_per_sec
+k_values:
+  recall_k: 10
+  precision_k: 10
+  ndcg_k: 10
+  top_k_accuracy_k: 5
+  ranking_precision_k: 10
+  ranking_recall_k: 10
+report_formats:
+  - json
+  - csv
+  - md
+pipeline_version: "1.0.0"
 # Evaluation & Submission Generation Settings
 
 evaluation:

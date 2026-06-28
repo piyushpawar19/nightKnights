@@ -1,0 +1,25 @@
+base_output_dir: "outputs/benchmarks"
+benchmark_runs:
+  dense_retrieval:
+    retrieval:
+      faiss_index_type: "IVF"
+      dense_top_k: 100
+      bm25_top_k: 0 # Effectively disables BM25
+  bm25_retrieval:
+    retrieval:
+      faiss_index_type: "None" # Or some other indicator to disable dense
+      dense_top_k: 0
+      bm25_top_k: 100
+  hybrid_retrieval:
+    retrieval:
+      faiss_index_type: "IVF"
+      dense_top_k: 50
+      bm25_top_k: 50
+default_k_values:
+  recall_k: 10
+  precision_k: 10
+  ndcg_k: 10
+  top_k_accuracy_k: 5
+  ranking_precision_k: 10
+  ranking_recall_k: 10
+report_format: "md"

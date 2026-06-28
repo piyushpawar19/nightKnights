@@ -1,1 +1,1 @@
-# Interfaces module for pipeline component base classes
+"""Interface contracts for pipeline module implementations."""

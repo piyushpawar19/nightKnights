@@ -1,3 +1,4 @@
+
 # System Architecture
 
 This document describes the high-level architecture of the **Intelligent Candidate Discovery & Ranking Challenge** system.
@@ -42,3 +43,4 @@ graph TD
 6. **Evaluation & Validator (`src.evaluation`, `validate_submission.py`)**:
    - Evaluates system performance internally.
    - Ensures the output CSV complies with format rules.
+

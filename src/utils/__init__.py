@@ -1,1 +1,1 @@
-# Utils module for helper functions and common tools
+"""Shared utilities: logging, configuration, helpers."""
