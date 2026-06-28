@@ -6,3 +6,45 @@ bm25_top_k: 50
 hybrid_top_k: 100
 cache_embeddings: true
 batch_size: 32
+# Configuration for the Candidate Retrieval pipeline
+
+dataset_loader:
+  batch_size: 256
+  cache_enabled: true
+  validate_records: true
+  strict_id_format: false
+  cache_dir: "data/cache"
+  default_dataset_path: "candidates.jsonl"
+
+retrieval_method: "hybrid" # Options: semantic, lexical, hybrid
+top_k_candidates: 500       # Number of candidates to retrieve for detailed ranking
+
+semantic_search:
+  model_name: "sentence-transformers/all-MiniLM-L6-v2"
+  device: "cpu"            # Constraints specify CPU only
+  embedding_dim: 384
+  index_path: "data/embeddings/candidate_embeddings.index"
+  batch_size: 128
+
+lexical_search:
+  backend: "rank_bm25"
+  top_k: 2000
+  index_path: "data/cache/bm25_index"
+  bm25_params:
+    k1: 1.5
+    b: 0.75
+  tokenizer:
+    strategy: "standard"
+    remove_stopwords: true
+    use_stemming: false
+    use_lemmatization: false
+    custom_stopwords: []
+  fields:
+    - "skills"
+    - "experience"
+    - "education"
+
+filters:
+  min_experience_years: 0
+  required_languages:
+    - "English"

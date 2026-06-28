@@ -5,3 +5,23 @@ max_tokens: 1024
 timeout: 60.0
 retry_attempts: 3
 prompt_directory: "src/prompts"
+# LLM Provider & Generation Configuration for Reasoning & Scoring
+
+llm_provider: "gemini" # Options: gemini, openai, local
+
+gemini:
+  model_name: "gemini-1.5-flash"
+  temperature: 0.2
+  top_p: 0.95
+  max_output_tokens: 1024
+  safety_settings:
+    block_threshold: "BLOCK_MEDIUM_AND_ABOVE"
+
+openai:
+  model_name: "gpt-4o-mini"
+  temperature: 0.2
+  max_tokens: 1024
+
+local:
+  model_name: "meta-llama/Llama-3-8B-Instruct"
+  api_base: "http://localhost:8000/v1"

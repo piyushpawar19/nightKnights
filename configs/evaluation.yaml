@@ -31,3 +31,20 @@ report_formats:
   - csv
   - md
 pipeline_version: "1.0.0"
+# Evaluation & Submission Generation Settings
+
+evaluation:
+  metrics:
+    - "ndcg@10"
+    - "ndcg@100"
+    - "precision@10"
+    - "honeypot_rate"
+
+submission:
+  output_csv: "outputs/submissions/team_submission.csv"
+  required_columns:
+    - "candidate_id"
+    - "rank"
+    - "score"
+    - "reasoning"
+  max_rows: 100

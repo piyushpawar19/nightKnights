@@ -1,3 +1,4 @@
+# Graph module for LangGraph workflow execution
 """LangGraph orchestration layer for the candidate ranking pipeline."""
 
 from src.graph.graph import build_graph, run_pipeline
