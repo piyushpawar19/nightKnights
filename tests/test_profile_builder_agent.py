@@ -1,6 +1,6 @@
 import unittest
-from src.retrieval.profile_builder_agent import CandidateProfileBuilder, InvalidCandidateRecordError
-from src.models.candidate_profile import CandidateProfile
+from retrieval.profile_builder_agent import CandidateProfileBuilder, InvalidCandidateRecordError
+from models.candidate_profile import CandidateProfile
 
 class TestCandidateProfileBuilder(unittest.TestCase):
     def setUp(self):

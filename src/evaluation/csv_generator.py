@@ -14,7 +14,7 @@ class CSVGenerator(CSVWriter):
         data: List[Dict[str, Any]],
         schema: List[str],
         delimiter: str = ",",
-        quotechar: str = ",",
+        quotechar: str = '"',
         quoting: int = csv.QUOTE_MINIMAL,
         encoding: str = "utf-8",
         overwrite: bool = False,

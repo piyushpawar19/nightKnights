@@ -3,19 +3,19 @@ import unittest
 from typing import Any, List
 from unittest.mock import MagicMock, patch
 
-from src.graph.dependency_registry import get_dependency_registry
-from src.graph.integration_manager import IntegrationManager
-from src.graph.node_adapters import ConcreteJDParserAdapter
-from src.interfaces.adapter_interfaces import (
+from graph.dependency_registry import get_dependency_registry
+from graph.integration_manager import IntegrationManager
+from graph.node_adapters import ConcreteJDParserAdapter
+from interfaces.adapter_interfaces import (
     DenseRetrievalAdapter,
     HybridRankerAdapter,
     JDParserAdapter,
     ModuleAdapter,
 )
-from src.models.domain_models import Candidate, JobDescription, RankedCandidate, SearchResult
-from src.schemas.retrieval_schema import RetrievalResult
-from src.state.pipeline_state import PipelineState, create_initial_state
-from src.utils.module_loader import ModuleLoader
+from models.domain_models import Candidate, JobDescription, RankedCandidate, SearchResult
+from schemas.retrieval_schema import RetrievalResult
+from state.pipeline_state import PipelineState, create_initial_state
+from utils.module_loader import ModuleLoader
 
 
 class MockJDParserAgent:
@@ -74,7 +74,7 @@ class IntegrationDenseRetrievalAdapter(DenseRetrievalAdapter):
         self._module = module
 
     def execute(self, state: PipelineState) -> PipelineState:
-        from src.graph.node_adapters import ConcreteDenseRetrievalAdapter
+        from graph.node_adapters import ConcreteDenseRetrievalAdapter
 
         return ConcreteDenseRetrievalAdapter(self._module).execute(state)
 
@@ -84,7 +84,7 @@ class IntegrationHybridRankerAdapter(HybridRankerAdapter):
         self._module = module
 
     def execute(self, state: PipelineState) -> PipelineState:
-        from src.graph.node_adapters import ConcreteHybridRankerAdapter
+        from graph.node_adapters import ConcreteHybridRankerAdapter
 
         return ConcreteHybridRankerAdapter(self._module).execute(state)
 
@@ -187,7 +187,7 @@ class TestIntegration(unittest.TestCase):
         is_compatible = manager.validate_module_interface("incompatible_mod", {"parse_jd": None})
         self.assertFalse(is_compatible)
         mock_logger.error.assert_called_with(
-            "Module 'incompatible_mod' is missing expected method 'parse_jd' or it's not callable."
+            "Module \'incompatible_mod\' is missing expected method \'parse_jd\' or it\'s not callable."
         )
 
         manager.register_module("compatible_mod", MockJDParserAgent())
@@ -195,7 +195,7 @@ class TestIntegration(unittest.TestCase):
 
     def test_error_handling_in_adapter_inputs(self):
         jd_parser_adapter = self.integration_manager.get_adapter("jd_parser_agent")
-        with self.assertRaisesRegex(ValueError, "Missing required input 'raw_jd'"):
+        with self.assertRaisesRegex(ValueError, "Missing required input \'raw_jd\'"):
             jd_parser_adapter.execute({})  # type: ignore[arg-type]
 
     @patch.object(MockJDParserAgent, "parse_jd", side_effect=TypeError("Mock parsing error"))
@@ -228,9 +228,9 @@ class TestIntegration(unittest.TestCase):
         loader = ModuleLoader()
         loader.set_mock_implementation("test_mod_exists", MagicMock())
         loader.load_module("test_mod_exists", "any.path", use_mock=True)
-        mock_logger.warning.assert_called_with("Loading mock implementation for 'test_mod_exists'.")
+        mock_logger.warning.assert_called_with("Loading mock implementation for \'test_mod_exists\'.")
         loader.load_module("non_existent", "any.path")
-        mock_logger.error.assert_called_with("No mock implementation available for 'non_existent'.")
+        mock_logger.error.assert_called_with("No mock implementation available for \'non_existent\'.")
 
 
 if __name__ == "__main__":

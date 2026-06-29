@@ -8,9 +8,9 @@ from pathlib import Path
 from typing import Any, Dict, List, Set
 
 import pytest
-from src.evaluation.benchmark_runner import BenchmarkRunner
-from src.evaluation.evaluation_agent import EvaluationAgent
-from src.evaluation.latency_metrics import (
+from evaluation.benchmark_runner import BenchmarkRunner
+from evaluation.evaluation_agent import EvaluationAgent
+from evaluation.latency_metrics import (
     ExportLatencyMetric,
     ExplanationLatencyMetric,
     LatencyMetrics,
@@ -19,13 +19,13 @@ from src.evaluation.latency_metrics import (
     ThroughputMetric,
     TotalPipelineRuntimeMetric,
 )
-from src.evaluation.metrics import (
+from evaluation.metrics import (
     ExplainabilityMetrics,
     ExplanationConfidenceDistributionMetric,
     ExplanationSuccessRateMetric,
     FallbackRateMetric,
 )
-from src.evaluation.ranking_metrics import (
+from evaluation.ranking_metrics import (
     MAPMetric,
     MRRMetric,
     NDCGMetric,
@@ -34,20 +34,20 @@ from src.evaluation.ranking_metrics import (
     RankingRecallMetric,
     TopKAccuracyMetric,
 )
-from src.evaluation.report_generator import EvaluationReportGenerator
-from src.evaluation.retrieval_metrics import (
+from evaluation.report_generator import EvaluationReportGenerator
+from evaluation.retrieval_metrics import (
     CoverageMetric,
     HitRateMetric,
     PrecisionMetric,
     RecallMetric,
     RetrievalMetrics,
 )
-from src.models.domain_models import Explanation, RankedCandidate, RetrievalResult
-from src.schemas.common_schema import Metadata
-from src.schemas.retrieval_schema import RetrievalResult as RetrievalResultModel
-from src.schemas.graph_schema import NodeStatus, NodeTimestamp
-from src.utils.config_manager import ConfigManager, ConfigError
-from src.models.config_models import (
+from models.domain_models import Explanation, RankedCandidate, RetrievalResult
+from schemas.common_schema import Metadata
+from schemas.retrieval_schema import RetrievalResult as RetrievalResultModel
+from schemas.graph_schema import NodeStatus, NodeTimestamp
+from utils.config_manager import ConfigManager, ConfigError
+from models.config_models import (
     AppConfig,
     BenchmarkConfig,
     EvaluationConfig,
@@ -123,6 +123,7 @@ def _mock_retrieval(candidate_id: str) -> RetrievalResultModel:
         dense_score=0.8,
         retrieval_source="mock",
         rank=1,
+        query_id="mock_query"
     )
 
 

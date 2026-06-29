@@ -3,8 +3,8 @@ from pathlib import Path
 import os
 import yaml
 
-from src.utils.config_manager import ConfigManager, ConfigError, YamlConfigProvider
-from src.models.config_models import AppConfig, RetrievalConfig, RankingConfig, LLMConfig, EvaluationConfig
+from utils.config_manager import ConfigManager, ConfigError, YamlConfigProvider
+from models.config_models import AppConfig, RetrievalConfig, RankingConfig, LLMConfig, EvaluationConfig
 
 # Define a temporary config directory for testing
 TEST_CONFIG_DIR = Path("tests/temp_configs")

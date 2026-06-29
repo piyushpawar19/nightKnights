@@ -4,11 +4,11 @@ from pathlib import Path
 from typing import Any, Dict, List
 
 import pytest
-from src.evaluation.csv_generator import CSVGenerator
-from src.evaluation.serializers import SubmissionSerializer
-from src.evaluation.validators import ExportValidationError, SubmissionValidator
-from src.models.domain_models import Explanation, RankedCandidate, RecruiterAssessment
-from src.schemas.retrieval_schema import RetrievalResult
+from evaluation.csv_generator import CSVGenerator
+from evaluation.serializers import SubmissionSerializer
+from evaluation.validators import ExportValidationError, SubmissionValidator
+from models.domain_models import Explanation, RankedCandidate, RecruiterAssessment
+from schemas.retrieval_schema import RetrievalResult
 
 
 def _mock_retrieval(candidate_id: str) -> RetrievalResult:
@@ -17,6 +17,7 @@ def _mock_retrieval(candidate_id: str) -> RetrievalResult:
         dense_score=0.8,
         retrieval_source="mock",
         rank=1,
+        query_id="test_query"
     )
 
 

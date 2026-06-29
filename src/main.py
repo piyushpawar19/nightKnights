@@ -49,10 +49,10 @@ import sys
 from pathlib import Path
 
 # LangGraph entry point
-from src.graph import run_pipeline
+from graph import run_pipeline
 
 # Project logger
-from src.utils.logger import get_logger
+from utils.logger import get_logger
 
 logger = get_logger(__name__)
 
