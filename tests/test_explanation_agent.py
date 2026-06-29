@@ -5,19 +5,19 @@ from datetime import datetime, timezone
 from typing import List
 from unittest.mock import MagicMock
 
-from src.schemas.jd_schema import StructuredJD
-from src.schemas.candidate_schema import CandidateProfile
-from src.schemas.ranking_schema import RankedCandidate, FeatureVector
-from src.schemas.retrieval_schema import RetrievalResult
-from src.schemas.explanation_schema import Explanation, RecruiterAssessment
-from src.schemas.common_schema import Skill, Education, Experience, Location, Metadata
-from src.interfaces.explanation_interface import LLMGenerator
-from src.explainability.prompt_manager import PromptManager
-from src.explainability.evidence_extractor import EvidenceExtractor
-from src.explainability.explanation_builder import ExplanationBuilder
-from src.explainability.fallback_generator import FallbackGenerator
-from src.explainability.explanation_service import ExplanationService
-from src.explainability.explanation_agent import ExplanationAgent
+from schemas.jd_schema import StructuredJD
+from schemas.candidate_schema import CandidateProfile
+from schemas.ranking_schema import RankedCandidate, FeatureVector
+from schemas.retrieval_schema import RetrievalResult
+from schemas.explanation_schema import Explanation, RecruiterAssessment
+from schemas.common_schema import Skill, Education, Experience, Location, Metadata
+from interfaces.explanation_interface import LLMGenerator
+from explainability.prompt_manager import PromptManager
+from explainability.evidence_extractor import EvidenceExtractor
+from explainability.explanation_builder import ExplanationBuilder
+from explainability.fallback_generator import FallbackGenerator
+from explainability.explanation_service import ExplanationService
+from explainability.explanation_agent import ExplanationAgent
 
 
 # --- Mocks for Dependencies ---
@@ -41,9 +41,9 @@ class MockConfigManager:
 class MockLLMGenerator(LLMGenerator):
     def generate(self, prompt: str, **kwargs) -> Explanation:
         candidate_id = "cand123"
-        if '"candidate_id"' in prompt:
+        if "candidate_id" in prompt:
             import re
-            match = re.search(r'"candidate_id"\s*:\s*"([^"]+)"', prompt)
+            match = re.search(r"\"candidate_id\"\\s*:\\s*\"([^"]+)\", prompt)
             if match:
                 candidate_id = match.group(1)
         response_data = {
@@ -347,7 +347,7 @@ def test_explanation_builder_logic(explanation_builder):
         "career_progression": "Moved from Junior to Senior Engineer.",
         "leadership_evidence": ["Team Lead at previous company."],
         "risk_factors": [],
-        "structured_jd": {"experience_required": 5} # For builder's internal logic
+        "structured_jd": {"experience_required": 5} # For builder\"s internal logic
     }
     mock_recruiter_assessment = RecruiterAssessment(
         candidate_id="cand123",
@@ -407,3 +407,8 @@ def test_explanation_service_integration_fallback(explanation_service, sample_st
 
     # Restore original LLM generator
     explanation_service.llm_generator = original_llm_generator
+
+</final_file_content>
+
+IMPORTANT: For any future changes to this file, use the final_file_content shown above as your reference. This content reflects the current state of the file, including any auto-formatting (e.g., if you used single quotes but the formatter converted them to double quotes). Always base your SEARCH/REPLACE operations on this final version to ensure accuracy.
+

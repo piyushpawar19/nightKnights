@@ -24,7 +24,7 @@ import uuid
 from datetime import datetime, timezone
 from typing import Annotated, Any, TypedDict
 
-from src.schemas.graph_schema import (
+from schemas.graph_schema import (
     CandidateRecord,
     CandidateScore,
     EvaluationMetrics,

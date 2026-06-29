@@ -2,17 +2,17 @@ import pytest
 from datetime import datetime
 import uuid
 
-from src.schemas.common_schema import (
+from schemas.common_schema import (
     Skill, Education, Experience, Project, Certification, Location,
     Company, Timestamp, Score, Metadata, UUIDMixin
 )
-from src.schemas.jd_schema import StructuredJD, SkillTaxonomy
-from src.schemas.candidate_schema import CandidateProfile
-from src.schemas.retrieval_schema import RetrievalResult
-from src.schemas.ranking_schema import FeatureVector, RankedCandidate
-from src.schemas.explanation_schema import Explanation, RecruiterAssessment
-from src.schemas.evaluation_schema import EvaluationMetrics, EvaluationReport
-from src.schemas.submission_schema import SubmissionRecord
+from schemas.jd_schema import StructuredJD, SkillTaxonomy
+from schemas.candidate_schema import CandidateProfile
+from schemas.retrieval_schema import RetrievalResult
+from schemas.ranking_schema import FeatureVector, RankedCandidate
+from schemas.explanation_schema import Explanation, RecruiterAssessment
+from schemas.evaluation_schema import EvaluationMetrics, EvaluationReport
+from schemas.submission_schema import SubmissionRecord
 
 
 # --- Common Schema Tests ---

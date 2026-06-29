@@ -11,7 +11,7 @@ from typing import Any
 from langgraph.graph import END, START, StateGraph
 from langgraph.graph.state import CompiledStateGraph
 
-from src.graph.nodes import (
+from graph.nodes import (
     csv_generation_node,
     evaluation_node,
     explanation_node,
@@ -21,15 +21,15 @@ from src.graph.nodes import (
     retrieve_candidates_node,
     reranking_node,
 )
-from src.graph.router import (
+from graph.router import (
     RouteDecision,
     route_after_ranking,
     should_retry_retrieval,
     should_skip_evaluation,
     check_error_threshold,
 )
-from src.state.pipeline_state import PipelineState, create_initial_state
-from src.utils.logger import get_logger
+from state.pipeline_state import PipelineState, create_initial_state
+from utils.logger import get_logger
 
 logger = get_logger(__name__)
 

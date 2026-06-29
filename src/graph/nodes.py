@@ -27,7 +27,7 @@ import os
 from datetime import datetime, timezone
 from typing import Any
 
-from src.schemas.graph_schema import (
+from schemas.graph_schema import (
     CandidateRecord,
     CandidateScore,
     EvaluationMetrics,
@@ -36,7 +36,7 @@ from src.schemas.graph_schema import (
     SkillRequirement,
     StructuredJD,
 )
-from src.utils.logger import NodeExecutionLogger, get_logger
+from utils.logger import NodeExecutionLogger, get_logger
 
 logger = get_logger(__name__)
 

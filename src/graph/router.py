@@ -31,7 +31,7 @@ from __future__ import annotations
 from enum import Enum
 from typing import Any
 
-from src.utils.logger import get_logger
+from utils.logger import get_logger
 
 logger = get_logger(__name__)
 
