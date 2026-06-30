@@ -1,6 +1,13 @@
 import re
 from typing import Dict, Any, Optional
 import logging
+from functools import lru_cache
+import os
+from joblib import Memory
+
+CACHE_DIR = os.path.join(os.path.dirname(os.path.dirname(__file__)), "..", "data", "cache", "joblib_cache")
+os.makedirs(CACHE_DIR, exist_ok=True)
+memory = Memory(CACHE_DIR, verbose=0)
 
 logger = logging.getLogger(__name__)
 
@@ -24,6 +31,7 @@ class SalaryParser:
             "per month": "monthly", "monthly": "monthly", "p.m.": "monthly"
         }
 
+    @memory.cache # Cache results for common salary texts
     def parse_salary(self, text: str) -> Optional[Dict[str, Any]]:
         """
         Extracts salary range, currency, and period from the text.
@@ -67,21 +75,22 @@ class SalaryParser:
 
         return None
 
+    @memory.cache # Cache results for salary value parsing
     def _parse_salary_value(self, value_str: str, period: Optional[str]) -> Optional[float]:
         """
-        Converts a salary string to a float, handling 'k' for thousands.
+        Converts a salary string to a float, handling \"k\" for thousands.
         Adjusts value if LPA/CTC is used and implies a different scale.
         """
         try:
             value = float(value_str)
             # Heuristic: If period is annual and value is small, it might be in Lakhs (INR LPA)
             # This is a simplification and might need more robust currency/region detection.
-            # We need to ensure we don't multiply already large numbers.
-            if period == "annual" and value < 5000: # Assuming typical annual salaries are > 5000 without 'k' or 'LPA'
+            # We need to ensure we don\`t multiply already large numbers.
+            if period == "annual" and value < 5000: # Assuming typical annual salaries are > 5000 without \"k\" or \"LPA\"
                 if "lpa" in value_str.lower() or "ctc" in value_str.lower() or "lakh" in value_str.lower():
                     return value * 100000 # Convert Lakhs to actual value (e.g., 15 -> 1,500,000)
 
-            # If 'k' or 'K' is explicitly present, multiply by 1000
+            # If \"k\" or \"K\" is explicitly present, multiply by 1000
             if re.search(r"\d+[kK]", value_str):
                 return value * 1000
 
@@ -89,6 +98,7 @@ class SalaryParser:
         except ValueError:
             return None
 
+    @memory.cache # Cache results for currency determination
     def _determine_currency(self, symbol: Optional[str]) -> Optional[str]:
         """
         Determines the currency based on the symbol.
@@ -97,6 +107,7 @@ class SalaryParser:
             return self.currency_map.get(symbol.lower().strip(), None)
         return None
 
+    @memory.cache # Cache results for period determination
     def _determine_period(self, text: str) -> Optional[str]:
         """
         Determines the salary period (annual/monthly) based on keywords in the text.

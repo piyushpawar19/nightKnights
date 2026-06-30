@@ -17,6 +17,7 @@ class SectionSplitter:
             "benefits": re.compile(r"benefits|perks|what we offer", re.IGNORECASE),
             "nice_to_have": re.compile(r"nice to have|bonus points|preferred qualifications|good to have", re.IGNORECASE),
             "about_us": re.compile(r"about us|company overview", re.IGNORECASE),
+            "job_info": re.compile(r"job title|company|location|about the role", re.IGNORECASE) # Added job_info pattern
         }
 
     def split_jd_into_sections(self, jd_text: str) -> Dict[str, str]:
@@ -62,8 +63,8 @@ class SectionSplitter:
         if section_content and current_section != "unclassified":
             sections[current_section] = "\n".join(section_content).strip()
 
-        # If no specific sections were found, the whole JD might be in 'unclassified'
-        # Attempt to re-split 'unclassified' if it contains a lot of content and no other sections were found
+        # If no specific sections were found, the whole JD might be in \"unclassified\"
+        # Attempt to re-split \"unclassified\" if it contains a lot of content and no other sections were found
         if "unclassified" in sections and len(sections) == 1:
             logger.debug("No specific sections detected, attempting a more generic split.")
             return self._generic_split(jd_text)
@@ -72,7 +73,7 @@ class SectionSplitter:
 
     def _generic_split(self, jd_text: str) -> Dict[str, str]:
         """
-        A fallback generic splitter if specific section patterns don't yield results.
+        A fallback generic splitter if specific section patterns don\"t yield results.
         Attempts to split by common paragraph breaks or bullet points if no clear headings.
         """
         sections: Dict[str, str] = {}

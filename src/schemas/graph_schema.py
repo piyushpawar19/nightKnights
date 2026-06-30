@@ -62,51 +62,7 @@ class SkillRequirement(BaseModel):
     model_config = {"frozen": True}
 
 
-class StructuredJD(BaseModel):
-    """A parsed and structured representation of a job description.
-
-    Produced by the JD parsing node and consumed by retrieval, ranking,
-    and explanation nodes downstream.
-    """
-
-    title: str = Field(..., description="Job title extracted from the JD.")
-    department: str | None = Field(default=None, description="Department or team.")
-    seniority_level: str | None = Field(default=None, description="e.g. 'Senior', 'Staff'.")
-    required_skills: list[SkillRequirement] = Field(
-        default_factory=list,
-        description="Skills marked as required in the JD.",
-    )
-    preferred_skills: list[SkillRequirement] = Field(
-        default_factory=list,
-        description="Skills marked as preferred / nice-to-have.",
-    )
-    min_experience_years: float | None = Field(
-        default=None,
-        description="Minimum total years of experience.",
-    )
-    max_experience_years: float | None = Field(
-        default=None,
-        description="Maximum total years of experience, if capped.",
-    )
-    location_preferences: list[str] = Field(
-        default_factory=list,
-        description="Preferred candidate locations.",
-    )
-    work_mode: str | None = Field(
-        default=None,
-        description="'remote', 'hybrid', 'onsite', or 'flexible'.",
-    )
-    education_requirements: list[str] = Field(
-        default_factory=list,
-        description="Required degrees or fields of study.",
-    )
-    key_responsibilities: list[str] = Field(
-        default_factory=list,
-        description="Core responsibilities extracted from the JD.",
-    )
-    raw_text: str = Field(default="", description="Original JD text for reference.")
-
-    model_config = {"frozen": True}
+# (StructuredJD removed as it is replaced by ParsedJD from jd_schema.py)
 
 
 # ---------------------------------------------------------------------------

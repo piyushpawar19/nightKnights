@@ -28,7 +28,7 @@ from graph.router import (
     should_skip_evaluation,
     check_error_threshold,
 )
-from state.pipeline_state import PipelineState, create_initial_state
+from src.state.pipeline_state import PipelineState, create_initial_state
 from utils.logger import get_logger
 
 logger = get_logger(__name__)
@@ -104,7 +104,7 @@ def build_graph() -> CompiledStateGraph:
         },
     )
 
-    # Check for overall error threshold after nodes that don't have specific routing
+    # Check for overall error threshold after nodes that don\"t have specific routing
     workflow.add_conditional_edges(
         "evaluation",
         check_error_threshold,
@@ -126,7 +126,7 @@ def run_pipeline(raw_jd: str) -> dict[str, Any]:
     Parameters
     ----------
     raw_jd : str
-        The verbatim job description text.
+        The verbatim job-description text.
 
     Returns
     -------
@@ -140,3 +140,6 @@ def run_pipeline(raw_jd: str) -> dict[str, Any]:
     logger.info("Invoking graph execution")
     final_state = graph.invoke(initial_state)
     return final_state
+
+
+

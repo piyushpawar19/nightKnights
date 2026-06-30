@@ -1,7 +1,13 @@
-
 import logging
 from typing import Dict, Any, List
 from pydantic import ValidationError
+from functools import lru_cache
+import os
+from joblib import Memory
+
+CACHE_DIR = os.path.join(os.path.dirname(os.path.dirname(__file__)), "..", "data", "cache", "joblib_cache")
+os.makedirs(CACHE_DIR, exist_ok=True)
+memory = Memory(CACHE_DIR, verbose=0)
 
 from ..interfaces.reranking_interface import RecruiterRerankerInterface, LLMInterface, PromptBuilderInterface, ResponseParserInterface
 from ..schemas.reranking_schema import RerankedCandidates, RerankedCandidate, RecruiterAssessment
@@ -22,32 +28,38 @@ class RecruiterReranker(RecruiterRerankerInterface):
         self.ranking_weights = load_ranking_weights(config_path)
         self.top_k = top_k
 
+    @memory.cache # Cache reranking results for identical inputs
     def rerank_candidates(self, 
-                          parsed_jd: Dict[str, Any],
-                          ranked_candidates: List[Dict[str, Any]],
-                          candidate_features: Dict[str, Any],
-                          llm_interface: LLMInterface) -> RerankedCandidates:
+                           parsed_jd_json: str,
+                           ranked_candidates_json: str,
+                           candidate_features_json: str,
+                           llm_interface: LLMInterface) -> RerankedCandidates:
         """Reranks candidates based on recruiter-style reasoning.
 
         Args:
-            parsed_jd (Dict[str, Any]): Parsed Job Description.
-            ranked_candidates (List[Dict[str, Any]]): List of candidates ranked by the hybrid ranker.
-            candidate_features (Dict[str, Any]): Features for each candidate.
+            parsed_jd_json (str): JSON string of Parsed Job Description.
+            ranked_candidates_json (str): JSON string of List of candidates ranked by the hybrid ranker.
+            candidate_features_json (str): JSON string of Features for each candidate.
             llm_interface (LLMInterface): The LLM interface to use for generating assessments.
 
         Returns:
             RerankedCandidates: A Pydantic model containing the reranked candidates.
         """
+        import json
+        parsed_jd = json.loads(parsed_jd_json)
+        ranked_candidates = json.loads(ranked_candidates_json)
+        candidate_features = json.loads(candidate_features_json)
+
         if not ranked_candidates:
             logger.info("No candidates to rerank. Returning empty list.")
             return RerankedCandidates(candidates=[])
 
-        reranked_results: List[RerankedCandidate] = []
+        reranked_results: List[Dict[str, Any]] = []
 
         for candidate in ranked_candidates:
             candidate_id = candidate.get("candidate_id")
             if not candidate_id:
-                logger.warning(f"Candidate missing 'candidate_id'. Skipping: {candidate}")
+                logger.warning(f"Candidate missing \"candidate_id\". Skipping: {candidate}")
                 continue
 
             # Build prompt for individual candidate assessment
@@ -98,7 +110,7 @@ class RecruiterReranker(RecruiterRerankerInterface):
                 final_score=final_score,
                 assessment=assessment
             )
-            reranked_results.append(reranked_candidate.dict())
+            reranked_results.append(reranked_candidate.model_dump())
         
         # Apply stable sorting and assign final ranks
         final_reranked_list = stable_sort_candidates(reranked_results)
