@@ -1,30 +1,61 @@
+from pydantic import BaseModel, Field
 from typing import List, Optional, Dict, Any
-from pydantic import BaseModel, Field, constr, conint, confloat
-from src.schemas.common_schema import Skill, Metadata
 
+class JobInfo(BaseModel):
+    title: Optional[str] = Field(None, description="Job title")
+    company: Optional[str] = Field(None, description="Hiring company")
+    location: Optional[str] = Field(None, description="Job location")
+    employment_type: Optional[str] = Field(None, description="Full-time, part-time, contract, etc.")
+    remote_type: Optional[str] = Field(None, description="On-site, remote, hybrid")
+    seniority: Optional[str] = Field(None, description="Junior, mid, senior, lead, principal, architect")
+    industry: Optional[str] = Field(None, description="Industry of the company")
+    domain: Optional[str] = Field(None, description="Specific domain within the industry")
+    salary: Optional[Dict[str, Any]] = Field(None, description="Parsed salary information")
+    minimum_experience: Optional[int] = Field(None, description="Minimum years of experience required")
+    maximum_experience: Optional[int] = Field(None, description="Maximum years of experience required")
 
-class SkillTaxonomy(BaseModel):
-    """Represents normalized skills with aliases, categories, and confidence scores."""
-    normalized_skills: List[constr(min_length=1, max_length=100)] = Field(..., description="List of normalized skill names.")
-    aliases: Dict[constr(min_length=1), List[constr(min_length=1)]] = Field(default_factory=dict, description="Mapping of normalized skills to their known aliases.")
-    categories: Dict[constr(min_length=1), List[constr(min_length=1)]] = Field(default_factory=dict, description="Mapping of normalized skills to their categories.")
-    confidence_scores: Dict[constr(min_length=1), confloat(ge=0.0, le=1.0)] = Field(default_factory=dict, description="Confidence scores for each normalized skill.")
-    metadata: Metadata = Field(default_factory=Metadata, description="Additional metadata for the skill taxonomy.")
+class Education(BaseModel):
+    degree: Optional[str] = Field(None, description="Degree required (e.g., BE, MTech, PhD)")
+    field: Optional[str] = Field(None, description="Field of study")
+    required: bool = Field(False, description="Is this education mandatory?")
 
+class Certification(BaseModel):
+    name: str = Field(..., description="Name of the certification")
+    required: bool = Field(False, description="Is this certification mandatory?")
 
-class StructuredJD(BaseModel):
-    """Represents information extracted from a Job Description (JD)."""
-    job_title: constr(min_length=1, max_length=200) = Field(..., description="Title of the job.")
-    company: constr(min_length=1, max_length=150) = Field(..., description="Hiring company name.")
-    industry: Optional[constr(max_length=100)] = Field(None, description="Industry of the job.")
-    seniority: Optional[constr(max_length=50)] = Field(None, description="Seniority level (e.g., Junior, Senior, Lead).")
-    experience_required: Optional[conint(ge=0)] = Field(None, description="Years of experience required.")
-    education: List[constr(min_length=1, max_length=200)] = Field(default_factory=list, description="Required educational qualifications.")
-    employment_type: Optional[constr(max_length=50)] = Field(None, description="Employment type (e.g., Full-time, Contract).")
-    location: Optional[constr(max_length=100)] = Field(None, description="Job location.")
-    must_have_skills: List[Skill] = Field(default_factory=list, description="List of essential skills.")
-    nice_to_have_skills: List[Skill] = Field(default_factory=list, description="List of desirable skills.")
-    behavioral_traits: List[constr(min_length=1, max_length=100)] = Field(default_factory=list, description="Required behavioral traits.")
-    responsibilities: List[constr(min_length=1, max_length=500)] = Field(default_factory=list, description="Key job responsibilities.")
-    technologies: List[Skill] = Field(default_factory=list, description="Specific technologies associated with the job.")
-    metadata: Metadata = Field(default_factory=Metadata, description="Additional metadata for the structured JD.")
+class Requirements(BaseModel):
+    mandatory_requirements: List[str] = Field([], description="List of mandatory requirements")
+    preferred_requirements: List[str] = Field([], description="List of preferred requirements")
+    certifications: List[Certification] = Field([], description="List of required/preferred certifications")
+    education: List[Education] = Field([], description="List of required education")
+
+class Skills(BaseModel):
+    technical_skills: List[str] = Field([], description="General technical skills")
+    programming_languages: List[str] = Field([], description="Programming languages required")
+    frameworks: List[str] = Field([], description="Frameworks required")
+    libraries: List[str] = Field([], description="Libraries required")
+    databases: List[str] = Field([], description="Databases required")
+    cloud: List[str] = Field([], description="Cloud platforms/services")
+    devops: List[str] = Field([], description="DevOps tools/practices")
+    ai_ml: List[str] = Field([], description="AI/ML specific skills")
+    soft_skills: List[str] = Field([], description="Soft skills required")
+
+class Responsibilities(BaseModel):
+    responsibilities_list: List[str] = Field([], description="List of job responsibilities")
+
+class Preferences(BaseModel):
+    # This can be expanded based on common JD preferences
+    pass
+
+class ParsingMetadata(BaseModel):
+    parse_timestamp: str = Field(..., description="Timestamp of when the JD was parsed")
+    parser_version: str = Field("1.0", description="Version of the parser used")
+    # Add other metadata as needed, e.g., confidence scores, detected sections
+
+class ParsedJD(BaseModel):
+    job_info: JobInfo = Field(..., description="General job information")
+    requirements: Requirements = Field(..., description="Job requirements")
+    skills: Skills = Field(..., description="Skills required for the job")
+    responsibilities: Responsibilities = Field(..., description="Key job responsibilities")
+    preferences: Preferences = Field(..., description="Job preferences or nice-to-haves")
+    metadata: ParsingMetadata = Field(..., description="Metadata about the parsing process")
