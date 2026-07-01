@@ -26,46 +26,72 @@ class RequirementExtractor:
             re.compile(r"(computer science|engineering|it|information technology) degree", re.IGNORECASE),
             re.compile(r"equivalent degree|relevant field", re.IGNORECASE),
         ]
+        # Consolidate technical skills for a single, efficient regex search
         self.technical_keywords = [
-            "python", "java", "c++", "javascript", "react", "angular", "vue", "spring", "django",
-            "flask", "node.js", "aws", "azure", "gcp", "docker", "kubernetes", "sql", "nosql",
-            "tensorflow", "pytorch", "scikit-learn", "hadoop", "spark", "kafka", "terraform",
-            "ansible", "jenkins", "git", "jira", "agile", "scrum", "linux", "unix", "windows",
-            "api", "rest", "graphql", "microservices", "frontend", "backend", "fullstack",
-            "data structures", "algorithms", "object-oriented programming", "oop", "databases",
-            "cloud computing", "machine learning", "deep learning", "artificial intelligence",
-            "natural language processing", "nlp", "computer vision", "cv", "data science", "big data",
-            "web development", "mobile development", "android", "ios", "devops", "ci/cd",
-            "system design", "software architecture", "testing", "unit testing", "integration testing",
-            "security", "cybersecurity", "networking", "scripting", "bash", "shell", "powershell",
-            "typescript", "golang", "ruby", "php", "swift", "kotlin", "r", "scala", "html", "css",
-            "mongodb", "postgresql", "mysql", "redis", "cassandra", "dynamodb", "s3", "ec2", "lambda",
-            "azure functions", "google cloud functions", "kubernetes", "ecs", "eks", "gke",
-            "airflow", "mlflow", "databricks", "snowflake", "tableau", "power bi", "excel",
-            "confluence", "slack", "microsoft teams", "communication", "problem-solving", "leadership",
-            "teamwork", "critical thinking", "adaptability", "creativity", "time management",
-            "project management", "stakeholder management", "presentation skills", "mentoring",
-            "documentation", "writing skills", "research", "analytical skills", "troubleshooting",
-            "performance tuning", "optimization", "scalability", "reliability", "resilience",
-            "distributed systems", "high availability", "fault tolerance", "disaster recovery",
-            "message queues", "event-driven architecture", "serverless", "blockchain", "iot",
-            "augmented reality", "virtual reality", "game development", "unity", "unreal engine",
-            "graphic design", "ux/ui", "figma", "sketch", "adobe xd", "photoshop", "illustrator",
-            "seo", "sem", "marketing", "sales", "business development", "customer service",
+            "python", "java", "javascript", "c++", "c#", "go", "ruby", "php",
+            "typescript", "swift", "kotlin", "rust", "scala", "perl", "html", "css",
+            "sql", "r", "bash", "shell", "react", "angular", "vue", "node.js", "express",
+            "django", "flask", "spring", "rails", "asp.net", "laravel", "symfony",
+            "next.js", "nestjs", "nuxtjs", "gatsby", "flutter", "xamarin", "react native",
+            "jquery", "bootstrap", "tailwind", "material-ui", "ant design", "tensorflow",
+            "pytorch", "keras", "scikit-learn", "pandas", "numpy", "matplotlib", "seaborn",
+            "d3.js", "redux", "axios", "mongoose", "sqlalchemy", "hibernate", "nltk",
+            "spacy", "opencv", "pillow", "requests", "beautiful soup", "selenium",
+            "cypress", "jest", "mocha", "chai", "junit", "nunit", "xunit", "mockito",
+            "pytest", "postgresql", "mongodb", "mysql", "sql server", "oracle",
+            "dynamodb", "cassandra", "redis", "elasticsearch", "firebase", "mariadb",
+            "sqlite", "cosmos db", "neo4j", "hbase", "teradata", "vertica", "snowflake",
+            "databricks", "aws", "azure", "gcp", "ibm cloud", "oracle cloud", "alibaba cloud",
+            "heroku", "vercel", "netlify", "digitalocean", "docker", "kubernetes",
+            "jenkins", "git", "github", "gitlab", "bitbucket", "travis ci", "circleci",
+            "ansible", "puppet", "chef", "terraform", "cloudformation", "prometheus",
+            "grafana", "nagios", "splunk", "elk stack", "jira", "confluence", "trello",
+            "asana", "argo cd", "tekton", "ci/cd", "machine learning", "deep learning", "ai",
+            "nlp", "computer vision", "reinforcement learning", "generative ai", "llm",
+            "neural networks", "data science", "predictive modeling", "statistical modeling",
+            "mlops", "apache spark", "apache hadoop", "apache kafka", "etl",
+            "data warehousing", "data lakes", "apache flink", "apache airflow", "delta lake",
+            "presto", "trino", "hive", "pig", "kafka streams", "beam", "tableau", "power bi",
+            "looker", "qlikview", "google analytics", "mixpanel", "amplitude", "metabase",
+            "redash", "superset", "business intelligence", "data visualization", "reporting",
+            "dashboards", "linux", "windows", "macos", "ubuntu", "centos", "red hat",
+            "debian", "android", "ios", "svn", "perforce", "mercurial", "agile", "scrum",
+            "kanban", "waterfall", "lean", "xp", "tdd", "bdd", "ddd", "devops", "pmp",
+            "csm", "aws certified", "azure certified", "gcp certified", "comptia", "ccna",
+            "cisco certified", "oracle certified", "microsoft certified", "cka", "ceh",
+            "api design", "microservices", "system design", "oop", "functional programming",
+            "data structures", "algorithms", "networking", "security", "scalability",
+            "performance tuning", "database design", "web development", "mobile development",
+            "backend development", "frontend development", "fullstack development",
+            "cloud architecture", "containerization", "virtualization", "scripting",
+            "automation", "troubleshooting", "debugging", "technical writing",
+            "unit testing", "integration testing", "end-to-end testing", "ci/cd pipelines",
+            "infrastructure as code", "sre", "blockchain", "iot", "augmented reality",
+            "virtual reality", "game development", "unity", "unreal engine", "graphic design",
+            "ux/ui", "figma", "sketch", "adobe xd", "photoshop", "illustrator", "seo",
+            "sem", "marketing", "sales", "business development", "customer service",
             "financial analysis", "budgeting", "forecasting", "compliance", "risk management",
             "auditing", "legal", "hr", "recruitment", "training", "onboarding", "payroll",
-            "supply chain", "logistics", "operations", "manufacturing", "quality assurance", "qa",
-            "manual testing", "automation testing", "performance testing", "security testing",
-            "functional testing", "non-functional testing", "user acceptance testing", "uat",
-            "test plan", "test strategy", "test case", "bug tracking", "test management tools"
+            "supply chain", "logistics", "operations", "manufacturing", "quality assurance",
+            "qa", "manual testing", "automation testing", "performance testing",
+            "security testing", "functional testing", "non-functional testing",
+            "user acceptance testing", "uat", "test plan", "test strategy", "test case",
+            "bug tracking", "test management tools",
+            "communication", "teamwork", "problem-solving", "critical thinking",
+            "adaptability", "leadership", "time management", "collaboration",
+            "creativity", "interpersonal skills", "attention to detail"
         ]
+        self.technical_skill_pattern = re.compile(
+            r"\b(?:" + "|".join(map(re.escape, self.technical_keywords)) + r")\b",
+            re.IGNORECASE
+        )
 
     def extract_requirements(self, text: str) -> Dict[str, Any]:
         """
         Extracts mandatory, preferred, certifications, and education from a given text section.
 
         Args:
-            text (str): The text section (e.g., from 'requirements' or 'qualifications').
+            text (str): The text section (e.g., from \"requirements\" or \"qualifications\").
 
         Returns:
             Dict[str, Any]: A dictionary containing lists of extracted items.
@@ -145,13 +171,9 @@ class RequirementExtractor:
 
     def _extract_technical_skills(self, text: str) -> List[str]:
         """
-        Extracts technical skills based on a predefined list of keywords.
+        Extracts technical skills based on a predefined list of keywords using a compiled regex pattern.
         """
         found_skills = set()
-        text_lower = text.lower()
-
-        for keyword in self.technical_keywords:
-            if re.search(r"\b" + re.escape(keyword.lower()) + r"\b", text_lower):
-                found_skills.add(keyword)
-
+        for match in self.technical_skill_pattern.finditer(text):
+            found_skills.add(match.group(0))
         return sorted(list(found_skills))

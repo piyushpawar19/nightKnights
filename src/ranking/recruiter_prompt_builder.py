@@ -1,4 +1,3 @@
-
 import json
 from typing import Dict, Any, List
 from ..interfaces.reranking_interface import PromptBuilderInterface
@@ -35,17 +34,17 @@ class RecruiterPromptBuilder(PromptBuilderInterface):
                 candidate_assessments.append({
                     "candidate_id": candidate_id,
                     "previous_rank": candidate.get("rank"),
-                    "previous_score": candidate.get("score"),
+                    "previous_score": candidate.get("overall_score"),
                     "features": features
                 })
 
-        user_prompt_formatted = REC_RERANKER_USER_PROMPT.format(
-            parsed_jd=json.dumps(parsed_jd, indent=2),
-            candidate_features=json.dumps(candidate_assessments, indent=2),
-            ranked_candidates=json.dumps(ranked_candidates, indent=2) # This might be redundant if candidate_assessments is comprehensive
-        )
+            user_prompt_formatted = REC_RERANKER_USER_PROMPT.format(
+                parsed_jd=json.dumps(parsed_jd, indent=2),
+                candidate_features=json.dumps(candidate_assessments, indent=2),
+                ranked_candidates=json.dumps(ranked_candidates, indent=2) # This might be redundant if candidate_assessments is comprehensive
+            )
 
-        # Combine system and user prompts
-        full_prompt = f"{REC_RERANKER_SYSTEM_PROMPT}\n\n{user_prompt_formatted}"
+            # Combine system and user prompts
+            full_prompt = f"{REC_RERANKER_SYSTEM_PROMPT}\n\n{user_prompt_formatted}"
 
-        return full_prompt
+            return full_prompt

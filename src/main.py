@@ -91,8 +91,8 @@ def main() -> None:
         # ---------------------------------------------------------------------
         # Pipeline Summary
         # ---------------------------------------------------------------------
-        logger.info("Structured JD Parsed : %s",
-                    final_state.get("structured_jd") is not None)
+        logger.info("Parsed JD Available : %s",
+                    final_state.get("parsed_jd") is not None)
 
         logger.info("Skills Extracted : %s",
                     len(final_state.get("extracted_skills", [])))

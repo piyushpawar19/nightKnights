@@ -75,13 +75,13 @@ def should_retry_retrieval(state: dict[str, Any]) -> str:
     retrieval_errors = [e for e in errors if e.get("node_name") == "retrieve_candidates"]
     if retrieval_errors:
         logger.warning(
-            "Retrieval had errors but retry is not yet implemented — continuing."
+            "Retrieval had errors — triggering error exit."
         )
-        return RouteDecision.ERROR_EXIT # Changed to ERROR_EXIT for demonstration
+        return RouteDecision.ERROR_EXIT
 
-    if not candidates: # Example of a condition for retry
-        logger.info("No candidates retrieved, attempting retry.")
-        return RouteDecision.RETRY
+    if not candidates: # If no candidates are retrieved, trigger an error exit
+        logger.info("No candidates retrieved, triggering error exit.")
+        return RouteDecision.ERROR_EXIT
 
     logger.debug(
         "should_retry_retrieval: %d candidates retrieved → %s",
@@ -154,10 +154,16 @@ def route_after_ranking(state: dict[str, Any]) -> str:
         A ``RouteDecision`` value.
     """
     ranked = state.get("ranked_candidates", [])
+    errors = state.get("errors", [])
+    ranking_errors = [e for e in errors if e.get("node_name") in ["hybrid_ranking", "reranking"]]
+
+    if ranking_errors:
+        logger.warning("Ranking had errors — triggering error exit.")
+        return RouteDecision.ERROR_EXIT
 
     if not ranked:
-        logger.warning("No ranked candidates — would route to retry/exit.")
-        return RouteDecision.RETRY # Changed to RETRY for demonstration
+        logger.warning("No ranked candidates — triggering error exit.")
+        return RouteDecision.ERROR_EXIT
 
     logger.debug(
         "route_after_ranking: %d candidates ranked → %s",

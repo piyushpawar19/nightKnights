@@ -1,6 +1,13 @@
 import re
 from typing import List, Optional, Tuple
 import logging
+from functools import lru_cache
+import os
+from joblib import Memory
+
+CACHE_DIR = os.path.join(os.path.dirname(os.path.dirname(__file__)), "..", "data", "cache", "joblib_cache")
+os.makedirs(CACHE_DIR, exist_ok=True)
+memory = Memory(CACHE_DIR, verbose=0)
 
 logger = logging.getLogger(__name__)
 
@@ -9,9 +16,9 @@ class EducationParser:
 
     def __init__(self):
         self.degree_patterns = {
-            "bachelor": re.compile(r"b(?:\.?e|\.?s|\.?tech)|bachelor(?:\'s)? degree", re.IGNORECASE),
-            "master": re.compile(r"m(?:\.?e|\.?tech|\.?s)|master(?:\'s)? degree", re.IGNORECASE),
-            "phd": re.compile(r"ph(?:\.?d|d\.?)|doctorate(?:\'s)? degree", re.IGNORECASE),
+            "bachelor": re.compile(r"b(?:\.?e|\.?s|\.?tech)|bachelor(?:\`s)? degree", re.IGNORECASE),
+            "master": re.compile(r"m(?:\.?e|\.?tech|\.?s)|master(?:\`s)? degree", re.IGNORECASE),
+            "phd": re.compile(r"ph(?:\.?d|d\.?)|doctorate(?:\`s)? degree", re.IGNORECASE),
             "mba": re.compile(r"mba|master of business administration", re.IGNORECASE),
         }
         self.field_of_study_keywords = [
@@ -24,6 +31,7 @@ class EducationParser:
             re.compile(r"or equivalent combination of education and experience", re.IGNORECASE),
         ]
 
+    @memory.cache # Cache results for common education descriptions
     def parse_education(self, text: str) -> List[Tuple[Optional[str], Optional[str], bool]]:
         """
         Extracts education requirements (degree, field, mandatory) from the text.

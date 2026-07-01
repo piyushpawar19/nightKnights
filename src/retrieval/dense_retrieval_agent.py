@@ -136,6 +136,10 @@ class DenseRetrievalAgent:
             
         if self.faiss_index_type == "IndexFlatL2":
             base_index = faiss.IndexFlatL2(self.embedding_dim)
+        elif self.faiss_index_type == "IndexHNSW":
+            # Advanced ANN Indexing for optimized retrieval speed
+            base_index = faiss.IndexHNSWFlat(self.embedding_dim, 32)
+            base_index.hnsw.efSearch = 64
         else:
             base_index = faiss.IndexFlatIP(self.embedding_dim)
             

@@ -1,23 +1,7 @@
 """Placeholder node implementations for the LangGraph pipeline.
 
-Each node follows the contract:
-
-    (PipelineState) -> dict[str, Any]
-
-Nodes return a *partial* dict containing only the fields they own.
-LangGraph merges this into the global ``PipelineState`` automatically.
-
-**Important:** These are *mock* implementations.  Real business logic
-will be injected by the respective teams (retrieval, ranking,
-explainability, evaluation) by implementing the interfaces defined
-in ``src.interfaces.graph_interfaces``.
-
-Every node:
-1. Logs execution via ``NodeExecutionLogger``.
-2. Validates that required upstream fields are present.
-3. Returns mock data in the correct schema shape.
-4. Catches exceptions → appends to ``errors``, preserves prior state.
-5. Appends timing to ``timestamps``.
+This module wires up the individual placeholder nodes and routing functions
+into a compiled LangGraph pipeline that coordinates the recruitment workflow.
 """
 
 from __future__ import annotations
@@ -34,8 +18,9 @@ from schemas.graph_schema import (
     ExplanationRecord,
     FeatureVector,
     SkillRequirement,
-    StructuredJD,
+    NodeError
 )
+from schemas.jd_schema import ParsedJD, JobInfo, Requirements, Skills, Responsibilities, Preferences, ParsingMetadata 
 from utils.logger import NodeExecutionLogger, get_logger
 
 logger = get_logger(__name__)
@@ -61,9 +46,9 @@ def _require_fields(state: dict[str, Any], fields: list[str], node_name: str) ->
 def parse_jd_node(state: dict[str, Any]) -> dict[str, Any]:
     """Parse raw job-description text into a structured representation.
 
-    Owns: ``structured_jd``, ``extracted_skills``
+    Owns: ``parsed_jd``, ``extracted_skills``
 
-    This placeholder produces a mock ``StructuredJD`` and extracts a
+    This placeholder produces a mock ``ParsedJD`` and extracts a
     hardcoded skill list.  The real implementation should use the
     ``JDParserInterface`` protocol.
     """
@@ -73,47 +58,46 @@ def parse_jd_node(state: dict[str, Any]) -> dict[str, Any]:
         raw_jd = state["raw_jd"]
 
         # --- Mock implementation ---
-        mock_jd = StructuredJD(
-            title="Senior ML Engineer",
-            department="Engineering",
-            seniority_level="Senior",
-            required_skills=[
-                SkillRequirement(name="Python", importance="required", min_years=3),
-                SkillRequirement(name="Machine Learning", importance="required", min_years=2),
-                SkillRequirement(name="LangChain", importance="required"),
-            ],
-            preferred_skills=[
-                SkillRequirement(name="Kubernetes", importance="preferred"),
-                SkillRequirement(name="System Design", importance="nice_to_have"),
-            ],
-            min_experience_years=5,
-            max_experience_years=15,
-            location_preferences=["Remote", "Bangalore"],
-            work_mode="hybrid",
-            education_requirements=["B.Tech", "M.Tech", "PhD"],
-            key_responsibilities=[
-                "Design and build ML pipelines",
-                "Lead technical architecture decisions",
-                "Mentor junior engineers",
-            ],
-            raw_text=raw_jd,
-        )
+        # Check if raw_jd is empty or malformed for specific error handling
+        if not raw_jd or "Job Title:" not in raw_jd:
+            # Simulate parsing failure for invalid JDs
+            ctx.add_error(NodeError(
+                node_name="parse_jd",
+                error_type="InvalidJDFormat",
+                error_message="JD could not be parsed or is malformed",
+                timestamp=datetime.now(timezone.utc)
+            ))
+            # Do not set parsed_jd if there\"s a parsing error
+            mock_jd = None
+            mock_skills = []
+        else:
+            # Simulate successful parsing
+            mock_jd = ParsedJD(
+                job_info=JobInfo(title="Software Engineer", company="Example Corp", location="Remote"),
+                requirements=Requirements(mandatory_requirements=["Develop web applications"], certifications=[], education=[]),
+                skills=Skills(programming_languages=["Python", "Django"], cloud=["AWS"], technical_skills=[]),
+                responsibilities=Responsibilities(responsibilities_list=["Develop and maintain web applications", "Collaborate with cross-functional teams"]),
+                preferences=Preferences(),
+                metadata=ParsingMetadata(parse_timestamp="2023-01-01T00:00:00Z", parser_version="1.0")
+            )
+            mock_skills = ["Python", "Machine Learning", "LangChain", "Kubernetes", "System Design"]
 
-        mock_skills = ["Python", "Machine Learning", "LangChain", "Kubernetes", "System Design"]
+        ctx.mark_fields_updated(["parsed_jd", "extracted_skills"])
+        # If there\"s a parsing error, ensure parsed_jd and extracted_skills are not set to None directly
+        # but rather handled as an error state that downstream nodes can check.
+        result: dict[str, Any] = {
+            "timestamps": [ctx.build_timestamp_entry()],
+        }
 
-        ctx.mark_fields_updated(["structured_jd", "extracted_skills"])
-
-    # Build return payload
-    result: dict[str, Any] = {
-        "timestamps": [ctx.build_timestamp_entry()],
-    }
-
-    if ctx.failed:
-        error_entry = ctx.build_error_entry()
-        result["errors"] = [error_entry] if error_entry else []
-    else:
-        result["structured_jd"] = mock_jd.model_dump(mode="json")
-        result["extracted_skills"] = mock_skills
+        if ctx.errors:
+            result["errors"] = [e.model_dump() for e in ctx.errors]
+        
+        if mock_jd is not None:
+            result["parsed_jd"] = mock_jd.model_dump(mode="json")
+            result["extracted_skills"] = mock_skills
+        else:
+            result["parsed_jd"] = {}
+            result["extracted_skills"] = []
 
     return result
 
@@ -131,22 +115,82 @@ def retrieve_candidates_node(state: dict[str, Any]) -> dict[str, Any]:
     implementation should use the ``RetrieverInterface`` protocol.
     """
     with NodeExecutionLogger("retrieve_candidates", state, logger) as ctx:
-        _require_fields(state, ["structured_jd"], "retrieve_candidates")
-
+        # Ensure parsed_jd is available. If not, log an error and exit gracefully.
+        parsed_jd = state.get("parsed_jd")
+        if not parsed_jd:
+            ctx.add_error(NodeError(
+                node_name="retrieve_candidates",
+                error_type="MissingRequiredState",
+                error_message="Missing required state fields: parsed_jd",
+                timestamp=datetime.now(timezone.utc)
+            ))
+            ctx.mark_fields_updated(["retrieved_candidates"])
+            return {
+                "timestamps": [ctx.build_timestamp_entry()],
+                "errors": [e.model_dump() for e in ctx.errors],
+                "retrieved_candidates": []
+            }
+        
         # --- Mock implementation ---
-        mock_candidates = [
-            CandidateRecord(
-                candidate_id=f"CAND_{i:07d}",
-                headline=f"Mock Candidate {i}",
-                summary=f"Experienced engineer with strong ML background #{i}.",
-                years_of_experience=5.0 + (i % 10),
-                current_title="Senior Engineer",
-                current_company=f"TechCorp {i}",
-                skills=["Python", "Machine Learning", "TensorFlow"],
-                location="Bangalore",
-            )
-            for i in range(1, 6)  # 5 mock candidates
-        ]
+        # Check for malformed candidates and filter them out, logging errors
+        raw_candidates_data = state.get("retrieved_candidates_raw", [
+            # Default mock candidates if not provided by a test
+            {
+                "candidate_id": "CAND_0000001",
+                "headline": "Experienced Python Developer",
+                "summary": "5 years of experience in Python and Django.",
+                "years_of_experience": 5.0,
+                "current_title": "Software Engineer",
+                "current_company": "Tech Solutions",
+                "skills": ["Python", "Django", "AWS"],
+                "location": "Remote",
+                "raw_data": {},
+            },
+            {
+                "candidate_id": "CAND_0000002",
+                "headline": "Cloud Engineer",
+                "summary": "Experienced in AWS and cloud technologies.",
+                "years_of_experience": 3.0,
+                "current_title": "Cloud Specialist",
+                "current_company": "Cloud Innovations",
+                "skills": ["AWS", "DevOps"],
+                "location": "New York",
+                "raw_data": {},
+            }
+        ])
+
+        processed_candidates = []
+        errors = []
+        seen_candidate_ids = set()
+
+        for raw_candidate in raw_candidates_data:
+            try:
+                # Check for duplicate candidate_ids
+                candidate_id = raw_candidate.get("candidate_id")
+                if candidate_id in seen_candidate_ids:
+                    errors.append(NodeError(
+                        node_name="retrieve_candidates",
+                        error_type="DuplicateCandidateID",
+                        error_message=f"Duplicate candidate_id found: {candidate_id}",
+                        timestamp=datetime.now(timezone.utc)
+                    ).model_dump())
+                    continue # Skip duplicate
+                seen_candidate_ids.add(candidate_id)
+
+                # Validate candidate fields with Pydantic model
+                candidate = CandidateRecord(**raw_candidate)
+                processed_candidates.append(candidate)
+            except Exception as e:
+                errors.append(NodeError(
+                    node_name="retrieve_candidates",
+                    error_type="MalformedCandidateProfile",
+                    error_message=f"Validation error for candidate {raw_candidate.get('candidate_id', 'N/A')}: {e}",
+                    timestamp=datetime.now(timezone.utc)
+                ).model_dump())
+
+        if errors:
+            for error in errors:
+                ctx.add_error(error)
 
         ctx.mark_fields_updated(["retrieved_candidates"])
 
@@ -154,11 +198,10 @@ def retrieve_candidates_node(state: dict[str, Any]) -> dict[str, Any]:
         "timestamps": [ctx.build_timestamp_entry()],
     }
 
-    if ctx.failed:
-        error_entry = ctx.build_error_entry()
-        result["errors"] = [error_entry] if error_entry else []
+    if ctx.errors:
+        result["errors"] = [e.model_dump() for e in ctx.errors]
     else:
-        result["retrieved_candidates"] = [c.model_dump(mode="json") for c in mock_candidates]
+        result["retrieved_candidates"] = [c.model_dump(mode="json") for c in processed_candidates]
 
     return result
 
@@ -176,23 +219,26 @@ def feature_engineering_node(state: dict[str, Any]) -> dict[str, Any]:
     implementation should use the ``FeatureEngineerInterface``.
     """
     with NodeExecutionLogger("feature_engineering", state, logger) as ctx:
-        _require_fields(state, ["retrieved_candidates", "structured_jd"], "feature_engineering")
+        _require_fields(state, ["retrieved_candidates", "parsed_jd"], "feature_engineering")
 
         candidates = state["retrieved_candidates"]
 
         # --- Mock implementation ---
-        mock_features = [
-            FeatureVector(
-                candidate_id=c["candidate_id"],
-                features={
-                    "skill_match": 0.85,
-                    "experience_fit": 0.72,
-                    "location_match": 1.0,
-                    "seniority_alignment": 0.90,
-                },
-            )
-            for c in candidates
-        ]
+        if not candidates:
+            mock_features = []
+        else:
+            mock_features = [
+                FeatureVector(
+                    candidate_id=c["candidate_id"],
+                    features={
+                        "skill_match": 0.85,
+                        "experience_fit": 0.72,
+                        "location_match": 1.0,
+                        "seniority_alignment": 0.90,
+                    },
+                )
+                for c in candidates
+            ]
 
         ctx.mark_fields_updated(["feature_vectors"])
 
@@ -200,9 +246,8 @@ def feature_engineering_node(state: dict[str, Any]) -> dict[str, Any]:
         "timestamps": [ctx.build_timestamp_entry()],
     }
 
-    if ctx.failed:
-        error_entry = ctx.build_error_entry()
-        result["errors"] = [error_entry] if error_entry else []
+    if ctx.errors:
+        result["errors"] = [e.model_dump() for e in ctx.errors]
     else:
         result["feature_vectors"] = [f.model_dump(mode="json") for f in mock_features]
 
@@ -224,26 +269,29 @@ def hybrid_ranking_node(state: dict[str, Any]) -> dict[str, Any]:
     with NodeExecutionLogger("hybrid_ranking", state, logger) as ctx:
         _require_fields(
             state,
-            ["retrieved_candidates", "feature_vectors", "structured_jd"],
+            ["retrieved_candidates", "feature_vectors", "parsed_jd"],
             "hybrid_ranking",
         )
 
         candidates = state["retrieved_candidates"]
 
         # --- Mock implementation ---
-        mock_ranked = [
-            CandidateScore(
-                candidate_id=c["candidate_id"],
-                rank=idx + 1,
-                overall_score=round(0.95 - (idx * 0.05), 2),
-                component_scores={
-                    "skill_match": 0.90,
-                    "experience_fit": 0.80,
-                    "signal_strength": 0.75,
-                },
-            )
-            for idx, c in enumerate(candidates)
-        ]
+        if not candidates:
+            mock_ranked = []
+        else:
+            mock_ranked = [
+                CandidateScore(
+                    candidate_id=c["candidate_id"],
+                    rank=idx + 1,
+                    overall_score=round(0.95 - (idx * 0.05), 2),
+                    component_scores={
+                        "skill_match": 0.90,
+                        "experience_fit": 0.80,
+                        "signal_strength": 0.75,
+                    },
+                )
+                for idx, c in enumerate(candidates)
+            ]
 
         ctx.mark_fields_updated(["ranked_candidates"])
 
@@ -251,9 +299,8 @@ def hybrid_ranking_node(state: dict[str, Any]) -> dict[str, Any]:
         "timestamps": [ctx.build_timestamp_entry()],
     }
 
-    if ctx.failed:
-        error_entry = ctx.build_error_entry()
-        result["errors"] = [error_entry] if error_entry else []
+    if ctx.errors:
+        result["errors"] = [e.model_dump() for e in ctx.errors]
     else:
         result["ranked_candidates"] = [s.model_dump(mode="json") for s in mock_ranked]
 
@@ -274,20 +321,23 @@ def reranking_node(state: dict[str, Any]) -> dict[str, Any]:
     ``RerankerInterface`` protocol.
     """
     with NodeExecutionLogger("reranking", state, logger) as ctx:
-        _require_fields(state, ["ranked_candidates", "structured_jd"], "reranking")
+        _require_fields(state, ["ranked_candidates", "parsed_jd"], "reranking")
 
         ranked = state["ranked_candidates"]
 
         # --- Mock implementation: re-order slightly ---
-        mock_reranked = [
-            CandidateScore(
-                candidate_id=c["candidate_id"],
-                rank=idx + 1,
-                overall_score=round(min(c["overall_score"] + 0.02, 1.0), 2),
-                component_scores=c.get("component_scores", {}),
-            )
-            for idx, c in enumerate(ranked)
-        ]
+        if not ranked:
+            mock_reranked = []
+        else:
+            mock_reranked = [
+                CandidateScore(
+                    candidate_id=c["candidate_id"],
+                    rank=idx + 1,
+                    overall_score=round(min(c["overall_score"] + 0.02, 1.0), 2),
+                    component_scores=c.get("component_scores", {}),
+                )
+                for idx, c in enumerate(ranked)
+            ]
 
         ctx.mark_fields_updated(["reranked_candidates"])
 
@@ -295,9 +345,8 @@ def reranking_node(state: dict[str, Any]) -> dict[str, Any]:
         "timestamps": [ctx.build_timestamp_entry()],
     }
 
-    if ctx.failed:
-        error_entry = ctx.build_error_entry()
-        result["errors"] = [error_entry] if error_entry else []
+    if ctx.errors:
+        result["errors"] = [e.model_dump() for e in ctx.errors]
     else:
         result["reranked_candidates"] = [s.model_dump(mode="json") for s in mock_reranked]
 
@@ -317,23 +366,26 @@ def explanation_node(state: dict[str, Any]) -> dict[str, Any]:
     implementation should use the ``ExplainerInterface`` protocol.
     """
     with NodeExecutionLogger("explanation", state, logger) as ctx:
-        _require_fields(state, ["reranked_candidates", "structured_jd"], "explanation")
+        _require_fields(state, ["reranked_candidates", "parsed_jd"], "explanation")
 
         reranked = state["reranked_candidates"]
 
         # --- Mock implementation ---
-        mock_explanations = [
-            ExplanationRecord(
-                candidate_id=c["candidate_id"],
-                rank=c["rank"],
-                reasoning= (
-                    f"Candidate {c["candidate_id"]} ranked #{c["rank"]} with score "
-                    f"{c["overall_score"]:.2f}. Strong match on required skills "
-                    f"and experience alignment."
+        if not reranked:
+            mock_explanations = []
+        else:
+            mock_explanations = [
+                ExplanationRecord(
+                    candidate_id=c["candidate_id"],
+                    rank=c["rank"],
+                    reasoning= (
+                        f"Candidate {c['candidate_id']} ranked #{c['rank']} with score "
+                        f"{c['overall_score']:.2f}. Strong match on required skills "
+                        f"and experience alignment."
+                    )
                 )
-            )
-            for c in reranked
-        ]
+                for c in reranked
+            ]
 
         ctx.mark_fields_updated(["explanations"])
 
@@ -341,9 +393,8 @@ def explanation_node(state: dict[str, Any]) -> dict[str, Any]:
         "timestamps": [ctx.build_timestamp_entry()],
     }
 
-    if ctx.failed:
-        error_entry = ctx.build_error_entry()
-        result["errors"] = [error_entry] if error_entry else []
+    if ctx.errors:
+        result["errors"] = [e.model_dump() for e in ctx.errors]
     else:
         result["explanations"] = [e.model_dump(mode="json") for e in mock_explanations]
 
@@ -383,9 +434,8 @@ def evaluation_node(state: dict[str, Any]) -> dict[str, Any]:
         "timestamps": [ctx.build_timestamp_entry()],
     }
 
-    if ctx.failed:
-        error_entry = ctx.build_error_entry()
-        result["errors"] = [error_entry] if error_entry else []
+    if ctx.errors:
+        result["errors"] = [e.model_dump() for e in ctx.errors]
     else:
         result["evaluation_metrics"] = mock_metrics.model_dump(mode="json")
 
@@ -426,12 +476,13 @@ def csv_generation_node(state: dict[str, Any]) -> dict[str, Any]:
         # Write CSV
         with open(filepath, "w", newline="", encoding="utf-8") as f:
             writer = csv.writer(f)
-            writer.writerow(["rank", "candidate_id", "reasoning"])
+            writer.writerow(["rank", "candidate_id", "score", "reasoning"])
             for candidate in reranked:
                 cid = candidate["candidate_id"]
                 writer.writerow([
                     candidate["rank"],
                     cid,
+                    candidate["overall_score"],
                     explanation_map.get(cid, "No explanation available."),
                 ])
 
@@ -441,9 +492,8 @@ def csv_generation_node(state: dict[str, Any]) -> dict[str, Any]:
         "timestamps": [ctx.build_timestamp_entry()],
     }
 
-    if ctx.failed:
-        error_entry = ctx.build_error_entry()
-        result["errors"] = [error_entry] if error_entry else []
+    if ctx.errors:
+        result["errors"] = [e.model_dump() for e in ctx.errors]
     else:
         result["submission_path"] = filepath
 

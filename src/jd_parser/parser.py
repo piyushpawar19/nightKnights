@@ -1,7 +1,7 @@
 import logging
 import datetime
 import re
-from typing import Dict, Any
+from typing import Dict, Any, Optional
 
 from src.schemas.jd_schema import (
     ParsedJD, JobInfo, Requirements, Skills, Responsibilities, Preferences, ParsingMetadata, Education, Certification
@@ -41,7 +41,7 @@ class JDParser:
         requirements = self._parse_requirements(sections)
         skills = self._parse_skills(sections)
         responsibilities = self._parse_responsibilities(sections)
-        preferences = Preferences()
+        preferences = self._parse_preferences(sections) # Added call to parse preferences
         metadata = self._create_parsing_metadata()
 
         return ParsedJD(
@@ -52,6 +52,26 @@ class JDParser:
             preferences=preferences,
             metadata=metadata
         )
+
+    def _parse_preferences(self, sections: Dict[str, str]) -> Preferences:
+        """
+        Parses job preferences or \"nice-to-haves\".
+        This is a placeholder and would involve extracting specific preference details.
+        """
+        preferences_text = sections.get("nice_to_have", "")
+        # For now, simply return a default empty Preferences object.
+        # In a real scenario, you might extract keywords or phrases related to preferences.
+        return Preferences() # Consider populating this with actual preferences if detectable
+
+
+
+
+
+
+
+
+
+
 
     def _parse_job_info(self, raw_jd: str, sections: Dict[str, str]) -> JobInfo:
         """
@@ -141,7 +161,7 @@ class JDParser:
         technical_skills = self.requirement_extractor._extract_technical_skills(skills_text)
 
         # This is a simplification; a real skill extractor would categorize more granularly.
-        # For now, put all detected technical skills into the 'technical_skills' field.
+        # For now, put all detected technical skills into the \"technical_skills\" field.
         return Skills(
             technical_skills=technical_skills,
             programming_languages=[], # To be filled by a more advanced extractor

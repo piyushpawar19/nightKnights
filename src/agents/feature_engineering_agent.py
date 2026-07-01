@@ -15,9 +15,10 @@ class FeatureEngineeringAgent(FeatureEngineeringInterface):
     def validate_inputs(self, state: Dict):
         try:
             # Validate the incoming state against the request schema
-            FeatureEngineeringRequest(parsed_jd=state.get("parsed_jd", {}),
-                                      extracted_skills=state.get("extracted_skills", {}),
-                                      candidate_profile=state.get("candidate_profile", {}))
+            FeatureEngineeringRequest(
+                parsed_jd=state.get("parsed_jd", {}),
+                extracted_skills=state.get("extracted_skills", {}),
+                candidate_profile=state.get("candidate_profile", {}))
             logger.info("FeatureEngineeringAgent: Inputs validated successfully.")
         except ValidationError as e:
             logger.error(f"FeatureEngineeringAgent: Input validation failed: {e.errors()}")

@@ -53,15 +53,15 @@ class RecruiterRerankerAgent(RerankingAgentInterface):
             raise ValueError(f"Missing critical input keys in state: {', '.join(missing_keys)}")
         
         # 2. Perform reranking using the RecruiterReranker module
-        reranked_candidates_pydantic: RerankedCandidates = self.recruiter_reranker.rerank_candidates(
-            parsed_jd=parsed_jd,
-            ranked_candidates=ranked_candidates,
-            candidate_features=candidate_features,
-            llm_interface=self.llm_interface
-        )
+            reranked_candidates_pydantic: RerankedCandidates = self.recruiter_reranker.rerank_candidates(
+                parsed_jd=parsed_jd,
+                ranked_candidates=ranked_candidates,
+                candidate_features=candidate_features,
+                llm_interface=self.llm_interface
+            )
 
-        # 3. Update the state with the reranked candidates
-        state["reranked_candidates"] = reranked_candidates_pydantic.dict()
-        
-        logger.info("RecruiterRerankerAgent finished successfully.")
-        return state
+            # 3. Update the state with the reranked candidates
+            state["reranked_candidates"] = reranked_candidates_pydantic.model_dump()
+            
+            logger.info("RecruiterRerankerAgent finished successfully.")
+            return state
