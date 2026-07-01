@@ -59,7 +59,7 @@ def parse_jd_node(state: dict[str, Any]) -> dict[str, Any]:
 
         # --- Mock implementation ---
         # Check if raw_jd is empty or malformed for specific error handling
-        if not raw_jd or "Job Title:" not in raw_jd:
+        if not raw_jd or "Job Description:" not in raw_jd:
             # Simulate parsing failure for invalid JDs
             ctx.add_error(NodeError(
                 node_name="parse_jd",
@@ -131,33 +131,40 @@ def retrieve_candidates_node(state: dict[str, Any]) -> dict[str, Any]:
                 "retrieved_candidates": []
             }
         
-        # --- Mock implementation ---
+        # --- Real Data Loading Implementation ---
         # Check for malformed candidates and filter them out, logging errors
-        raw_candidates_data = state.get("retrieved_candidates_raw", [
-            # Default mock candidates if not provided by a test
-            {
-                "candidate_id": "CAND_0000001",
-                "headline": "Experienced Python Developer",
-                "summary": "5 years of experience in Python and Django.",
-                "years_of_experience": 5.0,
-                "current_title": "Software Engineer",
-                "current_company": "Tech Solutions",
-                "skills": ["Python", "Django", "AWS"],
-                "location": "Remote",
-                "raw_data": {},
-            },
-            {
-                "candidate_id": "CAND_0000002",
-                "headline": "Cloud Engineer",
-                "summary": "Experienced in AWS and cloud technologies.",
-                "years_of_experience": 3.0,
-                "current_title": "Cloud Specialist",
-                "current_company": "Cloud Innovations",
-                "skills": ["AWS", "DevOps"],
-                "location": "New York",
-                "raw_data": {},
-            }
-        ])
+        raw_candidates_data = state.get("retrieved_candidates_raw")
+        if not raw_candidates_data:
+            try:
+                from src.retrieval.dataset_loader import DatasetLoader
+                loader = DatasetLoader.from_config()
+                raw_candidates_data = []
+                for batch in loader.iter_batches():
+                    for raw_candidate in batch:
+                        profile = raw_candidate.get('profile', {})
+                        mapped = {
+                            "candidate_id": raw_candidate.get("candidate_id"),
+                            "headline": profile.get("headline", ""),
+                            "summary": profile.get("summary", ""),
+                            "years_of_experience": float(profile.get("years_of_experience", 0.0) or 0.0),
+                            "current_title": profile.get("current_title", ""),
+                            "current_company": profile.get("current_company", ""),
+                            "skills": [s.get("name") for s in raw_candidate.get("skills", []) if isinstance(s, dict)],
+                            "location": profile.get("location", ""),
+                            "raw_data": raw_candidate
+                        }
+                        raw_candidates_data.append(mapped)
+                    if len(raw_candidates_data) >= 100:
+                        raw_candidates_data = raw_candidates_data[:100]
+                        break
+            except Exception as e:
+                ctx.add_error(NodeError(
+                    node_name="retrieve_candidates",
+                    error_type="DatasetLoadError",
+                    error_message=f"Failed to load dataset: {e}",
+                    timestamp=datetime.now(timezone.utc)
+                ))
+                raw_candidates_data = []
 
         processed_candidates = []
         errors = []
@@ -168,12 +175,13 @@ def retrieve_candidates_node(state: dict[str, Any]) -> dict[str, Any]:
                 # Check for duplicate candidate_ids
                 candidate_id = raw_candidate.get("candidate_id")
                 if candidate_id in seen_candidate_ids:
+                    # Append NodeError instance directly, not .model_dump()
                     errors.append(NodeError(
                         node_name="retrieve_candidates",
                         error_type="DuplicateCandidateID",
                         error_message=f"Duplicate candidate_id found: {candidate_id}",
                         timestamp=datetime.now(timezone.utc)
-                    ).model_dump())
+                    ))
                     continue # Skip duplicate
                 seen_candidate_ids.add(candidate_id)
 
@@ -186,7 +194,7 @@ def retrieve_candidates_node(state: dict[str, Any]) -> dict[str, Any]:
                     error_type="MalformedCandidateProfile",
                     error_message=f"Validation error for candidate {raw_candidate.get('candidate_id', 'N/A')}: {e}",
                     timestamp=datetime.now(timezone.utc)
-                ).model_dump())
+                ))
 
         if errors:
             for error in errors:
@@ -283,7 +291,7 @@ def hybrid_ranking_node(state: dict[str, Any]) -> dict[str, Any]:
                 CandidateScore(
                     candidate_id=c["candidate_id"],
                     rank=idx + 1,
-                    overall_score=round(0.95 - (idx * 0.05), 2),
+                    overall_score=max(0.0, round(0.95 - (idx * 0.009), 2)),
                     component_scores={
                         "skill_match": 0.90,
                         "experience_fit": 0.80,
@@ -476,12 +484,12 @@ def csv_generation_node(state: dict[str, Any]) -> dict[str, Any]:
         # Write CSV
         with open(filepath, "w", newline="", encoding="utf-8") as f:
             writer = csv.writer(f)
-            writer.writerow(["rank", "candidate_id", "score", "reasoning"])
+            writer.writerow(["candidate_id", "rank", "score", "reasoning"])
             for candidate in reranked:
                 cid = candidate["candidate_id"]
                 writer.writerow([
-                    candidate["rank"],
                     cid,
+                    candidate["rank"],
                     candidate["overall_score"],
                     explanation_map.get(cid, "No explanation available."),
                 ])
