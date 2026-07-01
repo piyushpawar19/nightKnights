@@ -1,0 +1,810 @@
+============================= test session starts =============================
+platform win32 -- Python 3.14.5, pytest-9.1.1, pluggy-1.6.0
+rootdir: C:\Users\piyush pawar\Desktop\AI_Hackthonnnn
+plugins: anyio-4.14.1, langsmith-0.9.3
+collected 22 items
+
+tests\test_bm25_agent.py .FF.                                            [ 18%]
+tests\test_dataset_loader.py ...F.                                       [ 40%]
+tests\test_dense_retrieval.py .FF                                        [ 54%]
+tests\test_retrieval_pipeline.py .FFFF                                   [ 77%]
+tests\test_vector_store.py .....                                         [100%]
+
+================================== FAILURES ===================================
+_____________________ test_bm25_agent_build_and_retrieve ______________________
+
+bm25_agent = <src.retrieval.bm25_agent.BM25RetrievalAgent object at 0x0000020090555E50>
+sample_structured_jd = StructuredJD(job_title='Software Engineer', title=None, company='Tech Corp', industry='IT', seniority='Mid-level', exp..._skills=None, nice_to_have_skills=[], raw_text=None, responsibilities=['Develop Python applications'], technologies=[])
+sample_candidate_profiles = [CandidateProfile(id=UUID('6e21de9f-c759-4e8c-a9ef-94ecaa44a6e6'), candidate_id='CAND_001', name='Alice Smith', summar...oficiency=None)], certifications=[], location=None, activity_score=None, resume_text=None, metadata=Metadata(data={}))]
+
+    def test_bm25_agent_build_and_retrieve(bm25_agent, sample_structured_jd, sample_candidate_profiles):
+>       bm25_agent.build_index(sample_candidate_profiles)
+
+tests\test_bm25_agent.py:84: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <src.retrieval.bm25_agent.BM25RetrievalAgent object at 0x0000020090555E50>
+profiles = [CandidateProfile(id=UUID('6e21de9f-c759-4e8c-a9ef-94ecaa44a6e6'), candidate_id='CAND_001', name='Alice Smith', summar...oficiency=None)], certifications=[], location=None, activity_score=None, resume_text=None, metadata=Metadata(data={}))]
+
+    def build_index(self, profiles: Iterable[CandidateProfile]) -> int:
+        """
+        Build a fresh BM25 index from candidate profiles.
+    
+        Returns:
+            Number of documents indexed.
+        """
+        start = time.perf_counter()
+        self.clear_index()
+    
+        candidate_ids, tokenized_corpus = self._build_corpus(profiles)
+        if not candidate_ids:
+>           raise EmptyCorpusError("No valid candidate profiles with search_text to index.")
+E           src.retrieval.bm25_agent.EmptyCorpusError: No valid candidate profiles with search_text to index.
+
+src\retrieval\bm25_agent.py:469: EmptyCorpusError
+----------------------------- Captured log setup ------------------------------
+DEBUG    src.retrieval.bm25_agent:bm25_agent.py:440 BM25RetrievalAgent initialized (k1=1.50, b=0.75, top_k=2000, backend=rank_bm25)
+---------------------------- Captured stdout call -----------------------------
+2026-07-01 23:39:35 | INFO     | src.retrieval.bm25_agent       | BM25 index cleared.
+2026-07-01 23:39:35 | WARNING  | src.retrieval.bm25_agent       | Skipping invalid profile: Expected CandidateProfile, got CandidateProfile.
+2026-07-01 23:39:35 | WARNING  | src.retrieval.bm25_agent       | Skipping invalid profile: Expected CandidateProfile, got CandidateProfile.
+2026-07-01 23:39:35 | WARNING  | src.retrieval.bm25_agent       | Skipping invalid profile: Expected CandidateProfile, got CandidateProfile.
+------------------------------ Captured log call ------------------------------
+INFO     src.retrieval.bm25_agent:bm25_agent.py:584 BM25 index cleared.
+WARNING  src.retrieval.bm25_agent:bm25_agent.py:831 Skipping invalid profile: Expected CandidateProfile, got CandidateProfile.
+WARNING  src.retrieval.bm25_agent:bm25_agent.py:831 Skipping invalid profile: Expected CandidateProfile, got CandidateProfile.
+WARNING  src.retrieval.bm25_agent:bm25_agent.py:831 Skipping invalid profile: Expected CandidateProfile, got CandidateProfile.
+_______________________ test_bm25_agent_retrieve_top_k ________________________
+
+bm25_agent = <src.retrieval.bm25_agent.BM25RetrievalAgent object at 0x00000200B433E0D0>
+sample_structured_jd = StructuredJD(job_title='Software Engineer', title=None, company='Tech Corp', industry='IT', seniority='Mid-level', exp..._skills=None, nice_to_have_skills=[], raw_text=None, responsibilities=['Develop Python applications'], technologies=[])
+sample_candidate_profiles = [CandidateProfile(id=UUID('c7cec487-a268-48dc-bf2f-35774dfd48aa'), candidate_id='CAND_001', name='Alice Smith', summar...oficiency=None)], certifications=[], location=None, activity_score=None, resume_text=None, metadata=Metadata(data={}))]
+
+    def test_bm25_agent_retrieve_top_k(bm25_agent, sample_structured_jd, sample_candidate_profiles):
+>       bm25_agent.build_index(sample_candidate_profiles)
+
+tests\test_bm25_agent.py:101: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <src.retrieval.bm25_agent.BM25RetrievalAgent object at 0x00000200B433E0D0>
+profiles = [CandidateProfile(id=UUID('c7cec487-a268-48dc-bf2f-35774dfd48aa'), candidate_id='CAND_001', name='Alice Smith', summar...oficiency=None)], certifications=[], location=None, activity_score=None, resume_text=None, metadata=Metadata(data={}))]
+
+    def build_index(self, profiles: Iterable[CandidateProfile]) -> int:
+        """
+        Build a fresh BM25 index from candidate profiles.
+    
+        Returns:
+            Number of documents indexed.
+        """
+        start = time.perf_counter()
+        self.clear_index()
+    
+        candidate_ids, tokenized_corpus = self._build_corpus(profiles)
+        if not candidate_ids:
+>           raise EmptyCorpusError("No valid candidate profiles with search_text to index.")
+E           src.retrieval.bm25_agent.EmptyCorpusError: No valid candidate profiles with search_text to index.
+
+src\retrieval\bm25_agent.py:469: EmptyCorpusError
+----------------------------- Captured log setup ------------------------------
+DEBUG    src.retrieval.bm25_agent:bm25_agent.py:440 BM25RetrievalAgent initialized (k1=1.50, b=0.75, top_k=2000, backend=rank_bm25)
+---------------------------- Captured stdout call -----------------------------
+2026-07-01 23:39:35 | INFO     | src.retrieval.bm25_agent       | BM25 index cleared.
+2026-07-01 23:39:35 | WARNING  | src.retrieval.bm25_agent       | Skipping invalid profile: Expected CandidateProfile, got CandidateProfile.
+2026-07-01 23:39:35 | WARNING  | src.retrieval.bm25_agent       | Skipping invalid profile: Expected CandidateProfile, got CandidateProfile.
+2026-07-01 23:39:35 | WARNING  | src.retrieval.bm25_agent       | Skipping invalid profile: Expected CandidateProfile, got CandidateProfile.
+------------------------------ Captured log call ------------------------------
+INFO     src.retrieval.bm25_agent:bm25_agent.py:584 BM25 index cleared.
+WARNING  src.retrieval.bm25_agent:bm25_agent.py:831 Skipping invalid profile: Expected CandidateProfile, got CandidateProfile.
+WARNING  src.retrieval.bm25_agent:bm25_agent.py:831 Skipping invalid profile: Expected CandidateProfile, got CandidateProfile.
+WARNING  src.retrieval.bm25_agent:bm25_agent.py:831 Skipping invalid profile: Expected CandidateProfile, got CandidateProfile.
+_______________ test_load_candidates_from_json_empty_json_file ________________
+
+tmp_path = WindowsPath('C:/Users/piyush pawar/AppData/Local/Temp/pytest-of-piyush pawar/pytest-10/test_load_candidates_from_json3')
+
+    def test_load_candidates_from_json_empty_json_file(tmp_path):
+        empty_json_file = tmp_path / "empty.json"
+        empty_json_file.write_text("[]")
+        loader = DatasetLoader(dataset_path=empty_json_file)
+>       candidates_data = loader.load()
+                          ^^^^^^^^^^^^^
+
+tests\test_dataset_loader.py:41: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <src.retrieval.dataset_loader.DatasetLoader object at 0x00000200C9824770>
+
+    def load(self) -> list[CandidateRecord]:
+        """
+        Load and materialize the full validated dataset.
+    
+        Uses cache when enabled and the source fingerprint matches.
+    
+        Returns:
+            List of validated candidate record dictionaries.
+    
+        Raises:
+            EmptyDatasetError: If no valid records remain after validation.
+        """
+        start = time.perf_counter()
+        if self._records is not None:
+            logger.debug("Dataset already materialized in memory (%d records).", len(self._records))
+            return self._records
+    
+        if self.cache_enabled and self._try_load_cache():
+            elapsed = time.perf_counter() - start
+            self._stats["load_time_seconds"] = elapsed
+            logger.info(
+                "Dataset loaded from cache: %d records in %.2fs",
+                len(self._records or []),
+                elapsed,
+            )
+            return self._records or []
+    
+        logger.info("Loading dataset from source: %s", self.dataset_path)
+        records = self._materialize_from_source()
+        elapsed = time.perf_counter() - start
+        self._stats["load_time_seconds"] = elapsed
+    
+        if not records:
+>           raise EmptyDatasetError(f"No valid records found in {self.dataset_path}")
+E           src.retrieval.dataset_loader.EmptyDatasetError: No valid records found in C:\Users\piyush pawar\AppData\Local\Temp\pytest-of-piyush pawar\pytest-10\test_load_candidates_from_json3\empty.json
+
+src\retrieval\dataset_loader.py:377: EmptyDatasetError
+---------------------------- Captured stdout call -----------------------------
+2026-07-01 23:39:35 | INFO     | src.retrieval.dataset_loader   | DatasetLoader initialized for C:\Users\piyush pawar\AppData\Local\Temp\pytest-of-piyush pawar\pytest-10\test_load_candidates_from_json3\empty.json (format=json, batch_size=256, cache=True)
+2026-07-01 23:39:35 | INFO     | src.retrieval.dataset_loader   | Loading dataset from source: C:\Users\piyush pawar\AppData\Local\Temp\pytest-of-piyush pawar\pytest-10\test_load_candidates_from_json3\empty.json
+------------------------------ Captured log call ------------------------------
+INFO     src.retrieval.dataset_loader:dataset_loader.py:306 DatasetLoader initialized for C:\Users\piyush pawar\AppData\Local\Temp\pytest-of-piyush pawar\pytest-10\test_load_candidates_from_json3\empty.json (format=json, batch_size=256, cache=True)
+DEBUG    src.retrieval.dataset_loader:dataset_loader.py:746 Cache miss: artifacts not found for C:\Users\piyush pawar\AppData\Local\Temp\pytest-of-piyush pawar\pytest-10\test_load_candidates_from_json3\empty.json
+INFO     src.retrieval.dataset_loader:dataset_loader.py:371 Loading dataset from source: C:\Users\piyush pawar\AppData\Local\Temp\pytest-of-piyush pawar\pytest-10\test_load_candidates_from_json3\empty.json
+_____________________ test_dense_retrieval_agent_retrieve _____________________
+
+dense_retrieval_agent = <src.retrieval.dense_retrieval_agent.DenseRetrievalAgent object at 0x0000020090556710>
+sample_structured_jd = StructuredJD(job_title='Software Engineer', title=None, company='Tech Corp', industry='IT', seniority='Mid-level', exp..._skills=None, nice_to_have_skills=[], raw_text=None, responsibilities=['Develop Python applications'], technologies=[])
+sample_candidate_profiles = [CandidateProfile(id=UUID('054e1e5c-7ac7-40d4-baa3-a9c8636ff3e5'), candidate_id='CAND_001', name='Alice Smith', summar...oficiency=None)], certifications=[], location=None, activity_score=None, resume_text=None, metadata=Metadata(data={}))]
+
+    def test_dense_retrieval_agent_retrieve(dense_retrieval_agent, sample_structured_jd, sample_candidate_profiles):
+        dense_retrieval_agent.build_index(sample_candidate_profiles)
+    
+        query = sample_structured_jd.job_title + " " + " ".join(s["name"] for s in sample_structured_jd.must_have_skills) # type: ignore
+>       results: List[RetrievalResult] = dense_retrieval_agent.search(query, top_k=2)
+                                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\test_dense_retrieval.py:104: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+src\retrieval\dense_retrieval_agent.py:211: in search
+    query_embedding = self.encode_query(query)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^
+src\retrieval\dense_retrieval_agent.py:198: in encode_query
+    query_text = self._prepare_query(structured_jd)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <src.retrieval.dense_retrieval_agent.DenseRetrievalAgent object at 0x0000020090556710>
+structured_jd = 'Software Engineer Python'
+
+    def _prepare_query(self, structured_jd: Dict[str, Any]) -> str:
+        """Combines structured JD fields into a semantic query."""
+        parts = []
+>       if structured_jd.get("must_have"):
+           ^^^^^^^^^^^^^^^^^
+E       AttributeError: 'str' object has no attribute 'get'
+
+src\retrieval\dense_retrieval_agent.py:80: AttributeError
+---------------------------- Captured stdout call -----------------------------
+2026-07-01 23:39:35 | INFO     | src.retrieval.dense_retrieval_agent | Cleared FAISS index.
+2026-07-01 23:39:35 | WARNING  | src.retrieval.dense_retrieval_agent | Candidate missing 'search_text' field: id=UUID('054e1e5c-7ac7-40d4-baa3-a9c8636ff3e5') candidate_id='CAND_001' name='Alice Smith' summary='Experienced Python developer with strong ML background.' experience=[] education=[] projects=[] skills=[Skill(name='Python', proficiency=None)] certifications=[] location=None activity_score=None resume_text=None metadata=Metadata(data={})
+2026-07-01 23:39:35 | WARNING  | src.retrieval.dense_retrieval_agent | Candidate missing 'search_text' field: id=UUID('13823784-1c27-427e-8ed5-6a30dc7d4ab6') candidate_id='CAND_002' name='Bob Johnson' summary='Java backend developer, proficient in Spring Boot.' experience=[] education=[] projects=[] skills=[Skill(name='Java', proficiency=None)] certifications=[] location=None activity_score=None resume_text=None metadata=Metadata(data={})
+2026-07-01 23:39:35 | WARNING  | src.retrieval.dense_retrieval_agent | Candidate missing 'search_text' field: id=UUID('631b2227-d479-48df-8017-f650e9fef420') candidate_id='CAND_003' name='Charlie Brown' summary='Data Scientist with Python and R experience.' experience=[] education=[] projects=[] skills=[Skill(name='Python', proficiency=None), Skill(name='R', proficiency=None)] certifications=[] location=None activity_score=None resume_text=None metadata=Metadata(data={})
+2026-07-01 23:39:35 | INFO     | src.retrieval.dense_retrieval_agent | Loading embedding model: sentence-transformers/all-MiniLM-L6-v2 on cpu
+2026-07-01 23:39:36 | INFO     | httpx                          | HTTP Request: HEAD https://huggingface.co/sentence-transformers/all-MiniLM-L6-v2/resolve/main/modules.json "HTTP/1.1 307 Temporary Redirect"
+2026-07-01 23:39:36 | WARNING  | huggingface_hub.utils._http    | Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+2026-07-01 23:39:37 | INFO     | httpx                          | HTTP Request: HEAD https://huggingface.co/api/resolve-cache/models/sentence-transformers/all-MiniLM-L6-v2/1110a243fdf4706b3f48f1d95db1a4f5529b4d41/modules.json "HTTP/1.1 200 OK"
+2026-07-01 23:39:37 | INFO     | httpx                          | HTTP Request: HEAD https://huggingface.co/sentence-transformers/all-MiniLM-L6-v2/resolve/main/config_sentence_transformers.json "HTTP/1.1 307 Temporary Redirect"
+2026-07-01 23:39:37 | INFO     | httpx                          | HTTP Request: HEAD https://huggingface.co/api/resolve-cache/models/sentence-transformers/all-MiniLM-L6-v2/1110a243fdf4706b3f48f1d95db1a4f5529b4d41/config_sentence_transformers.json "HTTP/1.1 200 OK"
+2026-07-01 23:39:37 | INFO     | sentence_transformers.base.model | Loading SentenceTransformer model from sentence-transformers/all-MiniLM-L6-v2.
+2026-07-01 23:39:37 | INFO     | httpx                          | HTTP Request: HEAD https://huggingface.co/sentence-transformers/all-MiniLM-L6-v2/resolve/main/config_sentence_transformers.json "HTTP/1.1 307 Temporary Redirect"
+2026-07-01 23:39:38 | INFO     | httpx                          | HTTP Request: HEAD https://huggingface.co/api/resolve-cache/models/sentence-transformers/all-MiniLM-L6-v2/1110a243fdf4706b3f48f1d95db1a4f5529b4d41/config_sentence_transformers.json "HTTP/1.1 200 OK"
+2026-07-01 23:39:38 | INFO     | httpx                          | HTTP Request: HEAD https://huggingface.co/sentence-transformers/all-MiniLM-L6-v2/resolve/main/README.md "HTTP/1.1 307 Temporary Redirect"
+2026-07-01 23:39:38 | INFO     | httpx                          | HTTP Request: HEAD https://huggingface.co/api/resolve-cache/models/sentence-transformers/all-MiniLM-L6-v2/1110a243fdf4706b3f48f1d95db1a4f5529b4d41/README.md "HTTP/1.1 200 OK"
+2026-07-01 23:39:39 | INFO     | httpx                          | HTTP Request: HEAD https://huggingface.co/sentence-transformers/all-MiniLM-L6-v2/resolve/main/modules.json "HTTP/1.1 307 Temporary Redirect"
+2026-07-01 23:39:39 | INFO     | httpx                          | HTTP Request: HEAD https://huggingface.co/api/resolve-cache/models/sentence-transformers/all-MiniLM-L6-v2/1110a243fdf4706b3f48f1d95db1a4f5529b4d41/modules.json "HTTP/1.1 200 OK"
+2026-07-01 23:39:39 | INFO     | httpx                          | HTTP Request: HEAD https://huggingface.co/sentence-transformers/all-MiniLM-L6-v2/resolve/main/sentence_bert_config.json "HTTP/1.1 307 Temporary Redirect"
+2026-07-01 23:39:39 | INFO     | httpx                          | HTTP Request: HEAD https://huggingface.co/api/resolve-cache/models/sentence-transformers/all-MiniLM-L6-v2/1110a243fdf4706b3f48f1d95db1a4f5529b4d41/sentence_bert_config.json "HTTP/1.1 200 OK"
+2026-07-01 23:39:40 | INFO     | httpx                          | HTTP Request: HEAD https://huggingface.co/sentence-transformers/all-MiniLM-L6-v2/resolve/main/adapter_config.json "HTTP/1.1 404 Not Found"
+2026-07-01 23:39:40 | INFO     | httpx                          | HTTP Request: HEAD https://huggingface.co/sentence-transformers/all-MiniLM-L6-v2/resolve/main/config.json "HTTP/1.1 307 Temporary Redirect"
+2026-07-01 23:39:40 | INFO     | httpx                          | HTTP Request: HEAD https://huggingface.co/api/resolve-cache/models/sentence-transformers/all-MiniLM-L6-v2/1110a243fdf4706b3f48f1d95db1a4f5529b4d41/config.json "HTTP/1.1 200 OK"
+2026-07-01 23:39:41 | INFO     | httpx                          | HTTP Request: HEAD https://huggingface.co/sentence-transformers/all-MiniLM-L6-v2/resolve/main/processor_config.json "HTTP/1.1 404 Not Found"
+2026-07-01 23:39:41 | INFO     | httpx                          | HTTP Request: HEAD https://huggingface.co/sentence-transformers/all-MiniLM-L6-v2/resolve/main/preprocessor_config.json "HTTP/1.1 404 Not Found"
+2026-07-01 23:39:41 | INFO     | httpx                          | HTTP Request: HEAD https://huggingface.co/sentence-transformers/all-MiniLM-L6-v2/resolve/main/video_preprocessor_config.json "HTTP/1.1 404 Not Found"
+2026-07-01 23:39:42 | INFO     | httpx                          | HTTP Request: HEAD https://huggingface.co/sentence-transformers/all-MiniLM-L6-v2/resolve/main/preprocessor_config.json "HTTP/1.1 404 Not Found"
+2026-07-01 23:39:42 | INFO     | httpx                          | HTTP Request: HEAD https://huggingface.co/sentence-transformers/all-MiniLM-L6-v2/resolve/main/tokenizer_config.json "HTTP/1.1 307 Temporary Redirect"
+2026-07-01 23:39:42 | INFO     | httpx                          | HTTP Request: HEAD https://huggingface.co/api/resolve-cache/models/sentence-transformers/all-MiniLM-L6-v2/1110a243fdf4706b3f48f1d95db1a4f5529b4d41/tokenizer_config.json "HTTP/1.1 200 OK"
+2026-07-01 23:39:43 | INFO     | httpx                          | HTTP Request: HEAD https://huggingface.co/sentence-transformers/all-MiniLM-L6-v2/resolve/main/config.json "HTTP/1.1 307 Temporary Redirect"
+2026-07-01 23:39:43 | INFO     | httpx                          | HTTP Request: HEAD https://huggingface.co/api/resolve-cache/models/sentence-transformers/all-MiniLM-L6-v2/1110a243fdf4706b3f48f1d95db1a4f5529b4d41/config.json "HTTP/1.1 200 OK"
+2026-07-01 23:39:44 | INFO     | httpx                          | HTTP Request: HEAD https://huggingface.co/sentence-transformers/all-MiniLM-L6-v2/resolve/main/config.json "HTTP/1.1 307 Temporary Redirect"
+2026-07-01 23:39:44 | INFO     | httpx                          | HTTP Request: HEAD https://huggingface.co/api/resolve-cache/models/sentence-transformers/all-MiniLM-L6-v2/1110a243fdf4706b3f48f1d95db1a4f5529b4d41/config.json "HTTP/1.1 200 OK"
+2026-07-01 23:39:44 | INFO     | httpx                          | HTTP Request: HEAD https://huggingface.co/sentence-transformers/all-MiniLM-L6-v2/resolve/main/tokenizer_config.json "HTTP/1.1 307 Temporary Redirect"
+2026-07-01 23:39:44 | INFO     | httpx                          | HTTP Request: HEAD https://huggingface.co/api/resolve-cache/models/sentence-transformers/all-MiniLM-L6-v2/1110a243fdf4706b3f48f1d95db1a4f5529b4d41/tokenizer_config.json "HTTP/1.1 200 OK"
+2026-07-01 23:39:45 | INFO     | httpx                          | HTTP Request: GET https://huggingface.co/api/models/sentence-transformers/all-MiniLM-L6-v2/tree/main/additional_chat_templates?recursive=false&expand=false "HTTP/1.1 404 Not Found"
+2026-07-01 23:39:45 | INFO     | httpx                          | HTTP Request: GET https://huggingface.co/api/models/sentence-transformers/all-MiniLM-L6-v2/tree/main?recursive=true&expand=false "HTTP/1.1 200 OK"
+2026-07-01 23:39:45 | INFO     | httpx                          | HTTP Request: HEAD https://huggingface.co/sentence-transformers/all-MiniLM-L6-v2/resolve/main/1_Pooling/config.json "HTTP/1.1 307 Temporary Redirect"
+2026-07-01 23:39:46 | INFO     | httpx                          | HTTP Request: HEAD https://huggingface.co/api/resolve-cache/models/sentence-transformers/all-MiniLM-L6-v2/1110a243fdf4706b3f48f1d95db1a4f5529b4d41/1_Pooling%2Fconfig.json "HTTP/1.1 200 OK"
+2026-07-01 23:39:46 | INFO     | httpx                          | HTTP Request: GET https://huggingface.co/api/models/sentence-transformers/all-MiniLM-L6-v2 "HTTP/1.1 200 OK"
+2026-07-01 23:39:46 | INFO     | src.retrieval.dense_retrieval_agent | Built FAISS index: IndexFlatIP
+2026-07-01 23:39:46 | INFO     | src.retrieval.dense_retrieval_agent | Added 3 profiles. Index size now: 3
+---------------------------- Captured stderr call -----------------------------
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.\n\rLoading weights:   0%|          | 0/103 [00:00<?, ?it/s]\rLoading weights: 100%|\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588| 103/103 [00:00<00:00, 2560.02it/s]
+------------------------------ Captured log call ------------------------------
+INFO     src.retrieval.dense_retrieval_agent:dense_retrieval_agent.py:284 Cleared FAISS index.
+WARNING  src.retrieval.dense_retrieval_agent:dense_retrieval_agent.py:74 Candidate missing 'search_text' field: id=UUID('054e1e5c-7ac7-40d4-baa3-a9c8636ff3e5') candidate_id='CAND_001' name='Alice Smith' summary='Experienced Python developer with strong ML background.' experience=[] education=[] projects=[] skills=[Skill(name='Python', proficiency=None)] certifications=[] location=None activity_score=None resume_text=None metadata=Metadata(data={})
+WARNING  src.retrieval.dense_retrieval_agent:dense_retrieval_agent.py:74 Candidate missing 'search_text' field: id=UUID('13823784-1c27-427e-8ed5-6a30dc7d4ab6') candidate_id='CAND_002' name='Bob Johnson' summary='Java backend developer, proficient in Spring Boot.' experience=[] education=[] projects=[] skills=[Skill(name='Java', proficiency=None)] certifications=[] location=None activity_score=None resume_text=None metadata=Metadata(data={})
+WARNING  src.retrieval.dense_retrieval_agent:dense_retrieval_agent.py:74 Candidate missing 'search_text' field: id=UUID('631b2227-d479-48df-8017-f650e9fef420') candidate_id='CAND_003' name='Charlie Brown' summary='Data Scientist with Python and R experience.' experience=[] education=[] projects=[] skills=[Skill(name='Python', proficiency=None), Skill(name='R', proficiency=None)] certifications=[] location=None activity_score=None resume_text=None metadata=Metadata(data={})
+INFO     src.retrieval.dense_retrieval_agent:dense_retrieval_agent.py:64 Loading embedding model: sentence-transformers/all-MiniLM-L6-v2 on cpu
+DEBUG    httpcore.connection:_trace.py:47 connect_tcp.started host='huggingface.co' port=443 local_address=None timeout=10 socket_options=None
+DEBUG    httpcore.connection:_trace.py:47 connect_tcp.complete return_value=<httpcore._backends.sync.SyncStream object at 0x00000200C97C12B0>
+DEBUG    httpcore.connection:_trace.py:47 start_tls.started ssl_context=<ssl.SSLContext object at 0x00000200C94F7B60> server_hostname='huggingface.co' timeout=10
+DEBUG    httpcore.connection:_trace.py:47 start_tls.complete return_value=<httpcore._backends.sync.SyncStream object at 0x00000200C9676C10>
+DEBUG    httpcore.http11:_trace.py:47 send_request_headers.started request=<Request [b'HEAD']>
+DEBUG    httpcore.http11:_trace.py:47 send_request_headers.complete
+DEBUG    httpcore.http11:_trace.py:47 send_request_body.started request=<Request [b'HEAD']>
+DEBUG    httpcore.http11:_trace.py:47 send_request_body.complete
+DEBUG    httpcore.http11:_trace.py:47 receive_response_headers.started request=<Request [b'HEAD']>
+DEBUG    httpcore.http11:_trace.py:47 receive_response_headers.complete return_value=(b'HTTP/1.1', 307, b'Temporary Redirect', [(b'Content-Type', b'text/plain; charset=utf-8'), (b'Content-Length', b'282'), (b'Connection', b'keep-alive'), (b'Date', b'Wed, 01 Jul 2026 18:09:36 GMT'), (b'Location', b'/api/resolve-cache/models/sentence-transformers/all-MiniLM-L6-v2/1110a243fdf4706b3f48f1d95db1a4f5529b4d41/modules.json?%2Fsentence-transformers%2Fall-MiniLM-L6-v2%2Fresolve%2Fmain%2Fmodules.json=&etag=%22952a9b81c0bfd99800fabf352f69c7ccd46c5e43%22'), (b'X-Powered-By', b'huggingface-moon'), (b'X-Request-Id', b'Root=1-6a4557e0-2f893d874161ef3856a7b96d;a1e76241-84a1-4681-8111-bf3a52a8a826'), (b'RateLimit', b'"resolvers";r=2982;t=76'), (b'RateLimit-Policy', b'"fixed window";"resolvers";q=3000;w=300'), (b'cross-origin-opener-policy', b'same-origin'), (b'Referrer-Policy', b'strict-origin-when-cross-origin'), (b'Access-Control-Max-Age', b'86400'), (b'Access-Control-Allow-Origin', b'https://huggingface.co'), (b'Vary', b'Origin, Accept'), (b'Access-Control-Expose-Headers', b'X-Repo-Commit,X-Request-Id,X-Error-Code,X-Error-Message,X-Total-Count,ETag,Link,Accept-Ranges,Content-Range,X-Linked-Size,X-Linked-ETag,X-Xet-Hash'), (b'X-Repo-Commit', b'1110a243fdf4706b3f48f1d95db1a4f5529b4d41'), (b'Accept-Ranges', b'bytes'), (b'X-HF-Warning', b'unauthenticated; Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.'), (b'X-Hub-Cache', b'HIT'), (b'Content-Disposition', b'inline; filename*=UTF-8\'\'modules.json; filename="modules.json";'), (b'Content-Security-Policy', b"default-src 'none'; sandbox"), (b'X-Linked-ETag', b'"952a9b81c0bfd99800fabf352f69c7ccd46c5e43"'), (b'X-Cache', b'Miss from cloudfront'), (b'Via', b'1.1 fde464bcbe86090b23c7904aa5055d58.cloudfront.net (CloudFront)'), (b'X-Amz-Cf-Pop', b'DEL51-P7'), (b'X-Amz-Cf-Id', b'tMp6WilsiNo3LnqxNGDiWb6poHfEzjN34kU9gyxnzsU9FcQV-1xaBw==')])
+INFO     httpx:_client.py:1025 HTTP Request: HEAD https://huggingface.co/sentence-transformers/all-MiniLM-L6-v2/resolve/main/modules.json "HTTP/1.1 307 Temporary Redirect"
+DEBUG    httpcore.http11:_trace.py:47 receive_response_body.started request=<Request [b'HEAD']>
+DEBUG    httpcore.http11:_trace.py:47 receive_response_body.complete
+DEBUG    httpcore.http11:_trace.py:47 response_closed.started
+DEBUG    httpcore.http11:_trace.py:47 response_closed.complete
+WARNING  huggingface_hub.utils._http:_http.py:932 Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+DEBUG    httpcore.http11:_trace.py:47 send_request_headers.started request=<Request [b'HEAD']>
+DEBUG    httpcore.http11:_trace.py:47 send_request_headers.complete
+DEBUG    httpcore.http11:_trace.py:47 send_request_body.started request=<Request [b'HEAD']>
+DEBUG    httpcore.http11:_trace.py:47 send_request_body.complete
+DEBUG    httpcore.http11:_trace.py:47 receive_response_headers.started request=<Request [b'HEAD']>
+DEBUG    httpcore.http11:_trace.py:47 receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Content-Type', b'text/plain; charset=utf-8'), (b'Content-Length', b'349'), (b'Connection', b'keep-alive'), (b'Date', b'Mon, 01 Jun 2026 06:29:16 GMT'), (b'ETag', b'"952a9b81c0bfd99800fabf352f69c7ccd46c5e43"'), (b'X-Powered-By', b'huggingface-moon'), (b'X-Request-Id', b'Root=1-6a1d26bc-7e9897bc5d3856e14fd8315a;f62d7f83-7bfb-4ae0-aec2-4c1dc9551cf3'), (b'RateLimit', b'"resolvers";r=2999;t=160'), (b'RateLimit-Policy', b'"fixed window";"resolvers";q=3000;w=300'), (b'cross-origin-opener-policy', b'same-origin'), (b'Referrer-Policy', b'strict-origin-when-cross-origin'), (b'Access-Control-Max-Age', b'86400'), (b'Access-Control-Allow-Origin', b'https://huggingface.co'), (b'Access-Control-Expose-Headers', b'X-Repo-Commit,X-Request-Id,X-Error-Code,X-Error-Message,X-Total-Count,ETag,Link,Accept-Ranges,Content-Range,X-Linked-Size,X-Linked-ETag,X-Xet-Hash'), (b'X-Repo-Commit', b'1110a243fdf4706b3f48f1d95db1a4f5529b4d41'), (b'Accept-Ranges', b'bytes'), (b'Content-Disposition', b'inline; filename*=UTF-8\'\'modules.json; filename="modules.json";'), (b'Content-Security-Policy', b"default-src 'none'; sandbox"), (b'Vary', b'Origin'), (b'X-Cache', b'Hit from cloudfront'), (b'Via', b'1.1 fde464bcbe86090b23c7904aa5055d58.cloudfront.net (CloudFront)'), (b'X-Amz-Cf-Pop', b'DEL51-P7'), (b'X-Amz-Cf-Id', b'a0cYtWQD7vX-Hut6PDV7AHpVaAGSA-K18L2vWFuRukHk6vgTbIpDCw=='), (b'Age', b'2634020')])
+INFO     httpx:_client.py:1025 HTTP Request: HEAD https://huggingface.co/api/resolve-cache/models/sentence-transformers/all-MiniLM-L6-v2/1110a243fdf4706b3f48f1d95db1a4f5529b4d41/modules.json "HTTP/1.1 200 OK"
+DEBUG    httpcore.http11:_trace.py:47 receive_response_body.started request=<Request [b'HEAD']>
+DEBUG    httpcore.http11:_trace.py:47 receive_response_body.complete
+DEBUG    httpcore.http11:_trace.py:47 response_closed.started
+DEBUG    httpcore.http11:_trace.py:47 response_closed.complete
+DEBUG    httpcore.http11:_trace.py:47 send_request_headers.started request=<Request [b'HEAD']>
+DEBUG    httpcore.http11:_trace.py:47 send_request_headers.complete
+DEBUG    httpcore.http11:_trace.py:47 send_request_body.started request=<Request [b'HEAD']>
+DEBUG    httpcore.http11:_trace.py:47 send_request_body.complete
+DEBUG    httpcore.http11:_trace.py:47 receive_response_headers.started request=<Request [b'HEAD']>
+DEBUG    httpcore.http11:_trace.py:47 receive_response_headers.complete return_value=(b'HTTP/1.1', 307, b'Temporary Redirect', [(b'Content-Type', b'text/plain; charset=utf-8'), (b'Content-Length', b'324'), (b'Connection', b'keep-alive'), (b'Date', b'Wed, 01 Jul 2026 18:09:37 GMT'), (b'Location', b'/api/resolve-cache/models/sentence-transformers/all-MiniLM-L6-v2/1110a243fdf4706b3f48f1d95db1a4f5529b4d41/config_sentence_transformers.json?%2Fsentence-transformers%2Fall-MiniLM-L6-v2%2Fresolve%2Fmain%2Fconfig_sentence_transformers.json=&etag=%22fd1b291129c607e5d49799f87cb219b27f98acdf%22'), (b'X-Powered-By', b'huggingface-moon'), (b'X-Request-Id', b'Root=1-6a4557e1-710f4c7410885e5b5deced0c;e2748618-7295-4c1a-8c52-2809a1a9d6c1'), (b'RateLimit', b'"resolvers";r=2981;t=75'), (b'RateLimit-Policy', b'"fixed window";"resolvers";q=3000;w=300'), (b'cross-origin-opener-policy', b'same-origin'), (b'Referrer-Policy', b'strict-origin-when-cross-origin'), (b'Access-Control-Max-Age', b'86400'), (b'Access-Control-Allow-Origin', b'https://huggingface.co'), (b'Vary', b'Origin, Accept'), (b'Access-Control-Expose-Headers', b'X-Repo-Commit,X-Request-Id,X-Error-Code,X-Error-Message,X-Total-Count,ETag,Link,Accept-Ranges,Content-Range,X-Linked-Size,X-Linked-ETag,X-Xet-Hash'), (b'X-Repo-Commit', b'1110a243fdf4706b3f48f1d95db1a4f5529b4d41'), (b'Accept-Ranges', b'bytes'), (b'X-Hub-Cache', b'HIT'), (b'Content-Disposition', b'inline; filename*=UTF-8\'\'config_sentence_transformers.json; filename="config_sentence_transformers.json";'), (b'Content-Security-Policy', b"default-src 'none'; sandbox"), (b'X-Linked-ETag', b'"fd1b291129c607e5d49799f87cb219b27f98acdf"'), (b'X-Cache', b'Miss from cloudfront'), (b'Via', b'1.1 fde464bcbe86090b23c7904aa5055d58.cloudfront.net (CloudFront)'), (b'X-Amz-Cf-Pop', b'DEL51-P7'), (b'X-Amz-Cf-Id', b'-10sfmoW6tYWCvvOmZRObfU0UlAFq58O670bVqeX68F7-ojLwjDNIA==')])
+INFO     httpx:_client.py:1025 HTTP Request: HEAD https://huggingface.co/sentence-transformers/all-MiniLM-L6-v2/resolve/main/config_sentence_transformers.json "HTTP/1.1 307 Temporary Redirect"
+DEBUG    httpcore.http11:_trace.py:47 receive_response_body.started request=<Request [b'HEAD']>
+DEBUG    httpcore.http11:_trace.py:47 receive_response_body.complete
+DEBUG    httpcore.http11:_trace.py:47 response_closed.started
+DEBUG    httpcore.http11:_trace.py:47 response_closed.complete
+DEBUG    httpcore.http11:_trace.py:47 send_request_headers.started request=<Request [b'HEAD']>
+DEBUG    httpcore.http11:_trace.py:47 send_request_headers.complete
+DEBUG    httpcore.http11:_trace.py:47 send_request_body.started request=<Request [b'HEAD']>
+DEBUG    httpcore.http11:_trace.py:47 send_request_body.complete
+DEBUG    httpcore.http11:_trace.py:47 receive_response_headers.started request=<Request [b'HEAD']>
+DEBUG    httpcore.http11:_trace.py:47 receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Content-Type', b'text/plain; charset=utf-8'), (b'Content-Length', b'116'), (b'Connection', b'keep-alive'), (b'Date', b'Mon, 01 Jun 2026 06:29:13 GMT'), (b'ETag', b'"fd1b291129c607e5d49799f87cb219b27f98acdf"'), (b'X-Powered-By', b'huggingface-moon'), (b'X-Request-Id', b'Root=1-6a1d26b9-7fd79dca276d3403700af537;5a704aa2-c0dd-421f-bf1d-25999dcdb257'), (b'RateLimit', b'"resolvers";r=2666;t=67'), (b'RateLimit-Policy', b'"fixed window";"resolvers";q=3000;w=300'), (b'cross-origin-opener-policy', b'same-origin'), (b'Referrer-Policy', b'strict-origin-when-cross-origin'), (b'Access-Control-Max-Age', b'86400'), (b'Access-Control-Allow-Origin', b'https://huggingface.co'), (b'Access-Control-Expose-Headers', b'X-Repo-Commit,X-Request-Id,X-Error-Code,X-Error-Message,X-Total-Count,ETag,Link,Accept-Ranges,Content-Range,X-Linked-Size,X-Linked-ETag,X-Xet-Hash'), (b'X-Repo-Commit', b'1110a243fdf4706b3f48f1d95db1a4f5529b4d41'), (b'Accept-Ranges', b'bytes'), (b'X-Hub-Cache', b'MISS'), (b'Content-Disposition', b'inline; filename*=UTF-8\'\'config_sentence_transformers.json; filename="config_sentence_transformers.json";'), (b'Content-Security-Policy', b"default-src 'none'; sandbox"), (b'Vary', b'Origin'), (b'X-Cache', b'Hit from cloudfront'), (b'Via', b'1.1 fde464bcbe86090b23c7904aa5055d58.cloudfront.net (CloudFront)'), (b'X-Amz-Cf-Pop', b'DEL51-P7'), (b'X-Amz-Cf-Id', b'Xbmfq92GrmHcwp-_vHDqgXxRzI4ZmKOszeIlpjUThxr_X5Uaxo6Ysw=='), (b'Age', b'2634024')])
+INFO     httpx:_client.py:1025 HTTP Request: HEAD https://huggingface.co/api/resolve-cache/models/sentence-transformers/all-MiniLM-L6-v2/1110a243fdf4706b3f48f1d95db1a4f5529b4d41/config_sentence_transformers.json "HTTP/1.1 200 OK"
+DEBUG    httpcore.http11:_trace.py:47 receive_response_body.started request=<Request [b'HEAD']>
+DEBUG    httpcore.http11:_trace.py:47 receive_response_body.complete
+DEBUG    httpcore.http11:_trace.py:47 response_closed.started
+DEBUG    httpcore.http11:_trace.py:47 response_closed.complete
+INFO     sentence_transformers.base.model:model.py:1001 Loading SentenceTransformer model from sentence-transformers/all-MiniLM-L6-v2.
+DEBUG    httpcore.http11:_trace.py:47 send_request_headers.started request=<Request [b'HEAD']>
+DEBUG    httpcore.http11:_trace.py:47 send_request_headers.complete
+DEBUG    httpcore.http11:_trace.py:47 send_request_body.started request=<Request [b'HEAD']>
+DEBUG    httpcore.http11:_trace.py:47 send_request_body.complete
+DEBUG    httpcore.http11:_trace.py:47 receive_response_headers.started request=<Request [b'HEAD']>
+DEBUG    httpcore.http11:_trace.py:47 receive_response_headers.complete return_value=(b'HTTP/1.1', 307, b'Temporary Redirect', [(b'Content-Type', b'text/plain; charset=utf-8'), (b'Content-Length', b'324'), (b'Connection', b'keep-alive'), (b'Date', b'Wed, 01 Jul 2026 18:09:37 GMT'), (b'Location', b'/api/resolve-cache/models/sentence-transformers/all-MiniLM-L6-v2/1110a243fdf4706b3f48f1d95db1a4f5529b4d41/config_sentence_transformers.json?%2Fsentence-transformers%2Fall-MiniLM-L6-v2%2Fresolve%2Fmain%2Fconfig_sentence_transformers.json=&etag=%22fd1b291129c607e5d49799f87cb219b27f98acdf%22'), (b'X-Powered-By', b'huggingface-moon'), (b'X-Request-Id', b'Root=1-6a4557e1-07196b943d9ba67b1ab2fb8e;028c4eaf-f9f0-4523-a1ac-a2032a0212e6'), (b'RateLimit', b'"resolvers";r=2980;t=75'), (b'RateLimit-Policy', b'"fixed window";"resolvers";q=3000;w=300'), (b'cross-origin-opener-policy', b'same-origin'), (b'Referrer-Policy', b'strict-origin-when-cross-origin'), (b'Access-Control-Max-Age', b'86400'), (b'Access-Control-Allow-Origin', b'https://huggingface.co'), (b'Vary', b'Origin, Accept'), (b'Access-Control-Expose-Headers', b'X-Repo-Commit,X-Request-Id,X-Error-Code,X-Error-Message,X-Total-Count,ETag,Link,Accept-Ranges,Content-Range,X-Linked-Size,X-Linked-ETag,X-Xet-Hash'), (b'X-Repo-Commit', b'1110a243fdf4706b3f48f1d95db1a4f5529b4d41'), (b'Accept-Ranges', b'bytes'), (b'X-Hub-Cache', b'HIT'), (b'Content-Disposition', b'inline; filename*=UTF-8\'\'config_sentence_transformers.json; filename="config_sentence_transformers.json";'), (b'Content-Security-Policy', b"default-src 'none'; sandbox"), (b'X-Linked-ETag', b'"fd1b291129c607e5d49799f87cb219b27f98acdf"'), (b'X-Cache', b'Miss from cloudfront'), (b'Via', b'1.1 fde464bcbe86090b23c7904aa5055d58.cloudfront.net (CloudFront)'), (b'X-Amz-Cf-Pop', b'DEL51-P7'), (b'X-Amz-Cf-Id', b'D7GmceqjokOzJUiuecnCJ3VrHp32Va7VyVTUbFBdSa2FMK0rrob_uA==')])
+INFO     httpx:_client.py:1025 HTTP Request: HEAD https://huggingface.co/sentence-transformers/all-MiniLM-L6-v2/resolve/main/config_sentence_transformers.json "HTTP/1.1 307 Temporary Redirect"
+DEBUG    httpcore.http11:_trace.py:47 receive_response_body.started request=<Request [b'HEAD']>
+DEBUG    httpcore.http11:_trace.py:47 receive_response_body.complete
+DEBUG    httpcore.http11:_trace.py:47 response_closed.started
+DEBUG    httpcore.http11:_trace.py:47 response_closed.complete
+DEBUG    httpcore.http11:_trace.py:47 send_request_headers.started request=<Request [b'HEAD']>
+DEBUG    httpcore.http11:_trace.py:47 send_request_headers.complete
+DEBUG    httpcore.http11:_trace.py:47 send_request_body.started request=<Request [b'HEAD']>
+DEBUG    httpcore.http11:_trace.py:47 send_request_body.complete
+DEBUG    httpcore.http11:_trace.py:47 receive_response_headers.started request=<Request [b'HEAD']>
+DEBUG    httpcore.http11:_trace.py:47 receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Content-Type', b'text/plain; charset=utf-8'), (b'Content-Length', b'116'), (b'Connection', b'keep-alive'), (b'Date', b'Mon, 01 Jun 2026 06:29:13 GMT'), (b'ETag', b'"fd1b291129c607e5d49799f87cb219b27f98acdf"'), (b'X-Powered-By', b'huggingface-moon'), (b'X-Request-Id', b'Root=1-6a1d26b9-7fd79dca276d3403700af537;5a704aa2-c0dd-421f-bf1d-25999dcdb257'), (b'RateLimit', b'"resolvers";r=2666;t=67'), (b'RateLimit-Policy', b'"fixed window";"resolvers";q=3000;w=300'), (b'cross-origin-opener-policy', b'same-origin'), (b'Referrer-Policy', b'strict-origin-when-cross-origin'), (b'Access-Control-Max-Age', b'86400'), (b'Access-Control-Allow-Origin', b'https://huggingface.co'), (b'Access-Control-Expose-Headers', b'X-Repo-Commit,X-Request-Id,X-Error-Code,X-Error-Message,X-Total-Count,ETag,Link,Accept-Ranges,Content-Range,X-Linked-Size,X-Linked-ETag,X-Xet-Hash'), (b'X-Repo-Commit', b'1110a243fdf4706b3f48f1d95db1a4f5529b4d41'), (b'Accept-Ranges', b'bytes'), (b'X-Hub-Cache', b'MISS'), (b'Content-Disposition', b'inline; filename*=UTF-8\'\'config_sentence_transformers.json; filename="config_sentence_transformers.json";'), (b'Content-Security-Policy', b"default-src 'none'; sandbox"), (b'Vary', b'Origin'), (b'X-Cache', b'Hit from cloudfront'), (b'Via', b'1.1 fde464bcbe86090b23c7904aa5055d58.cloudfront.net (CloudFront)'), (b'X-Amz-Cf-Pop', b'DEL51-P7'), (b'X-Amz-Cf-Id', b'MJiVhxS46fVmA6QQ8BNvpaeK6vxx0KNs8gkuKIkxhBs0vZDuTsZX3w=='), (b'Age', b'2634025')])
+INFO     httpx:_client.py:1025 HTTP Request: HEAD https://huggingface.co/api/resolve-cache/models/sentence-transformers/all-MiniLM-L6-v2/1110a243fdf4706b3f48f1d95db1a4f5529b4d41/config_sentence_transformers.json "HTTP/1.1 200 OK"
+DEBUG    httpcore.http11:_trace.py:47 receive_response_body.started request=<Request [b'HEAD']>
+DEBUG    httpcore.http11:_trace.py:47 receive_response_body.complete
+DEBUG    httpcore.http11:_trace.py:47 response_closed.started
+DEBUG    httpcore.http11:_trace.py:47 response_closed.complete
+DEBUG    httpcore.http11:_trace.py:47 send_request_headers.started request=<Request [b'HEAD']>
+DEBUG    httpcore.http11:_trace.py:47 send_request_headers.complete
+DEBUG    httpcore.http11:_trace.py:47 send_request_body.started request=<Request [b'HEAD']>
+DEBUG    httpcore.http11:_trace.py:47 send_request_body.complete
+DEBUG    httpcore.http11:_trace.py:47 receive_response_headers.started request=<Request [b'HEAD']>
+DEBUG    httpcore.http11:_trace.py:47 receive_response_headers.complete return_value=(b'HTTP/1.1', 307, b'Temporary Redirect', [(b'Content-Type', b'text/plain; charset=utf-8'), (b'Content-Length', b'276'), (b'Connection', b'keep-alive'), (b'Date', b'Wed, 01 Jul 2026 18:09:38 GMT'), (b'Location', b'/api/resolve-cache/models/sentence-transformers/all-MiniLM-L6-v2/1110a243fdf4706b3f48f1d95db1a4f5529b4d41/README.md?%2Fsentence-transformers%2Fall-MiniLM-L6-v2%2Fresolve%2Fmain%2FREADME.md=&etag=%2244af2e3b0fa3a0b6239e48422972bf755f28fde0%22'), (b'X-Powered-By', b'huggingface-moon'), (b'X-Request-Id', b'Root=1-6a4557e2-72f1e57b0ed7e44f76705385;ab118ee6-26f7-45b0-ac85-86a09a94cf40'), (b'RateLimit', b'"resolvers";r=2979;t=74'), (b'RateLimit-Policy', b'"fixed window";"resolvers";q=3000;w=300'), (b'cross-origin-opener-policy', b'same-origin'), (b'Referrer-Policy', b'strict-origin-when-cross-origin'), (b'Access-Control-Max-Age', b'86400'), (b'Access-Control-Allow-Origin', b'https://huggingface.co'), (b'Vary', b'Origin, Accept'), (b'Access-Control-Expose-Headers', b'X-Repo-Commit,X-Request-Id,X-Error-Code,X-Error-Message,X-Total-Count,ETag,Link,Accept-Ranges,Content-Range,X-Linked-Size,X-Linked-ETag,X-Xet-Hash'), (b'X-Repo-Commit', b'1110a243fdf4706b3f48f1d95db1a4f5529b4d41'), (b'Accept-Ranges', b'bytes'), (b'X-Hub-Cache', b'HIT'), (b'Content-Disposition', b'inline; filename*=UTF-8\'\'README.md; filename="README.md";'), (b'Content-Security-Policy', b"default-src 'none'; sandbox"), (b'X-Linked-ETag', b'"44af2e3b0fa3a0b6239e48422972bf755f28fde0"'), (b'X-Cache', b'Miss from cloudfront'), (b'Via', b'1.1 fde464bcbe86090b23c7904aa5055d58.cloudfront.net (CloudFront)'), (b'X-Amz-Cf-Pop', b'DEL51-P7'), (b'X-Amz-Cf-Id', b'173fpPGQLL87EJ4MGz7BErTzE9WViikIF_N_-QJi9zSVwAVl_qLUfA==')])
+INFO     httpx:_client.py:1025 HTTP Request: HEAD https://huggingface.co/sentence-transformers/all-MiniLM-L6-v2/resolve/main/README.md "HTTP/1.1 307 Temporary Redirect"
+DEBUG    httpcore.http11:_trace.py:47 receive_response_body.started request=<Request [b'HEAD']>
+DEBUG    httpcore.http11:_trace.py:47 receive_response_body.complete
+DEBUG    httpcore.http11:_trace.py:47 response_closed.started
+DEBUG    httpcore.http11:_trace.py:47 response_closed.complete
+DEBUG    httpcore.http11:_trace.py:47 send_request_headers.started request=<Request [b'HEAD']>
+DEBUG    httpcore.http11:_trace.py:47 send_request_headers.complete
+DEBUG    httpcore.http11:_trace.py:47 send_request_body.started request=<Request [b'HEAD']>
+DEBUG    httpcore.http11:_trace.py:47 send_request_body.complete
+DEBUG    httpcore.http11:_trace.py:47 receive_response_headers.started request=<Request [b'HEAD']>
+DEBUG    httpcore.http11:_trace.py:47 receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Content-Type', b'text/plain; charset=utf-8'), (b'Content-Length', b'10502'), (b'Connection', b'keep-alive'), (b'Date', b'Mon, 01 Jun 2026 06:29:14 GMT'), (b'ETag', b'"44af2e3b0fa3a0b6239e48422972bf755f28fde0"'), (b'X-Powered-By', b'huggingface-moon'), (b'X-Request-Id', b'Root=1-6a1d26ba-30f725e22eb564cb53fbc9a2;ba4fce5b-592d-4e7e-9417-c3e8f4ae35d0'), (b'RateLimit', b'"resolvers";r=2814;t=38'), (b'RateLimit-Policy', b'"fixed window";"resolvers";q=3000;w=300'), (b'cross-origin-opener-policy', b'same-origin'), (b'Referrer-Policy', b'strict-origin-when-cross-origin'), (b'Access-Control-Max-Age', b'86400'), (b'Access-Control-Allow-Origin', b'https://huggingface.co'), (b'Access-Control-Expose-Headers', b'X-Repo-Commit,X-Request-Id,X-Error-Code,X-Error-Message,X-Total-Count,ETag,Link,Accept-Ranges,Content-Range,X-Linked-Size,X-Linked-ETag,X-Xet-Hash'), (b'X-Repo-Commit', b'1110a243fdf4706b3f48f1d95db1a4f5529b4d41'), (b'Accept-Ranges', b'bytes'), (b'X-Hub-Cache', b'MISS'), (b'Content-Disposition', b'inline; filename*=UTF-8\'\'README.md; filename="README.md";'), (b'Content-Security-Policy', b"default-src 'none'; sandbox"), (b'Vary', b'Origin'), (b'X-Cache', b'Hit from cloudfront'), (b'Via', b'1.1 fde464bcbe86090b23c7904aa5055d58.cloudfront.net (CloudFront)'), (b'X-Amz-Cf-Pop', b'DEL51-P7'), (b'X-Amz-Cf-Id', b'iQl-k6hQ6IlXG5vtLtdZwRhYv38eH-QpjPvBx3gAeC2bZiYZZOFTTw=='), (b'Age', b'2634024')])
+INFO     httpx:_client.py:1025 HTTP Request: HEAD https://huggingface.co/api/resolve-cache/models/sentence-transformers/all-MiniLM-L6-v2/1110a243fdf4706b3f48f1d95db1a4f5529b4d41/README.md "HTTP/1.1 200 OK"
+DEBUG    httpcore.http11:_trace.py:47 receive_response_body.started request=<Request [b'HEAD']>
+DEBUG    httpcore.http11:_trace.py:47 receive_response_body.complete
+DEBUG    httpcore.http11:_trace.py:47 response_closed.started
+DEBUG    httpcore.http11:_trace.py:47 response_closed.complete
+DEBUG    httpcore.http11:_trace.py:47 send_request_headers.started request=<Request [b'HEAD']>
+DEBUG    httpcore.http11:_trace.py:47 send_request_headers.complete
+DEBUG    httpcore.http11:_trace.py:47 send_request_body.started request=<Request [b'HEAD']>
+DEBUG    httpcore.http11:_trace.py:47 send_request_body.complete
+DEBUG    httpcore.http11:_trace.py:47 receive_response_headers.started request=<Request [b'HEAD']>
+DEBUG    httpcore.http11:_trace.py:47 receive_response_headers.complete return_value=(b'HTTP/1.1', 307, b'Temporary Redirect', [(b'Content-Type', b'text/plain; charset=utf-8'), (b'Content-Length', b'282'), (b'Connection', b'keep-alive'), (b'Date', b'Wed, 01 Jul 2026 18:09:38 GMT'), (b'Location', b'/api/resolve-cache/models/sentence-transformers/all-MiniLM-L6-v2/1110a243fdf4706b3f48f1d95db1a4f5529b4d41/modules.json?%2Fsentence-transformers%2Fall-MiniLM-L6-v2%2Fresolve%2Fmain%2Fmodules.json=&etag=%22952a9b81c0bfd99800fabf352f69c7ccd46c5e43%22'), (b'X-Powered-By', b'huggingface-moon'), (b'X-Request-Id', b'Root=1-6a4557e2-405371d60b3bd3506394630d;f1ad019c-404b-4418-beeb-ec7e96917001'), (b'RateLimit', b'"resolvers";r=2978;t=74'), (b'RateLimit-Policy', b'"fixed window";"resolvers";q=3000;w=300'), (b'cross-origin-opener-policy', b'same-origin'), (b'Referrer-Policy', b'strict-origin-when-cross-origin'), (b'Access-Control-Max-Age', b'86400'), (b'Access-Control-Allow-Origin', b'https://huggingface.co'), (b'Vary', b'Origin, Accept'), (b'Access-Control-Expose-Headers', b'X-Repo-Commit,X-Request-Id,X-Error-Code,X-Error-Message,X-Total-Count,ETag,Link,Accept-Ranges,Content-Range,X-Linked-Size,X-Linked-ETag,X-Xet-Hash'), (b'X-Repo-Commit', b'1110a243fdf4706b3f48f1d95db1a4f5529b4d41'), (b'Accept-Ranges', b'bytes'), (b'X-HF-Warning', b'unauthenticated; Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.'), (b'X-Hub-Cache', b'HIT'), (b'Content-Disposition', b'inline; filename*=UTF-8\'\'modules.json; filename="modules.json";'), (b'Content-Security-Policy', b"default-src 'none'; sandbox"), (b'X-Linked-ETag', b'"952a9b81c0bfd99800fabf352f69c7ccd46c5e43"'), (b'X-Cache', b'Miss from cloudfront'), (b'Via', b'1.1 fde464bcbe86090b23c7904aa5055d58.cloudfront.net (CloudFront)'), (b'X-Amz-Cf-Pop', b'DEL51-P7'), (b'X-Amz-Cf-Id', b'E-hPi01Ux2BGO3HO_eRjCq7VPpySqribhoMyza1RMWV3tneYN3g6GQ==')])
+INFO     httpx:_client.py:1025 HTTP Request: HEAD https://huggingface.co/sentence-transformers/all-MiniLM-L6-v2/resolve/main/modules.json "HTTP/1.1 307 Temporary Redirect"
+DEBUG    httpcore.http11:_trace.py:47 receive_response_body.started request=<Request [b'HEAD']>
+DEBUG    httpcore.http11:_trace.py:47 receive_response_body.complete
+DEBUG    httpcore.http11:_trace.py:47 response_closed.started
+DEBUG    httpcore.http11:_trace.py:47 response_closed.complete
+DEBUG    httpcore.http11:_trace.py:47 send_request_headers.started request=<Request [b'HEAD']>
+DEBUG    httpcore.http11:_trace.py:47 send_request_headers.complete
+DEBUG    httpcore.http11:_trace.py:47 send_request_body.started request=<Request [b'HEAD']>
+DEBUG    httpcore.http11:_trace.py:47 send_request_body.complete
+DEBUG    httpcore.http11:_trace.py:47 receive_response_headers.started request=<Request [b'HEAD']>
+DEBUG    httpcore.http11:_trace.py:47 receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Content-Type', b'text/plain; charset=utf-8'), (b'Content-Length', b'349'), (b'Connection', b'keep-alive'), (b'Date', b'Mon, 01 Jun 2026 06:29:16 GMT'), (b'ETag', b'"952a9b81c0bfd99800fabf352f69c7ccd46c5e43"'), (b'X-Powered-By', b'huggingface-moon'), (b'X-Request-Id', b'Root=1-6a1d26bc-7e9897bc5d3856e14fd8315a;f62d7f83-7bfb-4ae0-aec2-4c1dc9551cf3'), (b'RateLimit', b'"resolvers";r=2999;t=160'), (b'RateLimit-Policy', b'"fixed window";"resolvers";q=3000;w=300'), (b'cross-origin-opener-policy', b'same-origin'), (b'Referrer-Policy', b'strict-origin-when-cross-origin'), (b'Access-Control-Max-Age', b'86400'), (b'Access-Control-Allow-Origin', b'https://huggingface.co'), (b'Access-Control-Expose-Headers', b'X-Repo-Commit,X-Request-Id,X-Error-Code,X-Error-Message,X-Total-Count,ETag,Link,Accept-Ranges,Content-Range,X-Linked-Size,X-Linked-ETag,X-Xet-Hash'), (b'X-Repo-Commit', b'1110a243fdf4706b3f48f1d95db1a4f5529b4d41'), (b'Accept-Ranges', b'bytes'), (b'Content-Disposition', b'inline; filename*=UTF-8\'\'modules.json; filename="modules.json";'), (b'Content-Security-Policy', b"default-src 'none'; sandbox"), (b'Vary', b'Origin'), (b'X-Cache', b'Hit from cloudfront'), (b'Via', b'1.1 fde464bcbe86090b23c7904aa5055d58.cloudfront.net (CloudFront)'), (b'X-Amz-Cf-Pop', b'DEL51-P7'), (b'X-Amz-Cf-Id', b'L_yB4UhWJUD9REQ56-zCIXHQF_7LUJs-Jhi_BFAp2AIsF_BISQ6Esw=='), (b'Age', b'2634023')])
+INFO     httpx:_client.py:1025 HTTP Request: HEAD https://huggingface.co/api/resolve-cache/models/sentence-transformers/all-MiniLM-L6-v2/1110a243fdf4706b3f48f1d95db1a4f5529b4d41/modules.json "HTTP/1.1 200 OK"
+DEBUG    httpcore.http11:_trace.py:47 receive_response_body.started request=<Request [b'HEAD']>
+DEBUG    httpcore.http11:_trace.py:47 receive_response_body.complete
+DEBUG    httpcore.http11:_trace.py:47 response_closed.started
+DEBUG    httpcore.http11:_trace.py:47 response_closed.complete
+DEBUG    httpcore.http11:_trace.py:47 send_request_headers.started request=<Request [b'HEAD']>
+DEBUG    httpcore.http11:_trace.py:47 send_request_headers.complete
+DEBUG    httpcore.http11:_trace.py:47 send_request_body.started request=<Request [b'HEAD']>
+DEBUG    httpcore.http11:_trace.py:47 send_request_body.complete
+DEBUG    httpcore.http11:_trace.py:47 receive_response_headers.started request=<Request [b'HEAD']>
+DEBUG    httpcore.http11:_trace.py:47 receive_response_headers.complete return_value=(b'HTTP/1.1', 307, b'Temporary Redirect', [(b'Content-Type', b'text/plain; charset=utf-8'), (b'Content-Length', b'308'), (b'Connection', b'keep-alive'), (b'Date', b'Wed, 01 Jul 2026 18:09:39 GMT'), (b'Location', b'/api/resolve-cache/models/sentence-transformers/all-MiniLM-L6-v2/1110a243fdf4706b3f48f1d95db1a4f5529b4d41/sentence_bert_config.json?%2Fsentence-transformers%2Fall-MiniLM-L6-v2%2Fresolve%2Fmain%2Fsentence_bert_config.json=&etag=%2259d594003bf59880a884c574bf88ef7555bb0202%22'), (b'X-Powered-By', b'huggingface-moon'), (b'X-Request-Id', b'Root=1-6a4557e3-266419807435cb5c329db5ce;19af94c1-3fcb-4990-8b14-855a7416587c'), (b'RateLimit', b'"resolvers";r=2977;t=73'), (b'RateLimit-Policy', b'"fixed window";"resolvers";q=3000;w=300'), (b'cross-origin-opener-policy', b'same-origin'), (b'Referrer-Policy', b'strict-origin-when-cross-origin'), (b'Access-Control-Max-Age', b'86400'), (b'Access-Control-Allow-Origin', b'https://huggingface.co'), (b'Vary', b'Origin, Accept'), (b'Access-Control-Expose-Headers', b'X-Repo-Commit,X-Request-Id,X-Error-Code,X-Error-Message,X-Total-Count,ETag,Link,Accept-Ranges,Content-Range,X-Linked-Size,X-Linked-ETag,X-Xet-Hash'), (b'X-Repo-Commit', b'1110a243fdf4706b3f48f1d95db1a4f5529b4d41'), (b'Accept-Ranges', b'bytes'), (b'X-HF-Warning', b'unauthenticated; Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.'), (b'X-Hub-Cache', b'HIT'), (b'Content-Disposition', b'inline; filename*=UTF-8\'\'sentence_bert_config.json; filename="sentence_bert_config.json";'), (b'Content-Security-Policy', b"default-src 'none'; sandbox"), (b'X-Linked-ETag', b'"59d594003bf59880a884c574bf88ef7555bb0202"'), (b'X-Cache', b'Miss from cloudfront'), (b'Via', b'1.1 fde464bcbe86090b23c7904aa5055d58.cloudfront.net (CloudFront)'), (b'X-Amz-Cf-Pop', b'DEL51-P7'), (b'X-Amz-Cf-Id', b'le-Rywt3qoc_yp0JltiBs3jcMdaO8QTb-Ve1plZUk3iepp_Hh5eofA==')])
+INFO     httpx:_client.py:1025 HTTP Request: HEAD https://huggingface.co/sentence-transformers/all-MiniLM-L6-v2/resolve/main/sentence_bert_config.json "HTTP/1.1 307 Temporary Redirect"
+DEBUG    httpcore.http11:_trace.py:47 receive_response_body.started request=<Request [b'HEAD']>
+DEBUG    httpcore.http11:_trace.py:47 receive_response_body.complete
+DEBUG    httpcore.http11:_trace.py:47 response_closed.started
+DEBUG    httpcore.http11:_trace.py:47 response_closed.complete
+DEBUG    httpcore.http11:_trace.py:47 send_request_headers.started request=<Request [b'HEAD']>
+DEBUG    httpcore.http11:_trace.py:47 send_request_headers.complete
+DEBUG    httpcore.http11:_trace.py:47 send_request_body.started request=<Request [b'HEAD']>
+DEBUG    httpcore.http11:_trace.py:47 send_request_body.complete
+DEBUG    httpcore.http11:_trace.py:47 receive_response_headers.started request=<Request [b'HEAD']>
+DEBUG    httpcore.http11:_trace.py:47 receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Content-Type', b'text/plain; charset=utf-8'), (b'Content-Length', b'53'), (b'Connection', b'keep-alive'), (b'Date', b'Mon, 01 Jun 2026 06:29:13 GMT'), (b'ETag', b'"59d594003bf59880a884c574bf88ef7555bb0202"'), (b'X-Powered-By', b'huggingface-moon'), (b'X-Request-Id', b'Root=1-6a1d26b9-62fd32c56d48c56939e0c14d;d58c3586-972b-41fa-b672-c9054a2c6a95'), (b'RateLimit', b'"resolvers";r=1667;t=219'), (b'RateLimit-Policy', b'"fixed window";"resolvers";q=3000;w=300'), (b'cross-origin-opener-policy', b'same-origin'), (b'Referrer-Policy', b'strict-origin-when-cross-origin'), (b'Access-Control-Max-Age', b'86400'), (b'Access-Control-Allow-Origin', b'https://huggingface.co'), (b'Access-Control-Expose-Headers', b'X-Repo-Commit,X-Request-Id,X-Error-Code,X-Error-Message,X-Total-Count,ETag,Link,Accept-Ranges,Content-Range,X-Linked-Size,X-Linked-ETag,X-Xet-Hash'), (b'X-Repo-Commit', b'1110a243fdf4706b3f48f1d95db1a4f5529b4d41'), (b'Accept-Ranges', b'bytes'), (b'X-Hub-Cache', b'MISS'), (b'Content-Disposition', b'inline; filename*=UTF-8\'\'sentence_bert_config.json; filename="sentence_bert_config.json";'), (b'Content-Security-Policy', b"default-src 'none'; sandbox"), (b'Vary', b'Origin'), (b'X-Cache', b'Hit from cloudfront'), (b'Via', b'1.1 fde464bcbe86090b23c7904aa5055d58.cloudfront.net (CloudFront)'), (b'X-Amz-Cf-Pop', b'DEL51-P7'), (b'X-Amz-Cf-Id', b'qme6XzmZv4hd8M6xO0LflDlTTMRbiSS4sDSPNRHHyM5aPcmO7adXyA=='), (b'Age', b'2634026')])
+INFO     httpx:_client.py:1025 HTTP Request: HEAD https://huggingface.co/api/resolve-cache/models/sentence-transformers/all-MiniLM-L6-v2/1110a243fdf4706b3f48f1d95db1a4f5529b4d41/sentence_bert_config.json "HTTP/1.1 200 OK"
+DEBUG    httpcore.http11:_trace.py:47 receive_response_body.started request=<Request [b'HEAD']>
+DEBUG    httpcore.http11:_trace.py:47 receive_response_body.complete
+DEBUG    httpcore.http11:_trace.py:47 response_closed.started
+DEBUG    httpcore.http11:_trace.py:47 response_closed.complete
+DEBUG    httpcore.http11:_trace.py:47 send_request_headers.started request=<Request [b'HEAD']>
+DEBUG    httpcore.http11:_trace.py:47 send_request_headers.complete
+DEBUG    httpcore.http11:_trace.py:47 send_request_body.started request=<Request [b'HEAD']>
+DEBUG    httpcore.http11:_trace.py:47 send_request_body.complete
+DEBUG    httpcore.http11:_trace.py:47 receive_response_headers.started request=<Request [b'HEAD']>
+DEBUG    httpcore.http11:_trace.py:47 receive_response_headers.complete return_value=(b'HTTP/1.1', 404, b'Not Found', [(b'Content-Type', b'text/plain; charset=utf-8'), (b'Content-Length', b'15'), (b'Connection', b'keep-alive'), (b'Date', b'Wed, 01 Jul 2026 18:09:40 GMT'), (b'ETag', b'W/"f-mY2VvLxuxB7KhsoOdQTlMTccuAQ"'), (b'X-Powered-By', b'huggingface-moon'), (b'X-Request-Id', b'Root=1-6a4557e3-2d98a7e8415766a952e49ef4;3f5eb174-af15-43c7-bd70-e169d5f5f834'), (b'RateLimit', b'"resolvers";r=2976;t=72'), (b'RateLimit-Policy', b'"fixed window";"resolvers";q=3000;w=300'), (b'cross-origin-opener-policy', b'same-origin'), (b'Referrer-Policy', b'strict-origin-when-cross-origin'), (b'Access-Control-Max-Age', b'86400'), (b'Access-Control-Allow-Origin', b'https://huggingface.co'), (b'Vary', b'Origin'), (b'Access-Control-Expose-Headers', b'X-Repo-Commit,X-Request-Id,X-Error-Code,X-Error-Message,X-Total-Count,ETag,Link,Accept-Ranges,Content-Range,X-Linked-Size,X-Linked-ETag,X-Xet-Hash'), (b'X-Repo-Commit', b'1110a243fdf4706b3f48f1d95db1a4f5529b4d41'), (b'Accept-Ranges', b'bytes'), (b'X-Hub-Cache', b'MISS'), (b'X-Error-Code', b'EntryNotFound'), (b'X-Error-Message', b'Entry not found'), (b'X-Cache', b'Error from cloudfront'), (b'Via', b'1.1 fde464bcbe86090b23c7904aa5055d58.cloudfront.net (CloudFront)'), (b'X-Amz-Cf-Pop', b'DEL51-P7'), (b'X-Amz-Cf-Id', b'tA5n-YN_Cd5hwSZrrKgRBxq4dgtbsy03mNlopubbbFvexl-gK92Ggw==')])
+INFO     httpx:_client.py:1025 HTTP Request: HEAD https://huggingface.co/sentence-transformers/all-MiniLM-L6-v2/resolve/main/adapter_config.json "HTTP/1.1 404 Not Found"
+DEBUG    httpcore.http11:_trace.py:47 receive_response_body.started request=<Request [b'HEAD']>
+DEBUG    httpcore.http11:_trace.py:47 receive_response_body.complete
+DEBUG    httpcore.http11:_trace.py:47 response_closed.started
+DEBUG    httpcore.http11:_trace.py:47 response_closed.complete
+DEBUG    httpcore.http11:_trace.py:47 send_request_headers.started request=<Request [b'HEAD']>
+DEBUG    httpcore.http11:_trace.py:47 send_request_headers.complete
+DEBUG    httpcore.http11:_trace.py:47 send_request_body.started request=<Request [b'HEAD']>
+DEBUG    httpcore.http11:_trace.py:47 send_request_body.complete
+DEBUG    httpcore.http11:_trace.py:47 receive_response_headers.started request=<Request [b'HEAD']>
+DEBUG    httpcore.http11:_trace.py:47 receive_response_headers.complete return_value=(b'HTTP/1.1', 307, b'Temporary Redirect', [(b'Content-Type', b'text/plain; charset=utf-8'), (b'Content-Length', b'280'), (b'Connection', b'keep-alive'), (b'Date', b'Wed, 01 Jul 2026 18:09:40 GMT'), (b'Location', b'/api/resolve-cache/models/sentence-transformers/all-MiniLM-L6-v2/1110a243fdf4706b3f48f1d95db1a4f5529b4d41/config.json?%2Fsentence-transformers%2Fall-MiniLM-L6-v2%2Fresolve%2Fmain%2Fconfig.json=&etag=%2272b987fd805cfa2b58c4c8c952b274a11bfd5a00%22'), (b'X-Powered-By', b'huggingface-moon'), (b'X-Request-Id', b'Root=1-6a4557e4-2126c8e30f3bd7615a934f73;8c1acfd0-3e87-49a5-a69d-035fd3073a57'), (b'RateLimit', b'"resolvers";r=2975;t=72'), (b'RateLimit-Policy', b'"fixed window";"resolvers";q=3000;w=300'), (b'cross-origin-opener-policy', b'same-origin'), (b'Referrer-Policy', b'strict-origin-when-cross-origin'), (b'Access-Control-Max-Age', b'86400'), (b'Access-Control-Allow-Origin', b'https://huggingface.co'), (b'Vary', b'Origin, Accept'), (b'Access-Control-Expose-Headers', b'X-Repo-Commit,X-Request-Id,X-Error-Code,X-Error-Message,X-Total-Count,ETag,Link,Accept-Ranges,Content-Range,X-Linked-Size,X-Linked-ETag,X-Xet-Hash'), (b'X-Repo-Commit', b'1110a243fdf4706b3f48f1d95db1a4f5529b4d41'), (b'Accept-Ranges', b'bytes'), (b'X-Hub-Cache', b'HIT'), (b'Content-Disposition', b'inline; filename*=UTF-8\'\'config.json; filename="config.json";'), (b'Content-Security-Policy', b"default-src 'none'; sandbox"), (b'X-Linked-ETag', b'"72b987fd805cfa2b58c4c8c952b274a11bfd5a00"'), (b'X-Cache', b'Miss from cloudfront'), (b'Via', b'1.1 fde464bcbe86090b23c7904aa5055d58.cloudfront.net (CloudFront)'), (b'X-Amz-Cf-Pop', b'DEL51-P7'), (b'X-Amz-Cf-Id', b'RpnH5x0rGfyl3l3OzivpcnxS6HzKWGI59DVp9dpUM2-mPotCFgB3GQ==')])
+INFO     httpx:_client.py:1025 HTTP Request: HEAD https://huggingface.co/sentence-transformers/all-MiniLM-L6-v2/resolve/main/config.json "HTTP/1.1 307 Temporary Redirect"
+DEBUG    httpcore.http11:_trace.py:47 receive_response_body.started request=<Request [b'HEAD']>
+DEBUG    httpcore.http11:_trace.py:47 receive_response_body.complete
+DEBUG    httpcore.http11:_trace.py:47 response_closed.started
+DEBUG    httpcore.http11:_trace.py:47 response_closed.complete
+DEBUG    httpcore.http11:_trace.py:47 send_request_headers.started request=<Request [b'HEAD']>
+DEBUG    httpcore.http11:_trace.py:47 send_request_headers.complete
+DEBUG    httpcore.http11:_trace.py:47 send_request_body.started request=<Request [b'HEAD']>
+DEBUG    httpcore.http11:_trace.py:47 send_request_body.complete
+DEBUG    httpcore.http11:_trace.py:47 receive_response_headers.started request=<Request [b'HEAD']>
+DEBUG    httpcore.http11:_trace.py:47 receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Content-Type', b'text/plain; charset=utf-8'), (b'Content-Length', b'612'), (b'Connection', b'keep-alive'), (b'Date', b'Mon, 01 Jun 2026 06:29:13 GMT'), (b'ETag', b'"72b987fd805cfa2b58c4c8c952b274a11bfd5a00"'), (b'X-Powered-By', b'huggingface-moon'), (b'X-Request-Id', b'Root=1-6a1d26b9-6cedbb9e6ebe2dae066c5d2c;a2c7e532-0dc7-4ea3-8085-aa1fbd025327'), (b'RateLimit', b'"resolvers";r=2770;t=197'), (b'RateLimit-Policy', b'"fixed window";"resolvers";q=3000;w=300'), (b'cross-origin-opener-policy', b'same-origin'), (b'Referrer-Policy', b'strict-origin-when-cross-origin'), (b'Access-Control-Max-Age', b'86400'), (b'Access-Control-Allow-Origin', b'https://huggingface.co'), (b'Access-Control-Expose-Headers', b'X-Repo-Commit,X-Request-Id,X-Error-Code,X-Error-Message,X-Total-Count,ETag,Link,Accept-Ranges,Content-Range,X-Linked-Size,X-Linked-ETag,X-Xet-Hash'), (b'X-Repo-Commit', b'1110a243fdf4706b3f48f1d95db1a4f5529b4d41'), (b'Accept-Ranges', b'bytes'), (b'X-Hub-Cache', b'MISS'), (b'Content-Disposition', b'inline; filename*=UTF-8\'\'config.json; filename="config.json";'), (b'Content-Security-Policy', b"default-src 'none'; sandbox"), (b'Vary', b'Origin'), (b'X-Cache', b'Hit from cloudfront'), (b'Via', b'1.1 fde464bcbe86090b23c7904aa5055d58.cloudfront.net (CloudFront)'), (b'X-Amz-Cf-Pop', b'DEL51-P7'), (b'X-Amz-Cf-Id', b'LwKwjHVonWoTWd1FTy8EMaMIZM5WVouZTdIzhD02tGtF3gwNQ3v7lw=='), (b'Age', b'2634027')])
+INFO     httpx:_client.py:1025 HTTP Request: HEAD https://huggingface.co/api/resolve-cache/models/sentence-transformers/all-MiniLM-L6-v2/1110a243fdf4706b3f48f1d95db1a4f5529b4d41/config.json "HTTP/1.1 200 OK"
+DEBUG    httpcore.http11:_trace.py:47 receive_response_body.started request=<Request [b'HEAD']>
+DEBUG    httpcore.http11:_trace.py:47 receive_response_body.complete
+DEBUG    httpcore.http11:_trace.py:47 response_closed.started
+DEBUG    httpcore.http11:_trace.py:47 response_closed.complete
+DEBUG    httpcore.http11:_trace.py:47 send_request_headers.started request=<Request [b'HEAD']>
+DEBUG    httpcore.http11:_trace.py:47 send_request_headers.complete
+DEBUG    httpcore.http11:_trace.py:47 send_request_body.started request=<Request [b'HEAD']>
+DEBUG    httpcore.http11:_trace.py:47 send_request_body.complete
+DEBUG    httpcore.http11:_trace.py:47 receive_response_headers.started request=<Request [b'HEAD']>
+DEBUG    httpcore.http11:_trace.py:47 receive_response_headers.complete return_value=(b'HTTP/1.1', 404, b'Not Found', [(b'Content-Type', b'text/plain; charset=utf-8'), (b'Content-Length', b'15'), (b'Connection', b'keep-alive'), (b'Date', b'Wed, 01 Jul 2026 18:09:41 GMT'), (b'ETag', b'W/"f-mY2VvLxuxB7KhsoOdQTlMTccuAQ"'), (b'X-Powered-By', b'huggingface-moon'), (b'X-Request-Id', b'Root=1-6a4557e5-1873985a3fb5f9ba1074a3d5;af216714-5f49-47ea-b79d-0aba0ad64b68'), (b'RateLimit', b'"resolvers";r=2974;t=71'), (b'RateLimit-Policy', b'"fixed window";"resolvers";q=3000;w=300'), (b'cross-origin-opener-policy', b'same-origin'), (b'Referrer-Policy', b'strict-origin-when-cross-origin'), (b'Access-Control-Max-Age', b'86400'), (b'Access-Control-Allow-Origin', b'https://huggingface.co'), (b'Vary', b'Origin'), (b'Access-Control-Expose-Headers', b'X-Repo-Commit,X-Request-Id,X-Error-Code,X-Error-Message,X-Total-Count,ETag,Link,Accept-Ranges,Content-Range,X-Linked-Size,X-Linked-ETag,X-Xet-Hash'), (b'X-Repo-Commit', b'1110a243fdf4706b3f48f1d95db1a4f5529b4d41'), (b'Accept-Ranges', b'bytes'), (b'X-Hub-Cache', b'MISS'), (b'X-Error-Code', b'EntryNotFound'), (b'X-Error-Message', b'Entry not found'), (b'X-Cache', b'Error from cloudfront'), (b'Via', b'1.1 fde464bcbe86090b23c7904aa5055d58.cloudfront.net (CloudFront)'), (b'X-Amz-Cf-Pop', b'DEL51-P7'), (b'X-Amz-Cf-Id', b'cx4FjhWHf92gQAe-Rr7O-7nmOBZ-9ySyVMOGs6LKP0mLJxe9Hs9aRA==')])
+INFO     httpx:_client.py:1025 HTTP Request: HEAD https://huggingface.co/sentence-transformers/all-MiniLM-L6-v2/resolve/main/processor_config.json "HTTP/1.1 404 Not Found"
+DEBUG    httpcore.http11:_trace.py:47 receive_response_body.started request=<Request [b'HEAD']>
+DEBUG    httpcore.http11:_trace.py:47 receive_response_body.complete
+DEBUG    httpcore.http11:_trace.py:47 response_closed.started
+DEBUG    httpcore.http11:_trace.py:47 response_closed.complete
+DEBUG    httpcore.http11:_trace.py:47 send_request_headers.started request=<Request [b'HEAD']>
+DEBUG    httpcore.http11:_trace.py:47 send_request_headers.complete
+DEBUG    httpcore.http11:_trace.py:47 send_request_body.started request=<Request [b'HEAD']>
+DEBUG    httpcore.http11:_trace.py:47 send_request_body.complete
+DEBUG    httpcore.http11:_trace.py:47 receive_response_headers.started request=<Request [b'HEAD']>
+DEBUG    httpcore.http11:_trace.py:47 receive_response_headers.complete return_value=(b'HTTP/1.1', 404, b'Not Found', [(b'Content-Type', b'text/plain; charset=utf-8'), (b'Content-Length', b'15'), (b'Connection', b'keep-alive'), (b'Date', b'Wed, 01 Jul 2026 18:09:41 GMT'), (b'ETag', b'W/"f-mY2VvLxuxB7KhsoOdQTlMTccuAQ"'), (b'X-Powered-By', b'huggingface-moon'), (b'X-Request-Id', b'Root=1-6a4557e5-650e703050c9bec807007346;f2935018-f230-49e0-badf-f09c9031af84'), (b'RateLimit', b'"resolvers";r=2973;t=71'), (b'RateLimit-Policy', b'"fixed window";"resolvers";q=3000;w=300'), (b'cross-origin-opener-policy', b'same-origin'), (b'Referrer-Policy', b'strict-origin-when-cross-origin'), (b'Access-Control-Max-Age', b'86400'), (b'Access-Control-Allow-Origin', b'https://huggingface.co'), (b'Vary', b'Origin'), (b'Access-Control-Expose-Headers', b'X-Repo-Commit,X-Request-Id,X-Error-Code,X-Error-Message,X-Total-Count,ETag,Link,Accept-Ranges,Content-Range,X-Linked-Size,X-Linked-ETag,X-Xet-Hash'), (b'X-Repo-Commit', b'1110a243fdf4706b3f48f1d95db1a4f5529b4d41'), (b'Accept-Ranges', b'bytes'), (b'X-HF-Warning', b'unauthenticated; Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.'), (b'X-Hub-Cache', b'MISS'), (b'X-Error-Code', b'EntryNotFound'), (b'X-Error-Message', b'Entry not found'), (b'X-Cache', b'Error from cloudfront'), (b'Via', b'1.1 fde464bcbe86090b23c7904aa5055d58.cloudfront.net (CloudFront)'), (b'X-Amz-Cf-Pop', b'DEL51-P7'), (b'X-Amz-Cf-Id', b'fUVZa69DmyzZXgIE6x3TOAaEffEEhUD60MbI2QiiUCpdW2lNyOuzHw==')])
+INFO     httpx:_client.py:1025 HTTP Request: HEAD https://huggingface.co/sentence-transformers/all-MiniLM-L6-v2/resolve/main/preprocessor_config.json "HTTP/1.1 404 Not Found"
+DEBUG    httpcore.http11:_trace.py:47 receive_response_body.started request=<Request [b'HEAD']>
+DEBUG    httpcore.http11:_trace.py:47 receive_response_body.complete
+DEBUG    httpcore.http11:_trace.py:47 response_closed.started
+DEBUG    httpcore.http11:_trace.py:47 response_closed.complete
+DEBUG    httpcore.http11:_trace.py:47 send_request_headers.started request=<Request [b'HEAD']>
+DEBUG    httpcore.http11:_trace.py:47 send_request_headers.complete
+DEBUG    httpcore.http11:_trace.py:47 send_request_body.started request=<Request [b'HEAD']>
+DEBUG    httpcore.http11:_trace.py:47 send_request_body.complete
+DEBUG    httpcore.http11:_trace.py:47 receive_response_headers.started request=<Request [b'HEAD']>
+DEBUG    httpcore.http11:_trace.py:47 receive_response_headers.complete return_value=(b'HTTP/1.1', 404, b'Not Found', [(b'Content-Type', b'text/plain; charset=utf-8'), (b'Content-Length', b'15'), (b'Connection', b'keep-alive'), (b'Date', b'Wed, 01 Jul 2026 18:09:41 GMT'), (b'ETag', b'W/"f-mY2VvLxuxB7KhsoOdQTlMTccuAQ"'), (b'X-Powered-By', b'huggingface-moon'), (b'X-Request-Id', b'Root=1-6a4557e5-2e9433aa05b84a755ec5db19;d534808f-33d8-48cd-8734-34ec8585dd0e'), (b'RateLimit', b'"resolvers";r=2972;t=71'), (b'RateLimit-Policy', b'"fixed window";"resolvers";q=3000;w=300'), (b'cross-origin-opener-policy', b'same-origin'), (b'Referrer-Policy', b'strict-origin-when-cross-origin'), (b'Access-Control-Max-Age', b'86400'), (b'Access-Control-Allow-Origin', b'https://huggingface.co'), (b'Vary', b'Origin'), (b'Access-Control-Expose-Headers', b'X-Repo-Commit,X-Request-Id,X-Error-Code,X-Error-Message,X-Total-Count,ETag,Link,Accept-Ranges,Content-Range,X-Linked-Size,X-Linked-ETag,X-Xet-Hash'), (b'X-Repo-Commit', b'1110a243fdf4706b3f48f1d95db1a4f5529b4d41'), (b'Accept-Ranges', b'bytes'), (b'X-HF-Warning', b'unauthenticated; Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.'), (b'X-Hub-Cache', b'MISS'), (b'X-Error-Code', b'EntryNotFound'), (b'X-Error-Message', b'Entry not found'), (b'X-Cache', b'Error from cloudfront'), (b'Via', b'1.1 fde464bcbe86090b23c7904aa5055d58.cloudfront.net (CloudFront)'), (b'X-Amz-Cf-Pop', b'DEL51-P7'), (b'X-Amz-Cf-Id', b'zGc4CH2jy4NX_FR3ddk7Ea_UgHgv4lrG5WHSpNVydxCdm-TUEqo_Aw==')])
+INFO     httpx:_client.py:1025 HTTP Request: HEAD https://huggingface.co/sentence-transformers/all-MiniLM-L6-v2/resolve/main/video_preprocessor_config.json "HTTP/1.1 404 Not Found"
+DEBUG    httpcore.http11:_trace.py:47 receive_response_body.started request=<Request [b'HEAD']>
+DEBUG    httpcore.http11:_trace.py:47 receive_response_body.complete
+DEBUG    httpcore.http11:_trace.py:47 response_closed.started
+DEBUG    httpcore.http11:_trace.py:47 response_closed.complete
+DEBUG    httpcore.http11:_trace.py:47 send_request_headers.started request=<Request [b'HEAD']>
+DEBUG    httpcore.http11:_trace.py:47 send_request_headers.complete
+DEBUG    httpcore.http11:_trace.py:47 send_request_body.started request=<Request [b'HEAD']>
+DEBUG    httpcore.http11:_trace.py:47 send_request_body.complete
+DEBUG    httpcore.http11:_trace.py:47 receive_response_headers.started request=<Request [b'HEAD']>
+DEBUG    httpcore.http11:_trace.py:47 receive_response_headers.complete return_value=(b'HTTP/1.1', 404, b'Not Found', [(b'Content-Type', b'text/plain; charset=utf-8'), (b'Content-Length', b'15'), (b'Connection', b'keep-alive'), (b'Date', b'Wed, 01 Jul 2026 18:09:42 GMT'), (b'ETag', b'W/"f-mY2VvLxuxB7KhsoOdQTlMTccuAQ"'), (b'X-Powered-By', b'huggingface-moon'), (b'X-Request-Id', b'Root=1-6a4557e6-282c61d76c4dc473364ac008;8c1b1526-762b-43e6-ac0f-60072a54464b'), (b'RateLimit', b'"resolvers";r=2971;t=70'), (b'RateLimit-Policy', b'"fixed window";"resolvers";q=3000;w=300'), (b'cross-origin-opener-policy', b'same-origin'), (b'Referrer-Policy', b'strict-origin-when-cross-origin'), (b'Access-Control-Max-Age', b'86400'), (b'Access-Control-Allow-Origin', b'https://huggingface.co'), (b'Vary', b'Origin'), (b'Access-Control-Expose-Headers', b'X-Repo-Commit,X-Request-Id,X-Error-Code,X-Error-Message,X-Total-Count,ETag,Link,Accept-Ranges,Content-Range,X-Linked-Size,X-Linked-ETag,X-Xet-Hash'), (b'X-Repo-Commit', b'1110a243fdf4706b3f48f1d95db1a4f5529b4d41'), (b'Accept-Ranges', b'bytes'), (b'X-Hub-Cache', b'MISS'), (b'X-Error-Code', b'EntryNotFound'), (b'X-Error-Message', b'Entry not found'), (b'X-Cache', b'Error from cloudfront'), (b'Via', b'1.1 fde464bcbe86090b23c7904aa5055d58.cloudfront.net (CloudFront)'), (b'X-Amz-Cf-Pop', b'DEL51-P7'), (b'X-Amz-Cf-Id', b'ETlm0KXf3l_RM8NVyHUUXMgrQ0Lt5L3up1Fc3nfYooEw6icfulaXmw==')])
+INFO     httpx:_client.py:1025 HTTP Request: HEAD https://huggingface.co/sentence-transformers/all-MiniLM-L6-v2/resolve/main/preprocessor_config.json "HTTP/1.1 404 Not Found"
+DEBUG    httpcore.http11:_trace.py:47 receive_response_body.started request=<Request [b'HEAD']>
+DEBUG    httpcore.http11:_trace.py:47 receive_response_body.complete
+DEBUG    httpcore.http11:_trace.py:47 response_closed.started
+DEBUG    httpcore.http11:_trace.py:47 response_closed.complete
+DEBUG    httpcore.http11:_trace.py:47 send_request_headers.started request=<Request [b'HEAD']>
+DEBUG    httpcore.http11:_trace.py:47 send_request_headers.complete
+DEBUG    httpcore.http11:_trace.py:47 send_request_body.started request=<Request [b'HEAD']>
+DEBUG    httpcore.http11:_trace.py:47 send_request_body.complete
+DEBUG    httpcore.http11:_trace.py:47 receive_response_headers.started request=<Request [b'HEAD']>
+DEBUG    httpcore.http11:_trace.py:47 receive_response_headers.complete return_value=(b'HTTP/1.1', 307, b'Temporary Redirect', [(b'Content-Type', b'text/plain; charset=utf-8'), (b'Content-Length', b'300'), (b'Connection', b'keep-alive'), (b'Date', b'Wed, 01 Jul 2026 18:09:42 GMT'), (b'Location', b'/api/resolve-cache/models/sentence-transformers/all-MiniLM-L6-v2/1110a243fdf4706b3f48f1d95db1a4f5529b4d41/tokenizer_config.json?%2Fsentence-transformers%2Fall-MiniLM-L6-v2%2Fresolve%2Fmain%2Ftokenizer_config.json=&etag=%22c79f2b6a0cea6f4b564fed1938984bace9d30ff0%22'), (b'X-Powered-By', b'huggingface-moon'), (b'X-Request-Id', b'Root=1-6a4557e6-173e5d264ceed8f8063c8689;724e5edc-af1d-4e20-a5f2-d091f81465a8'), (b'RateLimit', b'"resolvers";r=2970;t=70'), (b'RateLimit-Policy', b'"fixed window";"resolvers";q=3000;w=300'), (b'cross-origin-opener-policy', b'same-origin'), (b'Referrer-Policy', b'strict-origin-when-cross-origin'), (b'Access-Control-Max-Age', b'86400'), (b'Access-Control-Allow-Origin', b'https://huggingface.co'), (b'Vary', b'Origin, Accept'), (b'Access-Control-Expose-Headers', b'X-Repo-Commit,X-Request-Id,X-Error-Code,X-Error-Message,X-Total-Count,ETag,Link,Accept-Ranges,Content-Range,X-Linked-Size,X-Linked-ETag,X-Xet-Hash'), (b'X-Repo-Commit', b'1110a243fdf4706b3f48f1d95db1a4f5529b4d41'), (b'Accept-Ranges', b'bytes'), (b'X-Hub-Cache', b'HIT'), (b'Content-Disposition', b'inline; filename*=UTF-8\'\'tokenizer_config.json; filename="tokenizer_config.json";'), (b'Content-Security-Policy', b"default-src 'none'; sandbox"), (b'X-Linked-ETag', b'"c79f2b6a0cea6f4b564fed1938984bace9d30ff0"'), (b'X-Cache', b'Miss from cloudfront'), (b'Via', b'1.1 fde464bcbe86090b23c7904aa5055d58.cloudfront.net (CloudFront)'), (b'X-Amz-Cf-Pop', b'DEL51-P7'), (b'X-Amz-Cf-Id', b'uLZ92QZcTdwsWQDA0EgDvUOkojZrPEkdG9d5zGLiVIfzsC1W7qBkyQ==')])
+INFO     httpx:_client.py:1025 HTTP Request: HEAD https://huggingface.co/sentence-transformers/all-MiniLM-L6-v2/resolve/main/tokenizer_config.json "HTTP/1.1 307 Temporary Redirect"
+DEBUG    httpcore.http11:_trace.py:47 receive_response_body.started request=<Request [b'HEAD']>
+DEBUG    httpcore.http11:_trace.py:47 receive_response_body.complete
+DEBUG    httpcore.http11:_trace.py:47 response_closed.started
+DEBUG    httpcore.http11:_trace.py:47 response_closed.complete
+DEBUG    httpcore.http11:_trace.py:47 send_request_headers.started request=<Request [b'HEAD']>
+DEBUG    httpcore.http11:_trace.py:47 send_request_headers.complete
+DEBUG    httpcore.http11:_trace.py:47 send_request_body.started request=<Request [b'HEAD']>
+DEBUG    httpcore.http11:_trace.py:47 send_request_body.complete
+DEBUG    httpcore.http11:_trace.py:47 receive_response_headers.started request=<Request [b'HEAD']>
+DEBUG    httpcore.http11:_trace.py:47 receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Content-Type', b'text/plain; charset=utf-8'), (b'Content-Length', b'350'), (b'Connection', b'keep-alive'), (b'Date', b'Mon, 01 Jun 2026 06:29:13 GMT'), (b'ETag', b'"c79f2b6a0cea6f4b564fed1938984bace9d30ff0"'), (b'X-Powered-By', b'huggingface-moon'), (b'X-Request-Id', b'Root=1-6a1d26b9-3973fd0179761cf84b8cb0d4;9937d73e-673e-496d-893e-26ea1453e568'), (b'RateLimit', b'"resolvers";r=1173;t=175'), (b'RateLimit-Policy', b'"fixed window";"resolvers";q=3000;w=300'), (b'cross-origin-opener-policy', b'same-origin'), (b'Referrer-Policy', b'strict-origin-when-cross-origin'), (b'Access-Control-Max-Age', b'86400'), (b'Access-Control-Allow-Origin', b'https://huggingface.co'), (b'Access-Control-Expose-Headers', b'X-Repo-Commit,X-Request-Id,X-Error-Code,X-Error-Message,X-Total-Count,ETag,Link,Accept-Ranges,Content-Range,X-Linked-Size,X-Linked-ETag,X-Xet-Hash'), (b'X-Repo-Commit', b'1110a243fdf4706b3f48f1d95db1a4f5529b4d41'), (b'Accept-Ranges', b'bytes'), (b'X-Hub-Cache', b'MISS'), (b'Content-Disposition', b'inline; filename*=UTF-8\'\'tokenizer_config.json; filename="tokenizer_config.json";'), (b'Content-Security-Policy', b"default-src 'none'; sandbox"), (b'Vary', b'Origin'), (b'X-Cache', b'Hit from cloudfront'), (b'Via', b'1.1 fde464bcbe86090b23c7904aa5055d58.cloudfront.net (CloudFront)'), (b'X-Amz-Cf-Pop', b'DEL51-P7'), (b'X-Amz-Cf-Id', b'gsWBtqA_5MlM6qO6lIHZVO5PlRLjOUyK9ztp3VjaTNMU1pNVBWLLlg=='), (b'Age', b'2634029')])
+INFO     httpx:_client.py:1025 HTTP Request: HEAD https://huggingface.co/api/resolve-cache/models/sentence-transformers/all-MiniLM-L6-v2/1110a243fdf4706b3f48f1d95db1a4f5529b4d41/tokenizer_config.json "HTTP/1.1 200 OK"
+DEBUG    httpcore.http11:_trace.py:47 receive_response_body.started request=<Request [b'HEAD']>
+DEBUG    httpcore.http11:_trace.py:47 receive_response_body.complete
+DEBUG    httpcore.http11:_trace.py:47 response_closed.started
+DEBUG    httpcore.http11:_trace.py:47 response_closed.complete
+DEBUG    httpcore.http11:_trace.py:47 send_request_headers.started request=<Request [b'HEAD']>
+DEBUG    httpcore.http11:_trace.py:47 send_request_headers.complete
+DEBUG    httpcore.http11:_trace.py:47 send_request_body.started request=<Request [b'HEAD']>
+DEBUG    httpcore.http11:_trace.py:47 send_request_body.complete
+DEBUG    httpcore.http11:_trace.py:47 receive_response_headers.started request=<Request [b'HEAD']>
+DEBUG    httpcore.http11:_trace.py:47 receive_response_headers.complete return_value=(b'HTTP/1.1', 307, b'Temporary Redirect', [(b'Content-Type', b'text/plain; charset=utf-8'), (b'Content-Length', b'280'), (b'Connection', b'keep-alive'), (b'Date', b'Wed, 01 Jul 2026 18:09:42 GMT'), (b'Location', b'/api/resolve-cache/models/sentence-transformers/all-MiniLM-L6-v2/1110a243fdf4706b3f48f1d95db1a4f5529b4d41/config.json?%2Fsentence-transformers%2Fall-MiniLM-L6-v2%2Fresolve%2Fmain%2Fconfig.json=&etag=%2272b987fd805cfa2b58c4c8c952b274a11bfd5a00%22'), (b'X-Powered-By', b'huggingface-moon'), (b'X-Request-Id', b'Root=1-6a4557e6-765164973b4b2aae7935b1a7;8b6c2d27-a97d-44c0-8680-3c7f04500198'), (b'RateLimit', b'"resolvers";r=2969;t=70'), (b'RateLimit-Policy', b'"fixed window";"resolvers";q=3000;w=300'), (b'cross-origin-opener-policy', b'same-origin'), (b'Referrer-Policy', b'strict-origin-when-cross-origin'), (b'Access-Control-Max-Age', b'86400'), (b'Access-Control-Allow-Origin', b'https://huggingface.co'), (b'Vary', b'Origin, Accept'), (b'Access-Control-Expose-Headers', b'X-Repo-Commit,X-Request-Id,X-Error-Code,X-Error-Message,X-Total-Count,ETag,Link,Accept-Ranges,Content-Range,X-Linked-Size,X-Linked-ETag,X-Xet-Hash'), (b'X-Repo-Commit', b'1110a243fdf4706b3f48f1d95db1a4f5529b4d41'), (b'Accept-Ranges', b'bytes'), (b'X-HF-Warning', b'unauthenticated; Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.'), (b'X-Hub-Cache', b'HIT'), (b'Content-Disposition', b'inline; filename*=UTF-8\'\'config.json; filename="config.json";'), (b'Content-Security-Policy', b"default-src 'none'; sandbox"), (b'X-Linked-ETag', b'"72b987fd805cfa2b58c4c8c952b274a11bfd5a00"'), (b'X-Cache', b'Miss from cloudfront'), (b'Via', b'1.1 fde464bcbe86090b23c7904aa5055d58.cloudfront.net (CloudFront)'), (b'X-Amz-Cf-Pop', b'DEL51-P7'), (b'X-Amz-Cf-Id', b'zqm5pPEk2CS-bOTrAmUkFHtxfOsz0V_G-M3Q_LEP1FZI4qggHMITYw==')])
+INFO     httpx:_client.py:1025 HTTP Request: HEAD https://huggingface.co/sentence-transformers/all-MiniLM-L6-v2/resolve/main/config.json "HTTP/1.1 307 Temporary Redirect"
+DEBUG    httpcore.http11:_trace.py:47 receive_response_body.started request=<Request [b'HEAD']>
+DEBUG    httpcore.http11:_trace.py:47 receive_response_body.complete
+DEBUG    httpcore.http11:_trace.py:47 response_closed.started
+DEBUG    httpcore.http11:_trace.py:47 response_closed.complete
+DEBUG    httpcore.http11:_trace.py:47 send_request_headers.started request=<Request [b'HEAD']>
+DEBUG    httpcore.http11:_trace.py:47 send_request_headers.complete
+DEBUG    httpcore.http11:_trace.py:47 send_request_body.started request=<Request [b'HEAD']>
+DEBUG    httpcore.http11:_trace.py:47 send_request_body.complete
+DEBUG    httpcore.http11:_trace.py:47 receive_response_headers.started request=<Request [b'HEAD']>
+DEBUG    httpcore.http11:_trace.py:47 receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Content-Type', b'text/plain; charset=utf-8'), (b'Content-Length', b'612'), (b'Connection', b'keep-alive'), (b'Date', b'Mon, 01 Jun 2026 06:29:13 GMT'), (b'ETag', b'"72b987fd805cfa2b58c4c8c952b274a11bfd5a00"'), (b'X-Powered-By', b'huggingface-moon'), (b'X-Request-Id', b'Root=1-6a1d26b9-6cedbb9e6ebe2dae066c5d2c;a2c7e532-0dc7-4ea3-8085-aa1fbd025327'), (b'RateLimit', b'"resolvers";r=2770;t=197'), (b'RateLimit-Policy', b'"fixed window";"resolvers";q=3000;w=300'), (b'cross-origin-opener-policy', b'same-origin'), (b'Referrer-Policy', b'strict-origin-when-cross-origin'), (b'Access-Control-Max-Age', b'86400'), (b'Access-Control-Allow-Origin', b'https://huggingface.co'), (b'Access-Control-Expose-Headers', b'X-Repo-Commit,X-Request-Id,X-Error-Code,X-Error-Message,X-Total-Count,ETag,Link,Accept-Ranges,Content-Range,X-Linked-Size,X-Linked-ETag,X-Xet-Hash'), (b'X-Repo-Commit', b'1110a243fdf4706b3f48f1d95db1a4f5529b4d41'), (b'Accept-Ranges', b'bytes'), (b'X-Hub-Cache', b'MISS'), (b'Content-Disposition', b'inline; filename*=UTF-8\'\'config.json; filename="config.json";'), (b'Content-Security-Policy', b"default-src 'none'; sandbox"), (b'Vary', b'Origin'), (b'X-Cache', b'Hit from cloudfront'), (b'Via', b'1.1 fde464bcbe86090b23c7904aa5055d58.cloudfront.net (CloudFront)'), (b'X-Amz-Cf-Pop', b'DEL51-P7'), (b'X-Amz-Cf-Id', b'64qonStQ1gOvQ7JfYT8Y4pTWhl7Xu-Xp3gxygqaio5lRFdbBoGDiJA=='), (b'Age', b'2634030')])
+INFO     httpx:_client.py:1025 HTTP Request: HEAD https://huggingface.co/api/resolve-cache/models/sentence-transformers/all-MiniLM-L6-v2/1110a243fdf4706b3f48f1d95db1a4f5529b4d41/config.json "HTTP/1.1 200 OK"
+DEBUG    httpcore.http11:_trace.py:47 receive_response_body.started request=<Request [b'HEAD']>
+DEBUG    httpcore.http11:_trace.py:47 receive_response_body.complete
+DEBUG    httpcore.http11:_trace.py:47 response_closed.started
+DEBUG    httpcore.http11:_trace.py:47 response_closed.complete
+DEBUG    httpcore.http11:_trace.py:47 send_request_headers.started request=<Request [b'HEAD']>
+DEBUG    httpcore.http11:_trace.py:47 send_request_headers.complete
+DEBUG    httpcore.http11:_trace.py:47 send_request_body.started request=<Request [b'HEAD']>
+DEBUG    httpcore.http11:_trace.py:47 send_request_body.complete
+DEBUG    httpcore.http11:_trace.py:47 receive_response_headers.started request=<Request [b'HEAD']>
+DEBUG    httpcore.http11:_trace.py:47 receive_response_headers.complete return_value=(b'HTTP/1.1', 307, b'Temporary Redirect', [(b'Content-Type', b'text/plain; charset=utf-8'), (b'Content-Length', b'280'), (b'Connection', b'keep-alive'), (b'Date', b'Wed, 01 Jul 2026 18:09:43 GMT'), (b'Location', b'/api/resolve-cache/models/sentence-transformers/all-MiniLM-L6-v2/1110a243fdf4706b3f48f1d95db1a4f5529b4d41/config.json?%2Fsentence-transformers%2Fall-MiniLM-L6-v2%2Fresolve%2Fmain%2Fconfig.json=&etag=%2272b987fd805cfa2b58c4c8c952b274a11bfd5a00%22'), (b'X-Powered-By', b'huggingface-moon'), (b'X-Request-Id', b'Root=1-6a4557e7-66c94c3b2c6c6553045fdad9;ccb2f933-3001-42ef-bf7b-eddd72210b0c'), (b'RateLimit', b'"resolvers";r=2968;t=69'), (b'RateLimit-Policy', b'"fixed window";"resolvers";q=3000;w=300'), (b'cross-origin-opener-policy', b'same-origin'), (b'Referrer-Policy', b'strict-origin-when-cross-origin'), (b'Access-Control-Max-Age', b'86400'), (b'Access-Control-Allow-Origin', b'https://huggingface.co'), (b'Vary', b'Origin, Accept'), (b'Access-Control-Expose-Headers', b'X-Repo-Commit,X-Request-Id,X-Error-Code,X-Error-Message,X-Total-Count,ETag,Link,Accept-Ranges,Content-Range,X-Linked-Size,X-Linked-ETag,X-Xet-Hash'), (b'X-Repo-Commit', b'1110a243fdf4706b3f48f1d95db1a4f5529b4d41'), (b'Accept-Ranges', b'bytes'), (b'X-Hub-Cache', b'HIT'), (b'Content-Disposition', b'inline; filename*=UTF-8\'\'config.json; filename="config.json";'), (b'Content-Security-Policy', b"default-src 'none'; sandbox"), (b'X-Linked-ETag', b'"72b987fd805cfa2b58c4c8c952b274a11bfd5a00"'), (b'X-Cache', b'Miss from cloudfront'), (b'Via', b'1.1 fde464bcbe86090b23c7904aa5055d58.cloudfront.net (CloudFront)'), (b'X-Amz-Cf-Pop', b'DEL51-P7'), (b'X-Amz-Cf-Id', b'EuxMIOhm51mG2OJrMBh_dg5kua83uie2CvGA18-m6xridNJhlJsxCw==')])
+INFO     httpx:_client.py:1025 HTTP Request: HEAD https://huggingface.co/sentence-transformers/all-MiniLM-L6-v2/resolve/main/config.json "HTTP/1.1 307 Temporary Redirect"
+DEBUG    httpcore.http11:_trace.py:47 receive_response_body.started request=<Request [b'HEAD']>
+DEBUG    httpcore.http11:_trace.py:47 receive_response_body.complete
+DEBUG    httpcore.http11:_trace.py:47 response_closed.started
+DEBUG    httpcore.http11:_trace.py:47 response_closed.complete
+DEBUG    httpcore.http11:_trace.py:47 send_request_headers.started request=<Request [b'HEAD']>
+DEBUG    httpcore.http11:_trace.py:47 send_request_headers.complete
+DEBUG    httpcore.http11:_trace.py:47 send_request_body.started request=<Request [b'HEAD']>
+DEBUG    httpcore.http11:_trace.py:47 send_request_body.complete
+DEBUG    httpcore.http11:_trace.py:47 receive_response_headers.started request=<Request [b'HEAD']>
+DEBUG    httpcore.http11:_trace.py:47 receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Content-Type', b'text/plain; charset=utf-8'), (b'Content-Length', b'612'), (b'Connection', b'keep-alive'), (b'Date', b'Mon, 01 Jun 2026 06:29:13 GMT'), (b'ETag', b'"72b987fd805cfa2b58c4c8c952b274a11bfd5a00"'), (b'X-Powered-By', b'huggingface-moon'), (b'X-Request-Id', b'Root=1-6a1d26b9-6cedbb9e6ebe2dae066c5d2c;a2c7e532-0dc7-4ea3-8085-aa1fbd025327'), (b'RateLimit', b'"resolvers";r=2770;t=197'), (b'RateLimit-Policy', b'"fixed window";"resolvers";q=3000;w=300'), (b'cross-origin-opener-policy', b'same-origin'), (b'Referrer-Policy', b'strict-origin-when-cross-origin'), (b'Access-Control-Max-Age', b'86400'), (b'Access-Control-Allow-Origin', b'https://huggingface.co'), (b'Access-Control-Expose-Headers', b'X-Repo-Commit,X-Request-Id,X-Error-Code,X-Error-Message,X-Total-Count,ETag,Link,Accept-Ranges,Content-Range,X-Linked-Size,X-Linked-ETag,X-Xet-Hash'), (b'X-Repo-Commit', b'1110a243fdf4706b3f48f1d95db1a4f5529b4d41'), (b'Accept-Ranges', b'bytes'), (b'X-Hub-Cache', b'MISS'), (b'Content-Disposition', b'inline; filename*=UTF-8\'\'config.json; filename="config.json";'), (b'Content-Security-Policy', b"default-src 'none'; sandbox"), (b'Vary', b'Origin'), (b'X-Cache', b'Hit from cloudfront'), (b'Via', b'1.1 fde464bcbe86090b23c7904aa5055d58.cloudfront.net (CloudFront)'), (b'X-Amz-Cf-Pop', b'DEL51-P7'), (b'X-Amz-Cf-Id', b'yCubq0u31muOZ2t7gwd1YXc2CwDV2-1LqpInZFTK1sZNWkCTQ4p6SQ=='), (b'Age', b'2634031')])
+INFO     httpx:_client.py:1025 HTTP Request: HEAD https://huggingface.co/api/resolve-cache/models/sentence-transformers/all-MiniLM-L6-v2/1110a243fdf4706b3f48f1d95db1a4f5529b4d41/config.json "HTTP/1.1 200 OK"
+DEBUG    httpcore.http11:_trace.py:47 receive_response_body.started request=<Request [b'HEAD']>
+DEBUG    httpcore.http11:_trace.py:47 receive_response_body.complete
+DEBUG    httpcore.http11:_trace.py:47 response_closed.started
+DEBUG    httpcore.http11:_trace.py:47 response_closed.complete
+DEBUG    httpcore.http11:_trace.py:47 send_request_headers.started request=<Request [b'HEAD']>
+DEBUG    httpcore.http11:_trace.py:47 send_request_headers.complete
+DEBUG    httpcore.http11:_trace.py:47 send_request_body.started request=<Request [b'HEAD']>
+DEBUG    httpcore.http11:_trace.py:47 send_request_body.complete
+DEBUG    httpcore.http11:_trace.py:47 receive_response_headers.started request=<Request [b'HEAD']>
+DEBUG    httpcore.http11:_trace.py:47 receive_response_headers.complete return_value=(b'HTTP/1.1', 307, b'Temporary Redirect', [(b'Content-Type', b'text/plain; charset=utf-8'), (b'Content-Length', b'300'), (b'Connection', b'keep-alive'), (b'Date', b'Wed, 01 Jul 2026 18:09:44 GMT'), (b'Location', b'/api/resolve-cache/models/sentence-transformers/all-MiniLM-L6-v2/1110a243fdf4706b3f48f1d95db1a4f5529b4d41/tokenizer_config.json?%2Fsentence-transformers%2Fall-MiniLM-L6-v2%2Fresolve%2Fmain%2Ftokenizer_config.json=&etag=%22c79f2b6a0cea6f4b564fed1938984bace9d30ff0%22'), (b'X-Powered-By', b'huggingface-moon'), (b'X-Request-Id', b'Root=1-6a4557e8-392f26d139d2524500d3d581;431446b6-e58c-4653-adca-67ac188424ad'), (b'RateLimit', b'"resolvers";r=2967;t=68'), (b'RateLimit-Policy', b'"fixed window";"resolvers";q=3000;w=300'), (b'cross-origin-opener-policy', b'same-origin'), (b'Referrer-Policy', b'strict-origin-when-cross-origin'), (b'Access-Control-Max-Age', b'86400'), (b'Access-Control-Allow-Origin', b'https://huggingface.co'), (b'Vary', b'Origin, Accept'), (b'Access-Control-Expose-Headers', b'X-Repo-Commit,X-Request-Id,X-Error-Code,X-Error-Message,X-Total-Count,ETag,Link,Accept-Ranges,Content-Range,X-Linked-Size,X-Linked-ETag,X-Xet-Hash'), (b'X-Repo-Commit', b'1110a243fdf4706b3f48f1d95db1a4f5529b4d41'), (b'Accept-Ranges', b'bytes'), (b'X-HF-Warning', b'unauthenticated; Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.'), (b'X-Hub-Cache', b'HIT'), (b'Content-Disposition', b'inline; filename*=UTF-8\'\'tokenizer_config.json; filename="tokenizer_config.json";'), (b'Content-Security-Policy', b"default-src 'none'; sandbox"), (b'X-Linked-ETag', b'"c79f2b6a0cea6f4b564fed1938984bace9d30ff0"'), (b'X-Cache', b'Miss from cloudfront'), (b'Via', b'1.1 fde464bcbe86090b23c7904aa5055d58.cloudfront.net (CloudFront)'), (b'X-Amz-Cf-Pop', b'DEL51-P7'), (b'X-Amz-Cf-Id', b'Uj943UtO5-1WO1b50lLg9XXCC8CjynE7RJrChv1HqbCXKIW3_HXhfA==')])
+INFO     httpx:_client.py:1025 HTTP Request: HEAD https://huggingface.co/sentence-transformers/all-MiniLM-L6-v2/resolve/main/tokenizer_config.json "HTTP/1.1 307 Temporary Redirect"
+DEBUG    httpcore.http11:_trace.py:47 receive_response_body.started request=<Request [b'HEAD']>
+DEBUG    httpcore.http11:_trace.py:47 receive_response_body.complete
+DEBUG    httpcore.http11:_trace.py:47 response_closed.started
+DEBUG    httpcore.http11:_trace.py:47 response_closed.complete
+DEBUG    httpcore.http11:_trace.py:47 send_request_headers.started request=<Request [b'HEAD']>
+DEBUG    httpcore.http11:_trace.py:47 send_request_headers.complete
+DEBUG    httpcore.http11:_trace.py:47 send_request_body.started request=<Request [b'HEAD']>
+DEBUG    httpcore.http11:_trace.py:47 send_request_body.complete
+DEBUG    httpcore.http11:_trace.py:47 receive_response_headers.started request=<Request [b'HEAD']>
+DEBUG    httpcore.http11:_trace.py:47 receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Content-Type', b'text/plain; charset=utf-8'), (b'Content-Length', b'350'), (b'Connection', b'keep-alive'), (b'Date', b'Mon, 01 Jun 2026 06:29:13 GMT'), (b'ETag', b'"c79f2b6a0cea6f4b564fed1938984bace9d30ff0"'), (b'X-Powered-By', b'huggingface-moon'), (b'X-Request-Id', b'Root=1-6a1d26b9-3973fd0179761cf84b8cb0d4;9937d73e-673e-496d-893e-26ea1453e568'), (b'RateLimit', b'"resolvers";r=1173;t=175'), (b'RateLimit-Policy', b'"fixed window";"resolvers";q=3000;w=300'), (b'cross-origin-opener-policy', b'same-origin'), (b'Referrer-Policy', b'strict-origin-when-cross-origin'), (b'Access-Control-Max-Age', b'86400'), (b'Access-Control-Allow-Origin', b'https://huggingface.co'), (b'Access-Control-Expose-Headers', b'X-Repo-Commit,X-Request-Id,X-Error-Code,X-Error-Message,X-Total-Count,ETag,Link,Accept-Ranges,Content-Range,X-Linked-Size,X-Linked-ETag,X-Xet-Hash'), (b'X-Repo-Commit', b'1110a243fdf4706b3f48f1d95db1a4f5529b4d41'), (b'Accept-Ranges', b'bytes'), (b'X-Hub-Cache', b'MISS'), (b'Content-Disposition', b'inline; filename*=UTF-8\'\'tokenizer_config.json; filename="tokenizer_config.json";'), (b'Content-Security-Policy', b"default-src 'none'; sandbox"), (b'Vary', b'Origin'), (b'X-Cache', b'Hit from cloudfront'), (b'Via', b'1.1 fde464bcbe86090b23c7904aa5055d58.cloudfront.net (CloudFront)'), (b'X-Amz-Cf-Pop', b'DEL51-P7'), (b'X-Amz-Cf-Id', b'_nNd5LNDupc34yGsYYC8wDFTFZVp8QhvZIqtuD3MQ1Gm6uk3h9QnEg=='), (b'Age', b'2634031')])
+INFO     httpx:_client.py:1025 HTTP Request: HEAD https://huggingface.co/api/resolve-cache/models/sentence-transformers/all-MiniLM-L6-v2/1110a243fdf4706b3f48f1d95db1a4f5529b4d41/tokenizer_config.json "HTTP/1.1 200 OK"
+DEBUG    httpcore.http11:_trace.py:47 receive_response_body.started request=<Request [b'HEAD']>
+DEBUG    httpcore.http11:_trace.py:47 receive_response_body.complete
+DEBUG    httpcore.http11:_trace.py:47 response_closed.started
+DEBUG    httpcore.http11:_trace.py:47 response_closed.complete
+DEBUG    httpcore.http11:_trace.py:47 send_request_headers.started request=<Request [b'GET']>
+DEBUG    httpcore.http11:_trace.py:47 send_request_headers.complete
+DEBUG    httpcore.http11:_trace.py:47 send_request_body.started request=<Request [b'GET']>
+DEBUG    httpcore.http11:_trace.py:47 send_request_body.complete
+DEBUG    httpcore.http11:_trace.py:47 receive_response_headers.started request=<Request [b'GET']>
+DEBUG    httpcore.http11:_trace.py:47 receive_response_headers.complete return_value=(b'HTTP/1.1', 404, b'Not Found', [(b'Content-Type', b'application/json; charset=utf-8'), (b'Content-Length', b'64'), (b'Connection', b'keep-alive'), (b'Date', b'Wed, 01 Jul 2026 18:09:45 GMT'), (b'ETag', b'W/"40-09f9IAqP13xarAhQxFS2W8rvRkM"'), (b'X-Powered-By', b'huggingface-moon'), (b'X-Request-Id', b'Root=1-6a4557e9-140e81e86ac1c0634e4ecaea;b47b6be3-1161-4d94-a441-4d644a4cfad6'), (b'RateLimit', b'"api";r=496;t=67'), (b'RateLimit-Policy', b'"fixed window";"api";q=500;w=300'), (b'cross-origin-opener-policy', b'same-origin'), (b'Referrer-Policy', b'strict-origin-when-cross-origin'), (b'Access-Control-Max-Age', b'86400'), (b'Access-Control-Allow-Origin', b'https://huggingface.co'), (b'Vary', b'Origin'), (b'Access-Control-Expose-Headers', b'X-Repo-Commit,X-Request-Id,X-Error-Code,X-Error-Message,X-Total-Count,ETag,Link,Accept-Ranges,Content-Range,X-Linked-Size,X-Linked-ETag,X-Xet-Hash'), (b'X-Error-Code', b'EntryNotFound'), (b'X-Error-Message', b'additional_chat_templates does not exist on "main"'), (b'X-Cache', b'Error from cloudfront'), (b'Via', b'1.1 fde464bcbe86090b23c7904aa5055d58.cloudfront.net (CloudFront)'), (b'X-Amz-Cf-Pop', b'DEL51-P7'), (b'X-Amz-Cf-Id', b'm5Tl-plizYJb9iGtIs0Wl--s9OhR68Oenzqd4CLS3Z_2aYO3Pdq5QA==')])
+INFO     httpx:_client.py:1025 HTTP Request: GET https://huggingface.co/api/models/sentence-transformers/all-MiniLM-L6-v2/tree/main/additional_chat_templates?recursive=false&expand=false "HTTP/1.1 404 Not Found"
+DEBUG    httpcore.http11:_trace.py:47 receive_response_body.started request=<Request [b'GET']>
+DEBUG    httpcore.http11:_trace.py:47 receive_response_body.complete
+DEBUG    httpcore.http11:_trace.py:47 response_closed.started
+DEBUG    httpcore.http11:_trace.py:47 response_closed.complete
+DEBUG    httpcore.http11:_trace.py:47 send_request_headers.started request=<Request [b'GET']>
+DEBUG    httpcore.http11:_trace.py:47 send_request_headers.complete
+DEBUG    httpcore.http11:_trace.py:47 send_request_body.started request=<Request [b'GET']>
+DEBUG    httpcore.http11:_trace.py:47 send_request_body.complete
+DEBUG    httpcore.http11:_trace.py:47 receive_response_headers.started request=<Request [b'GET']>
+DEBUG    httpcore.http11:_trace.py:47 receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Content-Type', b'application/json; charset=utf-8'), (b'Transfer-Encoding', b'chunked'), (b'Connection', b'keep-alive'), (b'Date', b'Wed, 01 Jul 2026 18:09:45 GMT'), (b'content-encoding', b'gzip'), (b'ETag', b'W/"1941-hVCCg8o6+Z9eHy795jGmhiAD0to"'), (b'X-Powered-By', b'huggingface-moon'), (b'X-Request-Id', b'Root=1-6a4557e9-09aa53893be535733066f49e;66e8a0bd-728d-4395-ac4a-cfbca815f0d4'), (b'RateLimit', b'"api";r=495;t=67'), (b'RateLimit-Policy', b'"fixed window";"api";q=500;w=300'), (b'cross-origin-opener-policy', b'same-origin'), (b'Referrer-Policy', b'strict-origin-when-cross-origin'), (b'Access-Control-Max-Age', b'86400'), (b'Access-Control-Allow-Origin', b'https://huggingface.co'), (b'Vary', b'Origin'), (b'vary', b'Accept-Encoding'), (b'Access-Control-Expose-Headers', b'X-Repo-Commit,X-Request-Id,X-Error-Code,X-Error-Message,X-Total-Count,ETag,Link,Accept-Ranges,Content-Range,X-Linked-Size,X-Linked-ETag,X-Xet-Hash'), (b'X-Cache', b'Miss from cloudfront'), (b'Via', b'1.1 fde464bcbe86090b23c7904aa5055d58.cloudfront.net (CloudFront)'), (b'X-Amz-Cf-Pop', b'DEL51-P7'), (b'X-Amz-Cf-Id', b'TGrj-2fEy_2en-MywEkgA1MPAOykKkZh1JMDcJhHeT4dWjRDq5ZIAw==')])
+INFO     httpx:_client.py:1025 HTTP Request: GET https://huggingface.co/api/models/sentence-transformers/all-MiniLM-L6-v2/tree/main?recursive=true&expand=false "HTTP/1.1 200 OK"
+DEBUG    httpcore.http11:_trace.py:47 receive_response_body.started request=<Request [b'GET']>
+DEBUG    httpcore.http11:_trace.py:47 receive_response_body.complete
+DEBUG    httpcore.http11:_trace.py:47 response_closed.started
+DEBUG    httpcore.http11:_trace.py:47 response_closed.complete
+DEBUG    sentence_transformers.base.modules.transformer:transformer.py:740 Active modality config: {'text': {'method': 'forward', 'method_output_name': 'last_hidden_state'}}
+DEBUG    httpcore.http11:_trace.py:47 send_request_headers.started request=<Request [b'HEAD']>
+DEBUG    httpcore.http11:_trace.py:47 send_request_headers.complete
+DEBUG    httpcore.http11:_trace.py:47 send_request_body.started request=<Request [b'HEAD']>
+DEBUG    httpcore.http11:_trace.py:47 send_request_body.complete
+DEBUG    httpcore.http11:_trace.py:47 receive_response_headers.started request=<Request [b'HEAD']>
+DEBUG    httpcore.http11:_trace.py:47 receive_response_headers.complete return_value=(b'HTTP/1.1', 307, b'Temporary Redirect', [(b'Content-Type', b'text/plain; charset=utf-8'), (b'Content-Length', b'304'), (b'Connection', b'keep-alive'), (b'Date', b'Wed, 01 Jul 2026 18:09:45 GMT'), (b'Location', b'/api/resolve-cache/models/sentence-transformers/all-MiniLM-L6-v2/1110a243fdf4706b3f48f1d95db1a4f5529b4d41/1_Pooling%2Fconfig.json?%2Fsentence-transformers%2Fall-MiniLM-L6-v2%2Fresolve%2Fmain%2F1_Pooling%2Fconfig.json=&etag=%22d1514c3162bbe87b343f565fadc62e6c06f04f03%22'), (b'X-Powered-By', b'huggingface-moon'), (b'X-Request-Id', b'Root=1-6a4557e9-71ab8361184cf02623f1b334;cec4ce72-ea5d-45a0-a04a-332edabd530b'), (b'RateLimit', b'"resolvers";r=2966;t=67'), (b'RateLimit-Policy', b'"fixed window";"resolvers";q=3000;w=300'), (b'cross-origin-opener-policy', b'same-origin'), (b'Referrer-Policy', b'strict-origin-when-cross-origin'), (b'Access-Control-Max-Age', b'86400'), (b'Access-Control-Allow-Origin', b'https://huggingface.co'), (b'Vary', b'Origin, Accept'), (b'Access-Control-Expose-Headers', b'X-Repo-Commit,X-Request-Id,X-Error-Code,X-Error-Message,X-Total-Count,ETag,Link,Accept-Ranges,Content-Range,X-Linked-Size,X-Linked-ETag,X-Xet-Hash'), (b'X-Repo-Commit', b'1110a243fdf4706b3f48f1d95db1a4f5529b4d41'), (b'Accept-Ranges', b'bytes'), (b'X-HF-Warning', b'unauthenticated; Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.'), (b'X-Hub-Cache', b'HIT'), (b'Content-Disposition', b'inline; filename*=UTF-8\'\'config.json; filename="config.json";'), (b'Content-Security-Policy', b"default-src 'none'; sandbox"), (b'X-Linked-ETag', b'"d1514c3162bbe87b343f565fadc62e6c06f04f03"'), (b'X-Cache', b'Miss from cloudfront'), (b'Via', b'1.1 fde464bcbe86090b23c7904aa5055d58.cloudfront.net (CloudFront)'), (b'X-Amz-Cf-Pop', b'DEL51-P7'), (b'X-Amz-Cf-Id', b'3fRU6rZQqoe2QUl4ayXU51G87R9NpdfQPlYggHl2F8pezTmUfWDEaA==')])
+INFO     httpx:_client.py:1025 HTTP Request: HEAD https://huggingface.co/sentence-transformers/all-MiniLM-L6-v2/resolve/main/1_Pooling/config.json "HTTP/1.1 307 Temporary Redirect"
+DEBUG    httpcore.http11:_trace.py:47 receive_response_body.started request=<Request [b'HEAD']>
+DEBUG    httpcore.http11:_trace.py:47 receive_response_body.complete
+DEBUG    httpcore.http11:_trace.py:47 response_closed.started
+DEBUG    httpcore.http11:_trace.py:47 response_closed.complete
+DEBUG    httpcore.http11:_trace.py:47 send_request_headers.started request=<Request [b'HEAD']>
+DEBUG    httpcore.http11:_trace.py:47 send_request_headers.complete
+DEBUG    httpcore.http11:_trace.py:47 send_request_body.started request=<Request [b'HEAD']>
+DEBUG    httpcore.http11:_trace.py:47 send_request_body.complete
+DEBUG    httpcore.http11:_trace.py:47 receive_response_headers.started request=<Request [b'HEAD']>
+DEBUG    httpcore.http11:_trace.py:47 receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Content-Type', b'text/plain; charset=utf-8'), (b'Content-Length', b'190'), (b'Connection', b'keep-alive'), (b'Date', b'Mon, 01 Jun 2026 06:29:13 GMT'), (b'ETag', b'"d1514c3162bbe87b343f565fadc62e6c06f04f03"'), (b'X-Powered-By', b'huggingface-moon'), (b'X-Request-Id', b'Root=1-6a1d26b9-1525c2365950708711bc5cab;638c20cf-be85-4ac7-9147-ce630fd678f4'), (b'RateLimit', b'"resolvers";r=2867;t=179'), (b'RateLimit-Policy', b'"fixed window";"resolvers";q=3000;w=300'), (b'cross-origin-opener-policy', b'same-origin'), (b'Referrer-Policy', b'strict-origin-when-cross-origin'), (b'Access-Control-Max-Age', b'86400'), (b'Access-Control-Allow-Origin', b'https://huggingface.co'), (b'Access-Control-Expose-Headers', b'X-Repo-Commit,X-Request-Id,X-Error-Code,X-Error-Message,X-Total-Count,ETag,Link,Accept-Ranges,Content-Range,X-Linked-Size,X-Linked-ETag,X-Xet-Hash'), (b'X-Repo-Commit', b'1110a243fdf4706b3f48f1d95db1a4f5529b4d41'), (b'Accept-Ranges', b'bytes'), (b'X-Hub-Cache', b'MISS'), (b'Content-Disposition', b'inline; filename*=UTF-8\'\'config.json; filename="config.json";'), (b'Content-Security-Policy', b"default-src 'none'; sandbox"), (b'Vary', b'Origin'), (b'X-Cache', b'Hit from cloudfront'), (b'Via', b'1.1 fde464bcbe86090b23c7904aa5055d58.cloudfront.net (CloudFront)'), (b'X-Amz-Cf-Pop', b'DEL51-P7'), (b'X-Amz-Cf-Id', b'-qeIqcnt2tf7dKSzWhShm-BNeTHtIPzDxTwzO3zkJSywq10qXWYxqA=='), (b'Age', b'2634033')])
+INFO     httpx:_client.py:1025 HTTP Request: HEAD https://huggingface.co/api/resolve-cache/models/sentence-transformers/all-MiniLM-L6-v2/1110a243fdf4706b3f48f1d95db1a4f5529b4d41/1_Pooling%2Fconfig.json "HTTP/1.1 200 OK"
+DEBUG    httpcore.http11:_trace.py:47 receive_response_body.started request=<Request [b'HEAD']>
+DEBUG    httpcore.http11:_trace.py:47 receive_response_body.complete
+DEBUG    httpcore.http11:_trace.py:47 response_closed.started
+DEBUG    httpcore.http11:_trace.py:47 response_closed.complete
+DEBUG    httpcore.http11:_trace.py:47 send_request_headers.started request=<Request [b'GET']>
+DEBUG    httpcore.http11:_trace.py:47 send_request_headers.complete
+DEBUG    httpcore.http11:_trace.py:47 send_request_body.started request=<Request [b'GET']>
+DEBUG    httpcore.http11:_trace.py:47 send_request_body.complete
+DEBUG    httpcore.http11:_trace.py:47 receive_response_headers.started request=<Request [b'GET']>
+DEBUG    httpcore.http11:_trace.py:47 receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Content-Type', b'application/json; charset=utf-8'), (b'Transfer-Encoding', b'chunked'), (b'Connection', b'keep-alive'), (b'Date', b'Wed, 01 Jul 2026 18:09:46 GMT'), (b'content-encoding', b'gzip'), (b'ETag', b'W/"1b99-WTGb7RCT2lB9950LIq0XoxDa8KA"'), (b'X-Powered-By', b'huggingface-moon'), (b'X-Request-Id', b'Root=1-6a4557ea-57abd82c2952224d4b1c4678;41b5c35a-57d2-4e53-9191-72e90c08fda0'), (b'RateLimit', b'"api";r=494;t=66'), (b'RateLimit-Policy', b'"fixed window";"api";q=500;w=300'), (b'cross-origin-opener-policy', b'same-origin'), (b'Referrer-Policy', b'strict-origin-when-cross-origin'), (b'Access-Control-Max-Age', b'86400'), (b'Access-Control-Allow-Origin', b'https://huggingface.co'), (b'Vary', b'Origin'), (b'vary', b'Accept-Encoding'), (b'Access-Control-Expose-Headers', b'X-Repo-Commit,X-Request-Id,X-Error-Code,X-Error-Message,X-Total-Count,ETag,Link,Accept-Ranges,Content-Range,X-Linked-Size,X-Linked-ETag,X-Xet-Hash'), (b'X-Cache', b'Miss from cloudfront'), (b'Via', b'1.1 fde464bcbe86090b23c7904aa5055d58.cloudfront.net (CloudFront)'), (b'X-Amz-Cf-Pop', b'DEL51-P7'), (b'X-Amz-Cf-Id', b'Q_ELOgj1geiH6L_Zaoj-F046YDLDj8BreGMwnluQvjjZitAptais6w==')])
+INFO     httpx:_client.py:1025 HTTP Request: GET https://huggingface.co/api/models/sentence-transformers/all-MiniLM-L6-v2 "HTTP/1.1 200 OK"
+DEBUG    httpcore.http11:_trace.py:47 receive_response_body.started request=<Request [b'GET']>
+DEBUG    httpcore.http11:_trace.py:47 receive_response_body.complete
+DEBUG    httpcore.http11:_trace.py:47 response_closed.started
+DEBUG    httpcore.http11:_trace.py:47 response_closed.complete
+DEBUG    src.retrieval.dense_retrieval_agent:dense_retrieval_agent.py:106 Encoding batch 1/1
+INFO     src.retrieval.dense_retrieval_agent:dense_retrieval_agent.py:148 Built FAISS index: IndexFlatIP
+INFO     src.retrieval.dense_retrieval_agent:dense_retrieval_agent.py:244 Added 3 profiles. Index size now: 3
+____________ test_dense_retrieval_agent_retrieve_empty_candidates _____________
+
+dense_retrieval_agent = <src.retrieval.dense_retrieval_agent.DenseRetrievalAgent object at 0x00000200C9676FD0>
+sample_structured_jd = StructuredJD(job_title='Software Engineer', title=None, company='Tech Corp', industry='IT', seniority='Mid-level', exp..._skills=None, nice_to_have_skills=[], raw_text=None, responsibilities=['Develop Python applications'], technologies=[])
+
+    def test_dense_retrieval_agent_retrieve_empty_candidates(dense_retrieval_agent, sample_structured_jd):
+        dense_retrieval_agent.clear_index()
+        query = sample_structured_jd.job_title
+>       with pytest.raises(Exception):
+             ^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE Exception
+
+tests\test_dense_retrieval.py:112: Failed
+---------------------------- Captured stdout call -----------------------------
+2026-07-01 23:39:46 | INFO     | src.retrieval.dense_retrieval_agent | Cleared FAISS index.
+2026-07-01 23:39:46 | WARNING  | src.retrieval.dense_retrieval_agent | Index is empty or not initialized.
+------------------------------ Captured log call ------------------------------
+INFO     src.retrieval.dense_retrieval_agent:dense_retrieval_agent.py:284 Cleared FAISS index.
+WARNING  src.retrieval.dense_retrieval_agent:dense_retrieval_agent.py:208 Index is empty or not initialized.
+___________________________ test_build_and_retrieve ___________________________
+
+retrieval_pipeline = <src.retrieval.retrieval_pipeline.RetrievalPipeline object at 0x00000200C9931D10>
+sample_structured_jd = StructuredJD(job_title=None, title='Software Engineer', company=None, industry=None, seniority=None, experience_requir...': 'required', 'min_years': 3}], preferred_skills=[], nice_to_have_skills=None, raw_text='Develop Python applications')
+sample_candidate_profiles = [CandidateProfile(id=UUID('95ce5023-7692-46cd-82cb-79504cbef722'), candidate_id='CAND_001', name='Alice Smith', summar...oficiency=None)], certifications=[], location=None, activity_score=None, resume_text=None, metadata=Metadata(data={}))]
+mock_dense_retrieval_agent = <MagicMock spec='DenseRetrievalAgent' id='2202405446256'>
+mock_bm25_retrieval_agent = <MagicMock spec='BM25RetrievalAgent' id='2202405446928'>
+
+    def test_build_and_retrieve(retrieval_pipeline, sample_structured_jd, sample_candidate_profiles,
+                                mock_dense_retrieval_agent, mock_bm25_retrieval_agent):
+        jd_id = "jd_test_1"
+        retrieval_pipeline.build_retrieval_index(jd_id, sample_candidate_profiles)
+    
+        retrieval_pipeline.vector_store_manager.add_candidates.assert_called_once()
+    
+        query = "python developer"
+>       retrieval_results = retrieval_pipeline.retrieve(jd_id, query)
+                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\test_retrieval_pipeline.py:106: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+src\retrieval\retrieval_pipeline.py:42: in retrieve
+    dense_results = self.dense_retrieval_agent.retrieve(jd_id, query, config.dense_top_k)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <MagicMock spec='DenseRetrievalAgent' id='2202405446256'>
+name = 'retrieve'
+
+    def __getattr__(self, name):
+        if name in {'_mock_methods', '_mock_unsafe'}:
+            raise AttributeError(name)
+        elif self._mock_methods is not None:
+            if name not in self._mock_methods or name in _all_magics:
+>               raise AttributeError("Mock object has no attribute %r" % name)
+E               AttributeError: Mock object has no attribute 'retrieve'
+
+C:\Program Files\Python314\Lib\unittest\mock.py:697: AttributeError
+________________________ test_empty_retrieval_results _________________________
+
+retrieval_pipeline = <src.retrieval.retrieval_pipeline.RetrievalPipeline object at 0x00000200C97D5450>
+sample_structured_jd = StructuredJD(job_title=None, title='Software Engineer', company=None, industry=None, seniority=None, experience_requir...': 'required', 'min_years': 3}], preferred_skills=[], nice_to_have_skills=None, raw_text='Develop Python applications')
+mock_dense_retrieval_agent = <MagicMock spec='DenseRetrievalAgent' id='2202405445248'>
+mock_bm25_retrieval_agent = <MagicMock spec='BM25RetrievalAgent' id='2202405445584'>
+
+    def test_empty_retrieval_results(retrieval_pipeline, sample_structured_jd,
+                                     mock_dense_retrieval_agent, mock_bm25_retrieval_agent):
+        mock_dense_retrieval_agent.search.return_value = []
+        mock_bm25_retrieval_agent.search.return_value = []
+    
+        jd_id = "jd_test_empty"
+        retrieval_pipeline.build_retrieval_index(jd_id, [])
+        query = "no match"
+>       results = retrieval_pipeline.retrieve(jd_id, query)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\test_retrieval_pipeline.py:123: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+src\retrieval\retrieval_pipeline.py:42: in retrieve
+    dense_results = self.dense_retrieval_agent.retrieve(jd_id, query, config.dense_top_k)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <MagicMock spec='DenseRetrievalAgent' id='2202405445248'>
+name = 'retrieve'
+
+    def __getattr__(self, name):
+        if name in {'_mock_methods', '_mock_unsafe'}:
+            raise AttributeError(name)
+        elif self._mock_methods is not None:
+            if name not in self._mock_methods or name in _all_magics:
+>               raise AttributeError("Mock object has no attribute %r" % name)
+E               AttributeError: Mock object has no attribute 'retrieve'
+
+C:\Program Files\Python314\Lib\unittest\mock.py:697: AttributeError
+_______________________ test_partial_retrieval_results ________________________
+
+retrieval_pipeline = <src.retrieval.retrieval_pipeline.RetrievalPipeline object at 0x00000200C987E8B0>
+sample_structured_jd = StructuredJD(job_title=None, title='Software Engineer', company=None, industry=None, seniority=None, experience_requir...': 'required', 'min_years': 3}], preferred_skills=[], nice_to_have_skills=None, raw_text='Develop Python applications')
+mock_dense_retrieval_agent = <MagicMock spec='DenseRetrievalAgent' id='2202405449952'>
+mock_bm25_retrieval_agent = <MagicMock spec='BM25RetrievalAgent' id='2202405450624'>
+
+    def test_partial_retrieval_results(retrieval_pipeline, sample_structured_jd,
+                                      mock_dense_retrieval_agent, mock_bm25_retrieval_agent):
+        mock_dense_retrieval_agent.search.return_value = [
+            {"candidate_id": "CAND_001", "score": 0.9}
+        ]
+        mock_bm25_retrieval_agent.search.return_value = []
+    
+        jd_id = "jd_test_partial"
+        retrieval_pipeline.build_retrieval_index(jd_id, [])
+        query = "partial match"
+>       results = retrieval_pipeline.retrieve(jd_id, query)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\test_retrieval_pipeline.py:137: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+src\retrieval\retrieval_pipeline.py:42: in retrieve
+    dense_results = self.dense_retrieval_agent.retrieve(jd_id, query, config.dense_top_k)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <MagicMock spec='DenseRetrievalAgent' id='2202405449952'>
+name = 'retrieve'
+
+    def __getattr__(self, name):
+        if name in {'_mock_methods', '_mock_unsafe'}:
+            raise AttributeError(name)
+        elif self._mock_methods is not None:
+            if name not in self._mock_methods or name in _all_magics:
+>               raise AttributeError("Mock object has no attribute %r" % name)
+E               AttributeError: Mock object has no attribute 'retrieve'
+
+C:\Program Files\Python314\Lib\unittest\mock.py:697: AttributeError
+__________________________ test_hybrid_scoring_logic __________________________
+
+retrieval_pipeline = <src.retrieval.retrieval_pipeline.RetrievalPipeline object at 0x00000200C987E520>
+mock_config_manager = <MagicMock spec='ConfigManager' id='2202411190656'>
+
+    def test_hybrid_scoring_logic(retrieval_pipeline, mock_config_manager):
+        dense_results = [
+            RetrievalResult(candidate_id="CAND_A", dense_score=0.8, retrieval_source="Dense", rank=1, query_id="test_query"),
+            RetrievalResult(candidate_id="CAND_B", dense_score=0.7, retrieval_source="Dense", rank=2, query_id="test_query"),
+        ]
+        bm25_results = [
+            RetrievalResult(candidate_id="CAND_B", bm25_score=0.9, retrieval_source="BM25", rank=1, query_id="test_query"),
+            RetrievalResult(candidate_id="CAND_C", bm25_score=0.85, retrieval_source="BM25", rank=2, query_id="test_query"),
+        ]
+    
+>       hybrid_results = retrieval_pipeline._hybrid_score_candidates(dense_results, bm25_results, 2)
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\test_retrieval_pipeline.py:152: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+src\retrieval\retrieval_pipeline.py:83: in _hybrid_score_candidates
+    hybrid_results.sort(key=lambda x: x.hybrid_score, reverse=True)
+src\retrieval\retrieval_pipeline.py:83: in <lambda>
+    hybrid_results.sort(key=lambda x: x.hybrid_score, reverse=True)
+                                      ^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = RetrievalResult(id=UUID('f390b8ec-27ea-42eb-b584-c5ababdfdca0'), candidate_id='CAND_A', dense_score=0.8, bm25_score=0.0, retrieval_source='hybrid', rank=1, metadata=Metadata(data={}))
+item = 'hybrid_score'
+
+    def __getattr__(self, item: str) -> Any:
+        private_attributes = object.__getattribute__(self, '__private_attributes__')
+        if item in private_attributes:
+            attribute = private_attributes[item]
+            if hasattr(attribute, '__get__'):
+                return attribute.__get__(self, type(self))  # type: ignore
+    
+            try:
+                # Note: self.__pydantic_private__ cannot be None if self.__private_attributes__ has items
+                return self.__pydantic_private__[item]  # type: ignore
+            except KeyError as exc:
+                raise AttributeError(f'{type(self).__name__!r} object has no attribute {item!r}') from exc
+        else:
+            # `__pydantic_extra__` can fail to be set if the model is not yet fully initialized.
+            # See `BaseModel.__repr_args__` for more details
+            try:
+                pydantic_extra = object.__getattribute__(self, '__pydantic_extra__')
+            except AttributeError:
+                pydantic_extra = None
+    
+            if pydantic_extra and item in pydantic_extra:
+                return pydantic_extra[item]
+            else:
+                if hasattr(self.__class__, item):
+                    return super().__getattribute__(item)  # Raises AttributeError if appropriate
+                else:
+                    # this is the current error
+>                   raise AttributeError(f'{type(self).__name__!r} object has no attribute {item!r}')
+E                   AttributeError: 'RetrievalResult' object has no attribute 'hybrid_score'
+
+..\..\AppData\Roaming\Python\Python314\site-packages\pydantic\main.py:1042: AttributeError
+=========================== short test summary info ===========================
+FAILED tests/test_bm25_agent.py::test_bm25_agent_build_and_retrieve - src.ret...
+FAILED tests/test_bm25_agent.py::test_bm25_agent_retrieve_top_k - src.retriev...
+FAILED tests/test_dataset_loader.py::test_load_candidates_from_json_empty_json_file
+FAILED tests/test_dense_retrieval.py::test_dense_retrieval_agent_retrieve - A...
+FAILED tests/test_dense_retrieval.py::test_dense_retrieval_agent_retrieve_empty_candidates
+FAILED tests/test_retrieval_pipeline.py::test_build_and_retrieve - AttributeE...
+FAILED tests/test_retrieval_pipeline.py::test_empty_retrieval_results - Attri...
+FAILED tests/test_retrieval_pipeline.py::test_partial_retrieval_results - Att...
+FAILED tests/test_retrieval_pipeline.py::test_hybrid_scoring_logic - Attribut...
+======================== 9 failed, 13 passed in 54.03s ========================

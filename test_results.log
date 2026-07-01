@@ -1,0 +1,66 @@
+============================= test session starts =============================
+platform win32 -- Python 3.14.5, pytest-9.1.1, pluggy-1.6.0
+rootdir: C:\Users\piyush pawar\Desktop\AI_Hackthonnnn
+plugins: anyio-4.14.1, langsmith-0.9.3
+collected 166 items
+
+tests\test_bm25_agent.py ....                                            [  2%]
+tests\test_config_manager.py .........                                   [  7%]
+tests\test_csv_generator.py ...............                              [ 16%]
+tests\test_dataset_loader.py ....                                        [ 19%]
+tests\test_dense_retrieval.py ...                                        [ 21%]
+tests\test_evaluation.py .......................                         [ 34%]
+tests\test_explanation_agent.py ..........                               [ 40%]
+tests\test_feature_engineering.py ...........                            [ 47%]
+tests\test_graph.py ...                                                  [ 49%]
+tests\test_integration.py ..........                                     [ 55%]
+tests\test_jd_parser.py .......                                          [ 59%]
+tests\test_profile_builder.py ......                                     [ 63%]
+tests\test_profile_builder_agent.py ......                               [ 66%]
+tests\test_recruiter_reranker.py .............                           [ 74%]
+tests\test_retrieval_pipeline.py .....                                   [ 77%]
+tests\test_schemas.py ......................                             [ 90%]
+tests\test_skill_extractor.py ..........                                 [ 96%]
+tests\test_vector_store.py .....                                         [100%]
+
+============================== warnings summary ===============================
+tests/test_recruiter_reranker.py::TestRecruiterReranker::test_json_serialization
+  C:\Users\piyush pawar\Desktop\AI_Hackthonnnn\tests\test_recruiter_reranker.py:209: PydanticDeprecatedSince20: The `json` method is deprecated; use `model_dump_json` instead. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.13/migration/
+    serialized_assessment = assessment.json()
+
+tests/test_recruiter_reranker.py::TestRecruiterReranker::test_json_serialization
+  C:\Users\piyush pawar\Desktop\AI_Hackthonnnn\tests\test_recruiter_reranker.py:211: PydanticDeprecatedSince20: The `parse_raw` method is deprecated; if your data is JSON use `model_validate_json`, otherwise load the data then use `model_validate` instead. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.13/migration/
+    deserialized_assessment = RecruiterAssessment.parse_raw(serialized_assessment)
+
+tests/test_recruiter_reranker.py::TestRecruiterReranker::test_json_serialization
+tests/test_recruiter_reranker.py::TestRecruiterReranker::test_json_serialization
+tests/test_recruiter_reranker.py::TestRecruiterReranker::test_json_serialization
+  C:\Users\piyush pawar\AppData\Roaming\Python\Python314\site-packages\pydantic\main.py:1415: PydanticDeprecatedSince20: `load_str_bytes` is deprecated. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.13/migration/
+    obj = parse.load_str_bytes(
+
+tests/test_recruiter_reranker.py::TestRecruiterReranker::test_json_serialization
+  C:\Users\piyush pawar\Desktop\AI_Hackthonnnn\tests\test_recruiter_reranker.py:221: PydanticDeprecatedSince20: The `dict` method is deprecated; use `model_dump` instead. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.13/migration/
+    "assessment": assessment.dict()
+
+tests/test_recruiter_reranker.py::TestRecruiterReranker::test_json_serialization
+  C:\Users\piyush pawar\Desktop\AI_Hackthonnnn\tests\test_recruiter_reranker.py:224: PydanticDeprecatedSince20: The `json` method is deprecated; use `model_dump_json` instead. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.13/migration/
+    serialized_reranked_candidate = reranked_candidate.json()
+
+tests/test_recruiter_reranker.py::TestRecruiterReranker::test_json_serialization
+  C:\Users\piyush pawar\Desktop\AI_Hackthonnnn\tests\test_recruiter_reranker.py:226: PydanticDeprecatedSince20: The `parse_raw` method is deprecated; if your data is JSON use `model_validate_json`, otherwise load the data then use `model_validate` instead. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.13/migration/
+    deserialized_reranked_candidate = RerankedCandidate.parse_raw(serialized_reranked_candidate)
+
+tests/test_recruiter_reranker.py::TestRecruiterReranker::test_json_serialization
+  C:\Users\piyush pawar\Desktop\AI_Hackthonnnn\tests\test_recruiter_reranker.py:231: PydanticDeprecatedSince20: The `json` method is deprecated; use `model_dump_json` instead. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.13/migration/
+    serialized_reranked_candidates = reranked_candidates.json()
+
+tests/test_recruiter_reranker.py::TestRecruiterReranker::test_json_serialization
+  C:\Users\piyush pawar\Desktop\AI_Hackthonnnn\tests\test_recruiter_reranker.py:233: PydanticDeprecatedSince20: The `parse_raw` method is deprecated; if your data is JSON use `model_validate_json`, otherwise load the data then use `model_validate` instead. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.13/migration/
+    deserialized_reranked_candidates = RerankedCandidates.parse_raw(serialized_reranked_candidates)
+
+tests/test_skill_extractor.py: 24 warnings
+  C:\Users\piyush pawar\Desktop\AI_Hackthonnnn\src\schemas\skill_schema.py:43: PydanticDeprecatedSince211: Accessing the 'model_fields' attribute on the instance is deprecated. Instead, you should access this attribute from the model class. Deprecated in Pydantic V2.11 to be removed in V3.0.
+    if category not in self.model_fields:
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+====================== 166 passed, 34 warnings in 25.35s ======================
