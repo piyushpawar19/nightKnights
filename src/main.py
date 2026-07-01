@@ -49,10 +49,10 @@ import sys
 from pathlib import Path
 
 # LangGraph entry point
-from graph import run_pipeline
+from src.graph import run_pipeline
 
 # Project logger
-from utils.logger import get_logger
+from src.utils.logger import get_logger
 
 logger = get_logger(__name__)
 
@@ -68,7 +68,7 @@ def main() -> None:
     # -------------------------------------------------------------------------
     # Input Job Description
     # -------------------------------------------------------------------------
-    jd_path = Path("job_description.txt")
+    jd_path = Path("data/job_description.txt")
 
     if not jd_path.exists():
         logger.error("Job Description not found: %s", jd_path)
@@ -82,7 +82,7 @@ def main() -> None:
         # ---------------------------------------------------------------------
         # Execute the complete workflow
         # ---------------------------------------------------------------------
-        final_state = run_pipeline(jd_path)
+        final_state = run_pipeline(jd_path.read_text(encoding='utf-8'))
 
         metadata = final_state.get("execution_metadata", {})
 

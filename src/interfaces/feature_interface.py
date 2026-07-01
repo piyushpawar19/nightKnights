@@ -1,5 +1,5 @@
 from typing import Dict
-from nightKnights.src.schemas.feature_schema import CandidateFeatures
+from src.schemas.feature_schema import CandidateFeatures
 
 class FeatureEngineeringInterface:
     def run(self, state: Dict) -> Dict:

@@ -2,9 +2,9 @@ import logging
 from typing import Dict, Any
 from pydantic import ValidationError
 
-from nightKnights.src.interfaces.feature_interface import FeatureEngineeringInterface
-from nightKnights.src.preprocessing.feature_engineering import FeatureEngineering
-from nightKnights.src.schemas.feature_schema import FeatureEngineeringRequest, CandidateFeatures
+from src.interfaces.feature_interface import FeatureEngineeringInterface
+from src.preprocessing.feature_engineering import FeatureEngineering
+from src.schemas.feature_schema import FeatureEngineeringRequest, CandidateFeatures
 
 logger = logging.getLogger(__name__)
 

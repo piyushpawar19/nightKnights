@@ -24,7 +24,7 @@ import uuid
 from datetime import datetime, timezone
 from typing import Annotated, Any, TypedDict
 
-from schemas.graph_schema import (
+from src.schemas.graph_schema import (
     CandidateRecord,
     CandidateScore,
     EvaluationMetrics,
@@ -34,7 +34,7 @@ from schemas.graph_schema import (
     NodeError,
     NodeTimestamp,
 )
-from schemas.jd_schema import ParsedJD  # Added ParsedJD
+from src.schemas.jd_schema import ParsedJD  # Added ParsedJD
 
 
 class PipelineState(TypedDict, total=False):

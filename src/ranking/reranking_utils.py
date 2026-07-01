@@ -39,7 +39,7 @@ def stable_sort_candidates(candidates: List[Dict[str, Any]]) -> List[Dict[str, A
     return sorted_candidates
 
 @memory.cache # Cache ranking weights as they are unlikely to change during runtime
-def load_ranking_weights(config_path: str = "nightKnights/configs/ranking.yaml") -> Dict[str, float]:
+def load_ranking_weights(config_path: str = "configs/ranking.yaml") -> Dict[str, float]:
     """Loads ranking weights from a YAML configuration file."""
     try:
         # Resolve path relative to the project root

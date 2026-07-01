@@ -32,7 +32,7 @@ import traceback
 from datetime import datetime, timezone
 from typing import Any
 
-from schemas.graph_schema import NodeError, NodeStatus, NodeTimestamp
+from src.schemas.graph_schema import NodeError, NodeStatus, NodeTimestamp
 
 
 # ---------------------------------------------------------------------------

@@ -11,7 +11,7 @@ import os
 from datetime import datetime, timezone
 from typing import Any
 
-from schemas.graph_schema import (
+from src.schemas.graph_schema import (
     CandidateRecord,
     CandidateScore,
     EvaluationMetrics,
@@ -20,8 +20,8 @@ from schemas.graph_schema import (
     SkillRequirement,
     NodeError
 )
-from schemas.jd_schema import ParsedJD, JobInfo, Requirements, Skills, Responsibilities, Preferences, ParsingMetadata 
-from utils.logger import NodeExecutionLogger, get_logger
+from src.schemas.jd_schema import ParsedJD, JobInfo, Requirements, Skills, Responsibilities, Preferences, ParsingMetadata 
+from src.utils.logger import NodeExecutionLogger, get_logger
 
 logger = get_logger(__name__)
 

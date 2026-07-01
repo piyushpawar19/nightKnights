@@ -8,13 +8,13 @@ from datetime import datetime, timezone
 # Adjust the path to import modules from the src directory
 sys.path.insert(0, str(Path(__file__).parent.parent / "src"))
 
-from main import run_pipeline # This might need adjustment based on actual main.py structure
-from graph.graph import build_graph, run_pipeline as graph_run_pipeline
-from state.pipeline_state import create_initial_state, PipelineState
-from schemas.graph_schema import CandidateRecord, NodeError # Import NodeError
-from schemas.jd_schema import JobInfo, Requirements, Skills, Responsibilities, Preferences, ParsingMetadata
-from schemas.jd_schema import ParsedJD
-from utils.validate_submission import validate_submission as validate_submission_csv
+from src.main import run_pipeline # This might need adjustment based on actual main.py structure
+from src.graph.graph import build_graph, run_pipeline as graph_run_pipeline
+from src.state.pipeline_state import create_initial_state, PipelineState
+from src.schemas.graph_schema import CandidateRecord, NodeError # Import NodeError
+from src.schemas.jd_schema import JobInfo, Requirements, Skills, Responsibilities, Preferences, ParsingMetadata
+from src.schemas.jd_schema import ParsedJD
+from src.utils.validate_submission import validate_submission as validate_submission_csv
 
 # Mock data for testing
 VALID_JD = """
@@ -221,7 +221,7 @@ def test_duplicate_candidate_ids_in_retrieval(mock_pipeline_modules):
 def test_submission_validation_utility():
     """Test the standalone submission validation utility with various invalid scenarios."""
     # Create a dummy CSV file for testing
-    test_csv_path = Path("nightKnights/tests/test_submission.csv")
+    test_csv_path = Path("tests/test_submission.csv")
     
     # Test 1: Invalid Header
     with open(test_csv_path, "w") as f:

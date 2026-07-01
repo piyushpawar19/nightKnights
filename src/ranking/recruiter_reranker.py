@@ -21,7 +21,7 @@ class RecruiterReranker(RecruiterRerankerInterface):
     def __init__(self, 
                  prompt_builder: PromptBuilderInterface,
                  response_parser: ResponseParserInterface,
-                 config_path: str = "nightKnights/configs/ranking.yaml",
+                 config_path: str = "configs/ranking.yaml",
                  top_k: int = 10):
         self.prompt_builder = prompt_builder
         self.response_parser = response_parser

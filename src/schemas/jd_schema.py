@@ -1,4 +1,4 @@
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, field_validator
 from typing import List, Optional, Dict, Any
 
 class JobInfo(BaseModel):
@@ -59,3 +59,42 @@ class ParsedJD(BaseModel):
     responsibilities: Responsibilities = Field(..., description="Key job responsibilities")
     preferences: Preferences = Field(..., description="Job preferences or nice-to-haves")
     metadata: ParsingMetadata = Field(..., description="Metadata about the parsing process")
+
+# ==============================================================================
+# Aliases and Missing Pydantic Models for Compatibility
+# ==============================================================================
+
+class SkillTaxonomy(BaseModel):
+    normalized_skills: List[str] = Field(default_factory=list)
+    confidence_scores: Dict[str, float] = Field(default_factory=dict)
+    
+    @field_validator("confidence_scores")
+    @classmethod
+    def check_scores(cls, v):
+        for val in v.values():
+            if not (0.0 <= val <= 1.0):
+                raise ValueError("confidence must be between 0 and 1")
+        return v
+
+class SkillRequirement(BaseModel):
+    name: str = ""
+    importance: str = ""
+    min_years: Optional[int] = None
+    
+    model_config = {"extra": "allow"}
+
+class StructuredJD(BaseModel):
+    job_title: Optional[str] = None
+    title: Optional[str] = None
+    company: Optional[str] = None
+    industry: Optional[str] = None
+    seniority: Optional[str] = None
+    experience_required: Optional[int] = None
+    min_experience_years: Optional[int] = None
+    must_have_skills: Optional[List[Any]] = None
+    required_skills: Optional[List[Any]] = None
+    preferred_skills: Optional[List[Any]] = None
+    nice_to_have_skills: Optional[List[Any]] = None
+    raw_text: Optional[str] = None
+    
+    model_config = {"extra": "allow"}

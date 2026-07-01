@@ -4,10 +4,10 @@ from typing import Dict, Any, List
 from pydantic import ValidationError
 from functools import lru_cache
 
-from nightKnights.src.schemas.feature_schema import (
+from src.schemas.feature_schema import (
     CandidateFeatures, RawFeatureMetrics, NormalizedFeatureMetrics, FeatureMetadata
 )
-from nightKnights.src.preprocessing.feature_extractors import (
+from src.preprocessing.feature_extractors import (
     extract_matched_skills, extract_missing_skills, extract_required_skill_matches,
     extract_preferred_skill_matches, extract_candidate_experience_years,
     extract_required_experience_years, extract_experience_gap_years,
@@ -22,7 +22,7 @@ from nightKnights.src.preprocessing.feature_extractors import (
     normalize_cloud_match, normalize_devops_match, normalize_ai_ml_match, normalize_soft_skill_match,
     normalize_keyword_similarity, normalize_technology_stack_match
 )
-from nightKnights.src.preprocessing.feature_utils import safe_get, safe_float, calculate_overlap
+from src.preprocessing.feature_utils import safe_get, safe_float, calculate_overlap
 
 logger = logging.getLogger(__name__)
 

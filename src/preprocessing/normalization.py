@@ -1,7 +1,7 @@
 import re
 import unicodedata
 from typing import List
-from nightKnights.src.interfaces.skill_interface import SkillNormalizationInterface
+from src.interfaces.skill_interface import SkillNormalizationInterface
 
 class SkillNormalization(SkillNormalizationInterface):
     def __init__(self):

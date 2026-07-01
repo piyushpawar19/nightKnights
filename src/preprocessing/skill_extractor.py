@@ -3,7 +3,7 @@ import logging
 from typing import List, Dict, Set
 from functools import lru_cache
 
-from nightKnights.src.interfaces.skill_interface import SkillExtractionEngineInterface
+from src.interfaces.skill_interface import SkillExtractionEngineInterface
 
 logger = logging.getLogger(__name__)
 
