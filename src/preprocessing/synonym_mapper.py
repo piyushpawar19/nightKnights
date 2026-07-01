@@ -1,5 +1,5 @@
 from typing import Dict
-from nightKnights.src.interfaces.skill_interface import SynonymMappingInterface
+from src.interfaces.skill_interface import SynonymMappingInterface
 
 class SynonymMapper(SynonymMappingInterface):
     def __init__(self):

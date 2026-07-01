@@ -2,12 +2,12 @@ import logging
 import datetime
 from typing import Dict, Any
 
-from nightKnights.src.schemas.skill_schema import ExtractedSkills
-from nightKnights.src.interfaces.skill_interface import SkillExtractorInterface
-from nightKnights.src.preprocessing.normalization import SkillNormalization
-from nightKnights.src.preprocessing.synonym_mapper import SynonymMapper
-from nightKnights.src.preprocessing.taxonomy import SkillTaxonomy
-from nightKnights.src.preprocessing.skill_extractor import SkillExtractor
+from src.schemas.skill_schema import ExtractedSkills
+from src.interfaces.skill_interface import SkillExtractorInterface
+from src.preprocessing.normalization import SkillNormalization
+from src.preprocessing.synonym_mapper import SynonymMapper
+from src.preprocessing.taxonomy import SkillTaxonomy
+from src.preprocessing.skill_extractor import SkillExtractor
 
 class SkillExtractorAgent(SkillExtractorInterface):
     def __init__(self):
@@ -54,7 +54,5 @@ class SkillExtractorAgent(SkillExtractorInterface):
         final_extracted_skills.metadata["extraction_timestamp"] = datetime.datetime.now(datetime.timezone.utc).isoformat()
 
         state["extracted_skills"] = final_extracted_skills.model_dump()
-        logging.info(f"SkillExtractorAgent finished. Total unique skills: {final_extracted_skills.metadata[\'total_skills
-description
-']}")
+        logging.info(f"SkillExtractorAgent finished. Total unique skills: {final_extracted_skills.metadata['total_skills']}")
         return state

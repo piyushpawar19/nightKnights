@@ -24,7 +24,7 @@ import uuid
 from datetime import datetime, timezone
 from typing import Annotated, Any, TypedDict
 
-from schemas.graph_schema import (
+from src.schemas.graph_schema import (
     CandidateRecord,
     CandidateScore,
     EvaluationMetrics,
@@ -33,8 +33,8 @@ from schemas.graph_schema import (
     FeatureVector,
     NodeError,
     NodeTimestamp,
-    StructuredJD,
 )
+from src.schemas.jd_schema import ParsedJD  # Added ParsedJD
 
 
 class PipelineState(TypedDict, total=False):
@@ -44,8 +44,8 @@ class PipelineState(TypedDict, total=False):
     ------
     raw_jd : str
         The verbatim job-description text supplied by the user.
-    structured_jd : dict | None
-        Serialised ``StructuredJD`` produced by the JD-parsing node.
+    parsed_jd : dict | None
+        Serialised ``ParsedJD`` produced by the JD-parsing node. # Changed from structured_jd
     extracted_skills : list[str]
         Flat list of skill names extracted from the JD.
     retrieved_candidates : list[dict]
@@ -72,7 +72,7 @@ class PipelineState(TypedDict, total=False):
     """
 
     raw_jd: str
-    structured_jd: dict[str, Any] | None
+    parsed_jd: ParsedJD | None
     extracted_skills: list[str]
     retrieved_candidates: list[dict[str, Any]]
     feature_vectors: list[dict[str, Any]]
@@ -116,7 +116,7 @@ def create_initial_state(raw_jd: str) -> PipelineState:
 
     return PipelineState(
         raw_jd=raw_jd,
-        structured_jd=None,
+        parsed_jd=None,
         extracted_skills=[],
         retrieved_candidates=[],
         feature_vectors=[],

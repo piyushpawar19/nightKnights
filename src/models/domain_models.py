@@ -12,7 +12,7 @@ from src.schemas.common_schema import (
     UUIDMixin
 )
 from src.schemas.jd_schema import (
-    StructuredJD,
+    ParsedJD,
     SkillTaxonomy
 )
 from src.schemas.candidate_schema import (
@@ -38,7 +38,7 @@ from src.schemas.submission_schema import (
 )
 
 # Integration aliases — canonical schema types used by external-module adapters.
-from src.schemas.graph_schema import StructuredJD as JobDescription
+from src.schemas.jd_schema import ParsedJD as JobDescription
 from src.schemas.candidate_schema import CandidateProfile as Candidate
 from src.schemas.retrieval_schema import RetrievalResult as SearchResult
 
@@ -54,7 +54,7 @@ __all__ = [
     "Score",
     "Metadata",
     "UUIDMixin",
-    "StructuredJD",
+    "ParsedJD",
     "SkillTaxonomy",
     "CandidateProfile",
     "RetrievalResult",

@@ -1,6 +1,13 @@
 import re
 from typing import Optional, Tuple
 import logging
+from functools import lru_cache
+import os
+from joblib import Memory
+
+CACHE_DIR = os.path.join(os.path.dirname(os.path.dirname(__file__)), "..", "data", "cache", "joblib_cache")
+os.makedirs(CACHE_DIR, exist_ok=True)
+memory = Memory(CACHE_DIR, verbose=0)
 
 logger = logging.getLogger(__name__)
 
@@ -22,6 +29,7 @@ class ExperienceParser:
             "manager": ["manager", "head", "director"],
         }
 
+    @memory.cache # Cache results for common experience descriptions
     def parse_experience(self, text: str) -> Tuple[Optional[int], Optional[int], Optional[str]]:
         """
         Extracts minimum, maximum experience and seniority level from the text.

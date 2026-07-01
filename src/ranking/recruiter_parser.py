@@ -1,16 +1,24 @@
-
 import json
 import logging
 from typing import Dict, Any
 from pydantic import ValidationError
+from functools import lru_cache
+import os
+from joblib import Memory
+
+CACHE_DIR = os.path.join(os.path.dirname(os.path.dirname(__file__)), "..", "data", "cache", "joblib_cache")
+os.makedirs(CACHE_DIR, exist_ok=True)
+memory = Memory(CACHE_DIR, verbose=0)
+
 from ..interfaces.reranking_interface import ResponseParserInterface
 from ..schemas.reranking_schema import RecruiterAssessment
 
 logger = logging.getLogger(__name__)
 
 class RecruiterParser(ResponseParserInterface):
-    """Parses and validates the LLM's recruiter assessment response."""
+    """Parses and validates the LLM\`s recruiter assessment response."""
 
+    @memory.cache # Cache parsing results for identical LLM responses
     def parse_recruiter_assessment(self, response: str) -> RecruiterAssessment:
         """Parses JSON, validates schema, and handles malformed responses.
 

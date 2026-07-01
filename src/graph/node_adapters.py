@@ -15,7 +15,7 @@ from src.interfaces.adapter_interfaces import (
     VectorStoreAdapter,
 )
 from src.models.domain_models import Candidate, JobDescription, RankedCandidate, SearchResult
-from src.schemas.graph_schema import StructuredJD
+from src.schemas.jd_schema import StructuredJD
 from src.state.pipeline_state import PipelineState
 
 logger = logging.getLogger(__name__)

@@ -2,11 +2,12 @@ import logging
 import datetime
 from typing import Dict, Any, List
 from pydantic import ValidationError
+from functools import lru_cache
 
-from nightKnights.src.schemas.feature_schema import (
+from src.schemas.feature_schema import (
     CandidateFeatures, RawFeatureMetrics, NormalizedFeatureMetrics, FeatureMetadata
 )
-from nightKnights.src.preprocessing.feature_extractors import (
+from src.preprocessing.feature_extractors import (
     extract_matched_skills, extract_missing_skills, extract_required_skill_matches,
     extract_preferred_skill_matches, extract_candidate_experience_years,
     extract_required_experience_years, extract_experience_gap_years,
@@ -21,7 +22,7 @@ from nightKnights.src.preprocessing.feature_extractors import (
     normalize_cloud_match, normalize_devops_match, normalize_ai_ml_match, normalize_soft_skill_match,
     normalize_keyword_similarity, normalize_technology_stack_match
 )
-from nightKnights.src.preprocessing.feature_utils import safe_get, safe_float, calculate_overlap
+from src.preprocessing.feature_utils import safe_get, safe_float, calculate_overlap
 
 logger = logging.getLogger(__name__)
 
@@ -36,47 +37,49 @@ class FeatureEngineering:
             return safe_get(data, keys, [])
 
         # JD Skills
-        jd_required_skills = get_list(extracted_skills, ["job_description", "required_skills"])
-        jd_preferred_skills = get_list(extracted_skills, ["job_description", "preferred_skills"])
-        jd_other_skills = get_list(extracted_skills, ["job_description", "other_skills"])
-        jd_all_skills = list(set(jd_required_skills + jd_preferred_skills + jd_other_skills))
+        # Access skills from parsed_jd.skills.required and parsed_jd.skills.preferred
+        jd_required_skills = [s.name for s in safe_get(parsed_jd, ["skills", "required"], [])]
+        jd_preferred_skills = [s.name for s in safe_get(parsed_jd, ["skills", "preferred"], [])]
+        jd_other_skills = [s.name for s in safe_get(parsed_jd, ["skills", "other"], [])] # New line for other skills
+        jd_technical_skills = jd_required_skills + jd_preferred_skills + jd_other_skills # Include other skills
+        jd_all_skills = list(set(jd_technical_skills))
 
         # Candidate Skills
-        candidate_hard_skills = get_list(extracted_skills, ["candidate_profile", "hard_skills"])
-        candidate_soft_skills_list = get_list(extracted_skills, ["candidate_profile", "soft_skills"])
+        candidate_hard_skills = get_list(candidate_profile, ["skills", "hard_skills"])
+        candidate_soft_skills_list = get_list(candidate_profile, ["skills", "soft_skills"])
         candidate_all_skills = list(set(candidate_hard_skills + candidate_soft_skills_list))
 
         # Experience
         candidate_exp_years = extract_candidate_experience_years(candidate_profile)
-        required_exp_years = extract_required_experience_years(parsed_jd)
+        required_exp_years = safe_get(parsed_jd, ["job_info", "years_of_experience", "min"], 0.0)
 
         # Certifications, Languages, Frameworks, etc. (from parsed_jd and candidate_profile)
-        jd_certifications = get_list(parsed_jd, ["certifications"])
-        candidate_certifications = get_list(candidate_profile, ["certifications"])
+        jd_certifications = [c.name for c in safe_get(parsed_jd, ["certifications"], [])]
+        candidate_certifications = [c.name for c in safe_get(candidate_profile, ["certifications"], [])]
 
-        jd_languages = get_list(parsed_jd, ["technologies", "languages"])
-        candidate_languages = get_list(candidate_profile, ["technologies", "languages"])
+        jd_languages = [t.name for t in safe_get(parsed_jd, ["technologies", "languages"], [])]
+        candidate_languages = [t.name for t in safe_get(candidate_profile, ["technologies", "languages"], [])]
 
-        jd_frameworks = get_list(parsed_jd, ["technologies", "frameworks"])
-        candidate_frameworks = get_list(candidate_profile, ["technologies", "frameworks"])
+        jd_frameworks = [t.name for t in safe_get(parsed_jd, ["technologies", "frameworks"], [])]
+        candidate_frameworks = [t.name for t in safe_get(candidate_profile, ["technologies", "frameworks"], [])]
 
-        jd_databases = get_list(parsed_jd, ["technologies", "databases"])
-        candidate_databases = get_list(candidate_profile, ["technologies", "databases"])
+        jd_databases = [t.name for t in safe_get(parsed_jd, ["technologies", "databases"], [])]
+        candidate_databases = [t.name for t in safe_get(candidate_profile, ["technologies", "databases"], [])]
 
-        jd_cloud_platforms = get_list(parsed_jd, ["technologies", "cloud_platforms"])
-        candidate_cloud_platforms = get_list(candidate_profile, ["technologies", "cloud_platforms"])
+        jd_cloud_platforms = [t.name for t in safe_get(parsed_jd, ["technologies", "cloud_platforms"], [])]
+        candidate_cloud_platforms = [t.name for t in safe_get(candidate_profile, ["technologies", "cloud_platforms"], [])]
 
-        jd_devops_tools = get_list(parsed_jd, ["technologies", "devops_tools"])
-        candidate_devops_tools = get_list(candidate_profile, ["technologies", "devops_tools"])
+        jd_devops_tools = [t.name for t in safe_get(parsed_jd, ["technologies", "devops_tools"], [])]
+        candidate_devops_tools = [t.name for t in safe_get(candidate_profile, ["technologies", "devops_tools"], [])]
 
-        jd_ai_ml_skills = get_list(parsed_jd, ["technologies", "ai_ml_skills"])
-        candidate_ai_ml_skills = get_list(candidate_profile, ["technologies", "ai_ml_skills"])
+        jd_ai_ml_skills = [t.name for t in safe_get(parsed_jd, ["technologies", "ai_ml_skills"], [])]
+        candidate_ai_ml_skills = [t.name for t in safe_get(candidate_profile, ["technologies", "ai_ml_skills"], [])]
 
-        jd_soft_skills = get_list(parsed_jd, ["soft_skills"])
+        jd_soft_skills = [s.name for s in safe_get(parsed_jd, ["skills", "soft_skills"], [])]
 
-        jd_description_text = safe_get(parsed_jd, ["job_description", "full_text"], "")
+        jd_description_text = safe_get(parsed_jd, ["job_info", "description"], "")
         candidate_summary_text = safe_get(candidate_profile, ["summary"], "")
-        jd_keywords = get_list(parsed_jd, ["keywords"])
+        jd_keywords = get_list(parsed_jd, ["job_info", "keywords"])
 
         raw_metrics = {
             "matched_skills": extract_matched_skills(jd_all_skills, candidate_all_skills),
@@ -108,52 +111,50 @@ class FeatureEngineering:
             return safe_get(data, keys, [])
 
         # JD Skills
-        jd_required_skills = get_list(extracted_skills, ["job_description", "required_skills"])
-        jd_preferred_skills = get_list(extracted_skills, ["job_description", "preferred_skills"])
-        jd_other_skills = get_list(extracted_skills, ["job_description", "other_skills"])
-        jd_all_skills = list(set(jd_required_skills + jd_preferred_skills + jd_other_skills))
+        # JD Skills
+        jd_required_skills = [s.name for s in safe_get(parsed_jd, ["skills", "required"], [])]
+        jd_preferred_skills = [s.name for s in safe_get(parsed_jd, ["skills", "preferred"], [])]
+        jd_other_skills = [s.name for s in safe_get(parsed_jd, ["skills", "other"], [])]
+        jd_technical_skills = jd_required_skills + jd_preferred_skills + jd_other_skills
+        jd_all_skills = list(set(jd_technical_skills))
 
         # Candidate Skills
-        """Changed to include all relevant candidate skills to calculate a more accurate skill_overlap."""
-        candidate_hard_skills = get_list(extracted_skills, ["candidate_profile", "hard_skills"])
-        candidate_soft_skills_list = get_list(extracted_skills, ["candidate_profile", "soft_skills"])
-        candidate_ml_related_skills = get_list(candidate_profile, ["technologies", "ai_ml_skills"])
-        # Also consider if TensorFlow/Keras are present in hard_skills as an indicator for ML
-        if any(s.lower() in [term.lower() for term in candidate_hard_skills] for s in ["tensorflow", "keras", "pytorch"]):
-            candidate_ml_related_skills.append("Machine Learning")
-        
-        candidate_all_skills = list(set(candidate_hard_skills + candidate_soft_skills_list + candidate_ml_related_skills))
+        candidate_hard_skills = get_list(candidate_profile, ["skills", "hard_skills"])
+        candidate_soft_skills_list = get_list(candidate_profile, ["skills", "soft_skills"])
+        candidate_all_skills = list(set(candidate_hard_skills + candidate_soft_skills_list))
 
         # Experience
         candidate_exp_years = raw_metrics["candidate_experience_years"]
-        required_exp_years = raw_metrics["required_experience_years"]
+        required_exp_years = safe_get(parsed_jd, ["job_info", "years_of_experience", "min"], 0.0)
 
         # Certifications, Languages, Frameworks, etc.
-        jd_certifications = get_list(parsed_jd, ["certifications"])
-        candidate_certifications = get_list(candidate_profile, ["certifications"])
+        jd_certifications = [c.name for c in safe_get(parsed_jd, ["certifications"], [])]
+        candidate_certifications = [c.name for c in safe_get(candidate_profile, ["certifications"], [])]
 
-        jd_languages = get_list(parsed_jd, ["technologies", "languages"])
-        candidate_languages = get_list(candidate_profile, ["technologies", "languages"])
+        jd_languages = [t.name for t in safe_get(parsed_jd, ["technologies", "languages"], [])]
+        candidate_languages = [t.name for t in safe_get(candidate_profile, ["technologies", "languages"], [])]
 
-        jd_frameworks = get_list(parsed_jd, ["technologies", "frameworks"])
-        candidate_frameworks = get_list(candidate_profile, ["technologies", "frameworks"])
+        jd_frameworks = [t.name for t in safe_get(parsed_jd, ["technologies", "frameworks"], [])]
+        candidate_frameworks = [t.name for t in safe_get(candidate_profile, ["technologies", "frameworks"], [])]
 
-        jd_databases = get_list(parsed_jd, ["technologies", "databases"])
-        candidate_databases = get_list(candidate_profile, ["technologies", "databases"])
+        jd_databases = [t.name for t in safe_get(parsed_jd, ["technologies", "databases"], [])]
+        candidate_databases = [t.name for t in safe_get(candidate_profile, ["technologies", "databases"], [])]
 
-        jd_cloud_platforms = get_list(parsed_jd, ["technologies", "cloud_platforms"])
-        candidate_cloud_platforms = get_list(candidate_profile, ["technologies", "cloud_platforms"])
+        jd_cloud_platforms = [t.name for t in safe_get(parsed_jd, ["technologies", "cloud_platforms"], [])]
+        candidate_cloud_platforms = [t.name for t in safe_get(candidate_profile, ["technologies", "cloud_platforms"], [])]
 
-        jd_devops_tools = get_list(parsed_jd, ["technologies", "devops_tools"])
-        candidate_devops_tools = get_list(candidate_profile, ["technologies", "devops_tools"])
+        jd_devops_tools = [t.name for t in safe_get(parsed_jd, ["technologies", "devops_tools"], [])]
+        candidate_devops_tools = [t.name for t in safe_get(candidate_profile, ["technologies", "devops_tools"], [])]
 
-        jd_ai_ml_skills = get_list(parsed_jd, ["technologies", "ai_ml_skills"])
-        # candidate_ai_ml_skills is defined locally in this method, so pass it here.
+        jd_ai_ml_skills = [t.name for t in safe_get(parsed_jd, ["technologies", "ai_ml_skills"], [])]
+        candidate_ml_related_skills = [t.name for t in safe_get(candidate_profile, ["technologies", "ai_ml_skills"], [])]
 
-        jd_soft_skills = get_list(parsed_jd, ["soft_skills"])
+        jd_soft_skills = [s.name for s in safe_get(parsed_jd, ["skills", "soft_skills"], [])]
 
-        jd_description_text = safe_get(parsed_jd, ["job_description", "full_text"], "")
+        jd_description_text = safe_get(parsed_jd, ["job_info", "description"], "")
         candidate_summary_text = safe_get(candidate_profile, ["summary"], "")
+
+        jd_keywords = get_list(parsed_jd, ["job_info", "keywords"])
 
         # For technology_stack_match, combine all tech-related skills/tools
         jd_tech_stack = list(set(
@@ -163,7 +164,7 @@ class FeatureEngineering:
         candidate_tech_stack = list(set(
             candidate_all_skills + candidate_languages + candidate_frameworks + 
             candidate_databases + candidate_cloud_platforms + candidate_devops_tools +
-            candidate_ml_related_skills # Corrected: use candidate_ml_related_skills instead of undefined candidate_ai_ml_skills
+            candidate_ml_related_skills
         ))
 
         normalized_metrics = {

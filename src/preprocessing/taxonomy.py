@@ -1,5 +1,5 @@
 from typing import Dict, List
-from nightKnights.src.interfaces.skill_interface import SkillTaxonomyInterface
+from src.interfaces.skill_interface import SkillTaxonomyInterface
 
 class SkillTaxonomy(SkillTaxonomyInterface):
     def __init__(self):

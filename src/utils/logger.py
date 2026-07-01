@@ -32,7 +32,7 @@ import traceback
 from datetime import datetime, timezone
 from typing import Any
 
-from schemas.graph_schema import NodeError, NodeStatus, NodeTimestamp
+from src.schemas.graph_schema import NodeError, NodeStatus, NodeTimestamp
 
 
 # ---------------------------------------------------------------------------
@@ -120,7 +120,7 @@ class NodeExecutionLogger:
         self._duration_ms: float = 0.0
         self._status: NodeStatus = NodeStatus.PENDING
         self._updated_fields: list[str] = []
-        self._error: NodeError | None = None
+        self._errors: list[NodeError] = [] # Changed to list to support multiple errors
 
     # -- Context manager protocol ------------------------------------------
 
@@ -146,14 +146,15 @@ class NodeExecutionLogger:
         self._completed_at = datetime.now(tz=timezone.utc)
 
         if exc_val is not None:
-            self._status = NodeStatus.FAILED
-            self._error = NodeError(
+            # If an unhandled exception occurs, capture it as a NodeError
+            self._errors.append(NodeError(
                 node_name=self.node_name,
                 error_type=type(exc_val).__name__,
                 error_message=str(exc_val),
                 timestamp=self._completed_at,
                 traceback=traceback.format_exc(),
-            )
+            ))
+            self._status = NodeStatus.FAILED
             self._logger.error(
                 "[%s] ERROR - Node failed after %.1fms - %s: %s",
                 self.node_name,
@@ -161,16 +162,26 @@ class NodeExecutionLogger:
                 type(exc_val).__name__,
                 exc_val,
             )
-            # Suppress the exception so the graph can continue
+            # Suppress the exception so the graph can continue its error handling
             return True
-
-        self._status = NodeStatus.SUCCESS
-        self._logger.info(
-            "[%s] SUCCESS - Node completed in %.1fms - updated: %s",
-            self.node_name,
-            self._duration_ms,
-            ", ".join(self._updated_fields) or "(none)",
-        )
+        
+        if self._errors: # If errors were explicitly added within the node
+            self._status = NodeStatus.FAILED
+            self._logger.warning(
+                "[%s] WARNING - Node completed with %d errors in %.1fms - updated: %s",
+                self.node_name,
+                len(self._errors),
+                self._duration_ms,
+                ", ".join(self._updated_fields) or "(none)",
+            )
+        else:
+            self._status = NodeStatus.SUCCESS
+            self._logger.info(
+                "[%s] SUCCESS - Node completed in %.1fms - updated: %s",
+                self.node_name,
+                self._duration_ms,
+                ", ".join(self._updated_fields) or "(none)",
+            )
         return False
 
     # -- Public helpers ----------------------------------------------------
@@ -182,7 +193,20 @@ class NodeExecutionLogger:
     @property
     def failed(self) -> bool:
         """Whether the node execution failed."""
-        return self._status == NodeStatus.FAILED
+        return self._status == NodeStatus.FAILED or bool(self._errors)
+    
+    @property
+    def errors(self) -> list[NodeError]:
+        """Return the list of errors captured during node execution."""
+        return self._errors
+
+    def add_error(self, error: NodeError) -> None:
+        """Add a NodeError to the list of captured errors."""
+        if isinstance(error, list):
+            self._errors.extend(error) # Extend if a list of errors is passed
+        else:
+            self._errors.append(error)
+        self._status = NodeStatus.FAILED # Mark as failed if an error is added
 
     def build_timestamp_entry(self) -> dict[str, Any]:
         """Build a serialised ``NodeTimestamp`` dict for appending to state."""
@@ -197,6 +221,10 @@ class NodeExecutionLogger:
 
     def build_error_entry(self) -> dict[str, Any] | None:
         """Build a serialised ``NodeError`` dict, or ``None`` if no error."""
-        if self._error is None:
-            return None
-        return self._error.model_dump(mode="json")
+        # This method might need adjustment if multiple errors are to be returned
+        if self._errors:
+            return self._errors[0].model_dump(mode="json") # Return the first error for compatibility, or refactor caller
+        return None
+
+
+

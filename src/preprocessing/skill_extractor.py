@@ -1,8 +1,11 @@
 import re
 import logging
 from typing import List, Dict, Set
+from functools import lru_cache
 
-from nightKnights.src.interfaces.skill_interface import SkillExtractionEngineInterface
+from src.interfaces.skill_interface import SkillExtractionEngineInterface
+
+logger = logging.getLogger(__name__)
 
 class SkillExtractor(SkillExtractionEngineInterface):
     def __init__(self, config: Dict = None):
@@ -116,6 +119,7 @@ class SkillExtractor(SkillExtractionEngineInterface):
             keyword_dicts[category] = set(k.lower() for k in keywords)
         return keyword_dicts
 
+    @lru_cache(maxsize=1024) # Cache extracted skills for a given text
     def extract_skills(self, text: str) -> List[str]:
         extracted: Set[str] = set()
         text_lower = text.lower()
