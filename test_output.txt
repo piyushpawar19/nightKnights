@@ -1,0 +1,26 @@
+============================= test session starts =============================
+platform win32 -- Python 3.14.5, pytest-9.1.1, pluggy-1.6.0
+rootdir: C:\Users\piyush pawar\Desktop\AI_Hackthonnnn
+plugins: anyio-4.14.1, langsmith-0.9.3
+collected 168 items
+
+tests\test_bm25_agent.py ssss                                            [  2%]
+tests\test_config_manager.py sssssssss                                   [  7%]
+tests\test_csv_generator.py sssssssssssssss                              [ 16%]
+tests\test_dataset_loader.py sssss                                       [ 19%]
+tests\test_dense_retrieval.py sss                                        [ 21%]
+tests\test_evaluation.py sssssssssssssssssssssss                         [ 35%]
+tests\test_explanation_agent.py ssssssssss                               [ 41%]
+tests\test_feature_engineering.py sssssssssss                            [ 47%]
+tests\test_graph.py sss                                                  [ 49%]
+tests\test_integration.py ssssssssss                                     [ 55%]
+tests\test_jd_parser.py sssssss                                          [ 59%]
+tests\test_profile_builder.py ssssss                                     [ 63%]
+tests\test_profile_builder_agent.py ssssss                               [ 66%]
+tests\test_recruiter_reranker.py sssssssssssss                           [ 74%]
+tests\test_retrieval_pipeline.py sssss                                   [ 77%]
+tests\test_schemas.py ssssssssssssssssssssss                             [ 90%]
+tests\test_skill_extractor.py ssssssssss                                 [ 96%]
+tests\test_vector_store.py ssssss                                        [100%]
+
+============================ 168 skipped in 9.14s =============================
